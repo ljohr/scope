@@ -1,0 +1,63 @@
+.prof-single-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5% var(--horizontal-padding);
+}
+
+.prof-courses {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  gap: 1rem;
+  row-gap: 1rem;
+  margin-top: 3%;
+}
+
+.prof-courses h4 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.prof-course {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
+  min-height: 220px;
+}
+
+.prof-course:hover {
+  transform: scale(1.01);
+}
+
+.rating-info {
+  margin-top: 0.5rem;
+}
+
+.course-dept {
+  font-size: 1.3rem;
+}
+
+.prof-course button {
+  margin-top: 20%;
+}
+
+.prof-course-info p {
+  line-height: 1.7;
+}
+
+.see-all-btn {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(222, 254, 231);
+  padding: 3% 5%;
+  margin-top: 5%;
+}

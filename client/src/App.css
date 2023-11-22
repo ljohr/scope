@@ -1,0 +1,39 @@
+* {
+  --main-color: rgb(44, 44, 44);
+  --main-hover: rgb(178, 178, 178);
+  --horizontal-padding: 14%;
+}
+
+a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgba(64, 64, 64, 0.751);
+}
+
+form input {
+  border: 1px solid #c7c7c7c1;
+}
+
+form input:focus {
+  outline: rgb(212, 212, 212) solid 1px;
+}
+
+button {
+  border: none;
+  padding: 0.5rem 0.7rem;
+}
+
+button:hover {
+  background-color: rgba(212, 212, 212, 0.276);
+}
+
+.light-green-btn {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(222, 254, 231);
+  padding: 3% 5%;
+  margin-top: 5%;
+}

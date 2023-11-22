@@ -1,0 +1,5 @@
+.professors-main {
+  display: flex;
+  justify-content: center;
+  padding: 5% 0;
+}

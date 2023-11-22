@@ -1,0 +1,102 @@
+.course-single-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3% 0;
+}
+
+.container {
+  padding-top: 3%;
+  display: grid;
+  width: 72%;
+  grid-template-columns: 2fr 1fr;
+  gap: 2%;
+}
+
+.course-reviews {
+  row-gap: 0.5%;
+}
+
+.course-overall {
+  padding: 2rem;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
+}
+
+.review-card {
+  padding: 2rem;
+  margin-bottom: 3%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
+}
+
+.review-card p,
+.course-overall p {
+  line-height: 1.7;
+}
+
+.review-card h4,
+.course-overall h3 {
+  font-size: 1.2rem;
+}
+
+.review-card .MuiRating-root {
+  font-size: 1.35rem;
+}
+.review-card:last-child {
+  margin-bottom: 0;
+}
+
+.prof-rating,
+.course-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.review-all-ratings {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-weight: 700;
+  padding-top: 3%;
+}
+
+.review-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.review-comment {
+  padding-top: 2%;
+}
+
+.btn-pill {
+  display: inline-block;
+  background-color: rgb(238, 238, 238);
+  padding: 2% 3%;
+  margin-right: 2%;
+  margin-bottom: 2%;
+  border-radius: 2rem;
+}
+
+.course-overall .prof-rating,
+.course-overall .course-rating {
+  margin-bottom: 1rem;
+}
+
+.allTags {
+  margin-top: 1rem;
+}
+
+/* .review-btn {
+
+} */

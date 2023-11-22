@@ -1,0 +1,67 @@
+.home-main {
+  padding: 3.5% var(--horizontal-padding);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 60% 40%;
+}
+
+.hero h1 {
+  font-size: 5rem;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.hero button {
+  font-size: 1.1rem;
+  padding: 2% 3%;
+  background-color: rgb(196, 255, 214);
+}
+
+.hero button:hover {
+  background-color: rgb(222, 254, 231);
+}
+
+.btn-container {
+  margin-top: 4%;
+  gap: 10px;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+.home-img {
+  display: flex;
+  justify-content: center;
+}
+
+.talking-students {
+  width: 100%;
+}
+
+@property --num {
+  syntax: "<integer>";
+  initial-value: 17284;
+  inherits: false;
+}
+
+.review-count {
+  animation: counter 5s;
+  counter-reset: num var(--num);
+  font-size: 2rem;
+  display: inline-block;
+}
+.review-count::after {
+  content: counter(num);
+}
+
+@keyframes counter {
+  from {
+    --num: 17200;
+  }
+  to {
+    --num: 17284;
+  }
+}
