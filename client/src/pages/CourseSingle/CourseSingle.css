@@ -79,15 +79,6 @@
   padding-top: 2%;
 }
 
-.btn-pill {
-  display: inline-block;
-  background-color: rgb(238, 238, 238);
-  padding: 2% 3%;
-  margin-right: 2%;
-  margin-bottom: 2%;
-  border-radius: 2rem;
-}
-
 .course-overall .prof-rating,
 .course-overall .course-rating {
   margin-bottom: 1rem;

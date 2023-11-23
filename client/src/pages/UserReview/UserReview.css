@@ -1,0 +1,75 @@
+.user-review-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3% 0;
+}
+
+.user-review h3 {
+  margin-bottom: 3%;
+}
+
+.rating-container,
+.semester-container,
+.course-tags,
+.prof-tags,
+.user-comment {
+  margin-bottom: 4%;
+}
+
+.rating-container h4 {
+  margin-bottom: 0.8%;
+}
+
+.semester-container h4,
+.course-tags h4,
+.prof-tags h4 {
+  margin-bottom: 1.5%;
+}
+
+.semester-container select {
+  padding: 0.8% 1.6%;
+  margin-right: 0.5rem;
+}
+
+.course-stars,
+.prof-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-comment {
+  padding: 1rem;
+  resize: none;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.submit-container {
+  display: flex;
+  justify-content: center;
+}
+
+.user-review {
+  padding: 2rem;
+  margin-bottom: 3%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
+}
+
+.btn-pill:hover {
+  background-color: rgb(238, 238, 238);
+}
+
+.active {
+  background-color: rgb(196, 255, 214);
+}
+
+.active:hover {
+  background-color: rgb(196, 255, 214);
+}

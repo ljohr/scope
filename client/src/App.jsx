@@ -16,6 +16,8 @@ import Core from "./pages/Core/Core";
 import Login from "./pages/LoginRegister/Login";
 import Register from "./pages/LoginRegister/Register";
 import ResetPassword from "./pages/LoginRegister/ResetPassword";
+import PageNotFound from "./pages/PageNotFound/PageNotFound.jsx";
+import UserReview from "./pages/UserReview/UserReview.jsx";
 import UserProvider from "./utils/UserProvider.jsx";
 
 axios.defaults.baseURL = "http://localhost:4000";
@@ -79,12 +81,20 @@ const router = createBrowserRouter([
         element: <CourseSingle />,
       },
       {
+        path: "/:deptcode/:profname/:coursecode/new-review",
+        element: <UserReview />,
+      },
+      {
         path: "/major/:id",
         element: <MajorSingle />,
       },
       {
         path: "/reset-password",
         element: <ResetPassword />,
+      },
+      {
+        path: "/page-not-found",
+        element: <PageNotFound />,
       },
     ],
   },

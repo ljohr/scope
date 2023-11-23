@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 import Rating from "@mui/material/Rating";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Link } from "react-router-dom";
-import axios from "axios";
 import "./CourseSingle.css";
 
 const CourseSingle = () => {
@@ -12,6 +13,7 @@ const CourseSingle = () => {
   const [courseInfo, setCourseInfo] = useState({});
   const [professor, setProfessor] = useState({});
   const [reviews, setReviews] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -25,12 +27,13 @@ const CourseSingle = () => {
         setReviews(res.data.reviews);
         setDataLoaded(true);
       } catch (error) {
-        console.error("Error fetching courses", error);
+        toast.error("Please login to view this page!");
+        navigate("/login");
       }
     };
 
     fetchCourse();
-  }, [deptcode, profname, coursecode]);
+  }, [deptcode, profname, coursecode, navigate]);
 
   // if (dataLoaded) {
   return (
@@ -120,7 +123,7 @@ const CourseSingle = () => {
             </section>
             <section className="course-overall">
               <h3>Course Overall</h3>
-              <p>Overall Professor Rating:</p>
+              <p>Average Professor Rating:</p>
               <div className="prof-rating">
                 {courseInfo.avgProfRating.toFixed(2)}
                 <Rating
@@ -130,7 +133,7 @@ const CourseSingle = () => {
                   readOnly
                 />
               </div>
-              <p>Overall Course Rating: </p>
+              <p>Average Course Rating: </p>
               <div className="prof-rating">
                 {courseInfo.avgCourseRating.toFixed(2)}
                 <Rating

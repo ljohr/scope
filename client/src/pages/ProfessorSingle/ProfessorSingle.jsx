@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 import "./ProfessorSingle.css";
 
@@ -11,6 +12,7 @@ import "./ProfessorSingle.css";
 const ProfessorSingle = () => {
   const { deptcode, profname } = useParams();
   const [professor, setProfessor] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -18,12 +20,21 @@ const ProfessorSingle = () => {
         const response = await axios.get(`/${deptcode}/${profname}`);
         setProfessor(response.data);
       } catch (error) {
-        console.error("Error fetching courses", error);
+        console.log(error);
+        if (error.response && error.response.status === 404) {
+          navigate("/page-not-found");
+          console.log("hi?");
+          console.log(error);
+        } else if (error.response && error.response.status === 401) {
+          toast.error("Please login to view this page!");
+          navigate("/login");
+        }
       }
     };
 
     fetchCourse();
-  }, [deptcode, profname]);
+  }, [deptcode, profname, navigate]);
+
   return (
     <main className="prof-single-main">
       <h1>{professor.professorName}</h1>

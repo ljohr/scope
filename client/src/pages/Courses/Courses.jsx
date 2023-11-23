@@ -1,22 +1,30 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 import "./Courses.css";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/courses"); // Your Express server URL
+        const response = await axios.get("/api/courses");
         setCourses(response.data);
       } catch (error) {
-        console.error("Error fetching courses", error);
+        if (error.status === 404) {
+          console.log(error);
+        } else if (error.status === 401) {
+          toast.error("Please login to view this page!");
+          navigate("/login");
+        }
       }
     };
 
     fetchCourses();
-  }, []);
+  }, [navigate]);
 
   return (
     <main className="courses-container">

@@ -4,6 +4,14 @@
   --horizontal-padding: 14%;
 }
 
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.2rem;
+}
+
 a {
   color: rgb(0, 0, 0);
   text-decoration: none;
@@ -34,6 +42,15 @@ button:hover {
   display: flex;
   justify-content: center;
   background-color: rgb(222, 254, 231);
-  padding: 3% 5%;
-  margin-top: 5%;
+  padding: 0.6rem 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.btn-pill {
+  display: inline-block;
+  background-color: rgb(238, 238, 238);
+  padding: 0.3rem 0.5rem;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+  border-radius: 2rem;
 }

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 import "./Majors.css";
 
 const Majors = () => {
   const [majors, setMajors] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMajors = async () => {
@@ -14,12 +16,17 @@ const Majors = () => {
         });
         setMajors(response.data);
       } catch (error) {
-        console.error("Error fetching courses", error);
+        if (error.status === 404) {
+          console.log(error);
+        } else if (error.status === 401) {
+          toast.error("Please login to view this page!");
+          navigate("/login");
+        }
       }
     };
 
     fetchMajors();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="majors-container">

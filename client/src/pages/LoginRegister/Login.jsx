@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { auth } from "../../config/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
@@ -83,9 +83,6 @@ const Login = () => {
         <p>
           {"Don't have an account?"} <a href="/register">Sign Up Here</a>
         </p>
-      </div>
-      <div>
-        <ToastContainer />
       </div>
     </main>
   );
