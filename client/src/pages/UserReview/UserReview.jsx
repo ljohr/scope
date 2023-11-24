@@ -5,6 +5,7 @@ import { GetYears } from "../../utils/GetYears";
 import axios from "axios";
 import Rating from "@mui/material/Rating";
 import CircularProgress from "@mui/material/CircularProgress";
+import Slider from "@mui/material/Slider";
 import StarRating from "./components/StarRating";
 import TagSelection from "./components/TagSelection";
 import "./UserReview.css";
@@ -14,26 +15,40 @@ const UserReview = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
   const [professor, setProfessor] = useState({});
-  const [courseRating, setCourseRating] = useState(1);
-  const [profRating, setProfRating] = useState(1);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [courseRating, setCourseRating] = useState(null);
+  const [profRating, setProfRating] = useState(null);
+  const [profTags, setProfTags] = useState([]);
+  const [courseTags, setCourseTags] = useState([]);
+  const [userComment, setUserComment] = useState("");
+  const [hours, setHours] = useState(0);
   const [term, setTerm] = useState("spring");
   const [year, setYear] = useState(new Date().getFullYear());
   const [workload, setWorkload] = useState("");
   const [lecturerStyle, setLecturerStyle] = useState("");
   const [grading, setGrading] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let isValid = true;
 
+    if (!profRating) {
+      toast.error("Please rate the professor 1-5.");
+      console.log("Validation failed");
+      isValid = false;
+    }
+    if (!courseRating) {
+      toast.error("Please rate the course 1-5.");
+      console.log("Validation failed");
+      isValid = false;
+    }
     if (!workload) {
       toast.error("Please select a workload.");
       console.log("Validation failed");
       isValid = false;
     }
     if (!lecturerStyle) {
-      toast.error("Please select a lecturer style.");
+      toast.error("Please select a lecture style.");
       console.log("Validation failed");
       isValid = false;
     }
@@ -42,12 +57,40 @@ const UserReview = () => {
       console.log("Validation failed");
       isValid = false;
     }
+    if (hours == 0) {
+      toast.error("Please select hours between 1-15.");
+      console.log("Validation failed");
+      isValid = false;
+    }
     if (isValid) {
-      console.log("Validation success");
+      console.log("Before axios.post");
+      try {
+        console.log("Inside try block, before axios.post");
+        const response = await axios.post("/api/new-review", {
+          deptcode,
+          profname,
+          coursecode,
+          profRating,
+          courseRating,
+          profTags,
+          courseTags,
+          term,
+          year,
+          workload,
+          lecturerStyle,
+          grading,
+          hours,
+          userComment,
+        });
+        console.log("After axios.post", response);
+        toast.success("Review submitted successfully!");
+        // navigate(`/${deptcode}/${profname}/${coursecode}`);
+      } catch (error) {
+        console.error("Error submitting review:", error);
+        toast.error("Error submitting review.");
+      }
     }
   };
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -88,12 +131,12 @@ const UserReview = () => {
             <section className="user-review">
               <h3>Submit Your Review</h3>
               <div className="rating-container">
-                <h4>Overall Course Rating</h4>
-                <StarRating rating={courseRating} setRating={setCourseRating} />
-              </div>
-              <div className="rating-container">
                 <h4>Overall Professor Rating</h4>
                 <StarRating rating={profRating} setRating={setProfRating} />
+              </div>
+              <div className="rating-container">
+                <h4>Overall Course Rating</h4>
+                <StarRating rating={courseRating} setRating={setCourseRating} />
               </div>
               <div className="semester-container">
                 <h4>Semester Taken</h4>
@@ -124,18 +167,42 @@ const UserReview = () => {
                 workload={workload}
                 lecturerStyle={lecturerStyle}
                 grading={grading}
-                selectedTags={selectedTags}
+                profTags={profTags}
+                courseTags={courseTags}
                 setWorkload={setWorkload}
                 setLecturerStyle={setLecturerStyle}
                 setGrading={setGrading}
-                setSelectedTags={setSelectedTags}
+                setCourseTags={setCourseTags}
+                setProfTags={setProfTags}
               />
-              <textarea
-                className="user-comment"
-                name="user-comment"
-                rows="7"
-                placeholder="Describe your experience: key takeaways, teaching style, workload, and any tips for future students. Help your peers pick the best courses!"
-              />
+              <div className="weekly-hours">
+                <h4>Hours per Week: {hours} hours</h4>
+                <p>
+                  Select the value that best estimates your weekly coursework
+                  hours.
+                </p>
+                <Slider
+                  aria-label="Temperature"
+                  defaultValue={0}
+                  valueLabelDisplay="auto"
+                  step={1}
+                  marks
+                  min={0}
+                  max={15}
+                  onChange={(e) => setHours(e.target.value)}
+                />
+              </div>
+              <div className="comment-container">
+                <h4>User Comment</h4>
+                <textarea
+                  className="user-comment"
+                  name="user-comment"
+                  rows="7"
+                  placeholder="Describe your experience: key takeaways, teaching style, workload, and any tips for future students!"
+                  onChange={(e) => setUserComment(e.target.value)}
+                />
+              </div>
+
               <div className="submit-container">
                 <button type="submit" onClick={handleSubmit}>
                   Submit Review

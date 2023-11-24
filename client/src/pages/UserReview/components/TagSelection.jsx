@@ -4,14 +4,23 @@ const TagSelection = ({
   workload,
   lecturerStyle,
   grading,
-  selectedTags,
+  profTags,
+  courseTags,
   setWorkload,
   setLecturerStyle,
   setGrading,
-  setSelectedTags,
+  setProfTags,
+  setCourseTags,
 }) => {
-  const toggleTag = (tag) => {
-    setSelectedTags((prevTags) =>
+  const toggleProf = (tag) => {
+    setProfTags((prevTags) =>
+      prevTags.includes(tag)
+        ? prevTags.filter((t) => t !== tag)
+        : [...prevTags, tag]
+    );
+  };
+  const toggleCourse = (tag) => {
+    setCourseTags((prevTags) =>
       prevTags.includes(tag)
         ? prevTags.filter((t) => t !== tag)
         : [...prevTags, tag]
@@ -50,40 +59,40 @@ const TagSelection = ({
             Heavy Workload
           </button>
         </div>
-        <div>
+        <div className="other-tags">
           <p>Other Tags (Optional)</p>
           <button
             className={`btn-pill ${
-              selectedTags.includes("followsTextbook") ? "active" : ""
+              courseTags.includes("followsTextbook") ? "active" : ""
             }`}
-            onClick={() => toggleTag("followsTextbook")}
+            onClick={() => toggleCourse("followsTextbook")}
             value="followsTextbook"
           >
             Follows Textbook
           </button>
           <button
             className={`btn-pill ${
-              selectedTags.includes("participationHeavy") ? "active" : ""
+              courseTags.includes("participationHeavy") ? "active" : ""
             }`}
-            onClick={() => toggleTag("participationHeavy")}
+            onClick={() => toggleCourse("participationHeavy")}
             value="participationHeavy"
           >
             Participation Heavy
           </button>
           <button
             className={`btn-pill ${
-              selectedTags.includes("discussionBased") ? "active" : ""
+              courseTags.includes("discussionBased") ? "active" : ""
             }`}
-            onClick={() => toggleTag("discussionBased")}
+            onClick={() => toggleCourse("discussionBased")}
             value="discussionBased"
           >
             Discussion Based
           </button>
           <button
             className={`btn-pill ${
-              selectedTags.includes("noFinalProject") ? "active" : ""
+              courseTags.includes("noFinalProject") ? "active" : ""
             }`}
-            onClick={() => toggleTag("noFinalProject")}
+            onClick={() => toggleCourse("noFinalProject")}
             value="noFinalProject"
           >
             Final Project Instead of Exam
@@ -123,10 +132,12 @@ const TagSelection = ({
         <div className="grading-tags">
           <p>Grading Style (Required)</p>
           <button
-            className={`btn-pill ${grading === "toughGrader" ? "active" : ""}`}
-            onClick={() => setGrading("toughGrader")}
+            className={`btn-pill ${
+              grading === "lenientGrader" ? "active" : ""
+            }`}
+            onClick={() => setGrading("lenientGrader")}
           >
-            Tough Grader
+            Lenient Grader
           </button>
           <button
             className={`btn-pill ${grading === "fairGrader" ? "active" : ""}`}
@@ -135,30 +146,28 @@ const TagSelection = ({
             Fair Grader
           </button>
           <button
-            className={`btn-pill ${
-              grading === "lenientGrader" ? "active" : ""
-            }`}
-            onClick={() => setGrading("lenientGrader")}
+            className={`btn-pill ${grading === "toughGrader" ? "active" : ""}`}
+            onClick={() => setGrading("toughGrader")}
           >
-            Lenient Grader
+            Tough Grader
           </button>
         </div>
-        <div>
+        <div className="other-tags">
           <p>Other Tags (Optional)</p>
           <button
             className={`btn-pill ${
-              selectedTags.includes("approachable") ? "active" : ""
+              profTags.includes("approachable") ? "active" : ""
             }`}
-            onClick={() => toggleTag("approachable")}
+            onClick={() => toggleProf("approachable")}
             value="approachable"
           >
             Approachable
           </button>
           <button
             className={`btn-pill ${
-              selectedTags.includes("willingToHelp") ? "active" : ""
+              profTags.includes("willingToHelp") ? "active" : ""
             }`}
-            onClick={() => toggleTag("willingToHelp")}
+            onClick={() => toggleProf("willingToHelp")}
             value="willingToHelp"
           >
             Willing To Help
@@ -173,11 +182,13 @@ TagSelection.propTypes = {
   workload: PropTypes.string.isRequired,
   lecturerStyle: PropTypes.string.isRequired,
   grading: PropTypes.string.isRequired,
-  selectedTags: PropTypes.array.isRequired,
+  profTags: PropTypes.array.isRequired,
+  courseTags: PropTypes.array.isRequired,
   setWorkload: PropTypes.func.isRequired,
   setLecturerStyle: PropTypes.func.isRequired,
   setGrading: PropTypes.func.isRequired,
-  setSelectedTags: PropTypes.func.isRequired,
+  setCourseTags: PropTypes.func.isRequired,
+  setProfTags: PropTypes.func.isRequired,
 };
 
 export default TagSelection;
