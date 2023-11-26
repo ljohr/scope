@@ -14,6 +14,8 @@ import MajorModel from "./models/Majors.js";
 import "./models/Professor.js";
 import connectDB from "./config/connectDB.js";
 import serviceAccount from "./config/scopefb.js";
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Types;
 
 // sort prof page and courses by
 // last semester taught -> alphabetical
@@ -215,9 +217,73 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
 });
 
 app.post("/api/new-review", async (req, res) => {
-  const reviewData = req.body;
-  console.log(reviewData);
-  res.status(200).send({ message: "Review submitted successfully" });
+  try {
+    const reviewData = req.body;
+    // const professorId = new ObjectId(reviewData.professorId);
+    // const courseId = new ObjectId(reviewData.courseId);
+    // const professor = await ProfessorModel.findById(professorId);
+    const professor = await CourseModel.findById("656388cce21362c48f7a2c51");
+    if (!professor) {
+      console.error("Professor not found");
+      return;
+    }
+    // const course = await CourseModel.findById(courseId);
+    // if (!course) {
+    //   console.error("Professor not found");
+    //   return;
+    // }
+
+    // reviewData.profTags = [
+    //   ...reviewData.profTags,
+    //   reviewData.lecturerStyle,
+    //   reviewData.gradingStyle,
+    // ];
+
+    // reviewData.courseTags = [...reviewData.courseTags, reviewData.workload];
+
+    // // Update Professor Tags in Professor Document
+    // reviewData.profTags.forEach((tag) => {
+    //   if (Object.prototype.hasOwnProperty.call(professor.profTags, tag)) {
+    //     professor.profTags[tag] += 1;
+    //   }
+    // });
+
+    // // Update Course Tags in Professor Document
+    // reviewData.courseTags.forEach((tag) => {
+    //   if (Object.prototype.hasOwnProperty.call(professor.courseTags, tag)) {
+    //     professor.courseTags[tag] += 1;
+    //   }
+    // });
+
+    // // Update Professor Tags in Course Document
+    // reviewData.profTags.forEach((tag) => {
+    //   if (Object.prototype.hasOwnProperty.call(course.profTags, tag)) {
+    //     course.profTags[tag] += 1;
+    //   }
+    // });
+
+    // // Update Course Tags in Course Document
+    // reviewData.courseTags.forEach((tag) => {
+    //   if (Object.prototype.hasOwnProperty.call(course.courseTags, tag)) {
+    //     course.courseTags[tag] += 1;
+    //   }
+    // });
+
+    // await course.save();
+
+    // Update the ratings
+    professor.totalProfRatingSum += reviewData.profRating;
+    professor.totalProfReviewers += 1;
+    professor.avgProfRating =
+      professor.totalProfRatingSum / professor.totalProfReviewers;
+    await professor.save();
+
+    console.log("professor", professor);
+    console.log(reviewData);
+    res.status(200).send({ message: "Review submitted successfully" });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // eslint-disable-next-line
