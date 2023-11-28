@@ -49,7 +49,7 @@ const ProfessorSingle = () => {
                 <h4>
                   {course.courseCode}: {course.courseName}
                 </h4>
-                <p>Average Instructor Rating: {course.avgProfRating}</p>
+                <p>Average Instructor Rating: {professor.avgProfRating}</p>
                 <p>Average Course Rating: {course.avgCourseRating}</p>
                 <p>Total Reviewers: {course.totalProfReviewers}</p>
               </div>

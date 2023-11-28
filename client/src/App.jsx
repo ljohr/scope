@@ -73,6 +73,10 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
+        path: "/reset-password",
+        element: <ResetPassword />,
+      },
+      {
         path: "/:deptcode/:profname",
         element: <ProfessorSingle />,
       },
@@ -81,16 +85,12 @@ const router = createBrowserRouter([
         element: <CourseSingle />,
       },
       {
-        path: "/:deptcode/:profname/:coursecode/new-review",
-        element: <UserReview />,
-      },
-      {
         path: "/major/:id",
         element: <MajorSingle />,
       },
       {
-        path: "/reset-password",
-        element: <ResetPassword />,
+        path: "/:deptcode/:profname/:coursecode/new-review",
+        element: <UserReview />,
       },
       {
         path: "/page-not-found",

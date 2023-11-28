@@ -30,6 +30,7 @@
 .course-tags,
 .prof-tags,
 .weekly-hours,
+.user-headline,
 .user-comment {
   margin-bottom: 4%;
 }
@@ -42,6 +43,7 @@
 .course-tags h4,
 .prof-tags h4,
 .weekly-hours h4,
+.headline-container h4,
 .comment-container h4 {
   margin-bottom: 1.5%;
 }
@@ -56,6 +58,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.user-headline {
+  padding: 0.8rem 1rem;
+  width: 100%;
+  line-height: 1.5;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .user-comment {

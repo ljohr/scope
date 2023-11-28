@@ -26,7 +26,7 @@ const Login = () => {
           .getIdToken(true)
           .then((idToken) => {
             axios.post(
-              "/sessionLogin",
+              "/api/sessionLogin",
               {},
               {
                 headers: {

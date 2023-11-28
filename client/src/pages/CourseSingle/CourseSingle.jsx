@@ -46,7 +46,9 @@ const CourseSingle = () => {
           <Link to={`/${deptcode}/${profname}`}>
             <h2>{professor.name}</h2>
           </Link>
-          <button className="review-btn">Add a Review!</button>
+          <Link to={`/${deptcode}/${profname}/${coursecode}/new-review`}>
+            <button className="review-btn">Add a Review!</button>
+          </Link>
           <div className="container">
             <section className="course-reviews">
               {reviews.map((review) => {
@@ -73,6 +75,11 @@ const CourseSingle = () => {
                         <></>
                       )}
                     </div>
+                    <p>
+                      {review.modality != "Lecture" && review.modality != "N/A"
+                        ? review.modality
+                        : ""}
+                    </p>
                     {/* {review.userComments ? ( */}
                     {review ? (
                       <p className="review-comment">
@@ -125,10 +132,10 @@ const CourseSingle = () => {
               <h3>Course Overall</h3>
               <p>Average Professor Rating:</p>
               <div className="prof-rating">
-                {courseInfo.avgProfRating.toFixed(2)}
+                {professor.avgProfRating.toFixed(2)}
                 <Rating
                   name="half-rating"
-                  defaultValue={courseInfo.avgProfRating}
+                  defaultValue={professor.avgProfRating}
                   precision={0.1}
                   readOnly
                 />

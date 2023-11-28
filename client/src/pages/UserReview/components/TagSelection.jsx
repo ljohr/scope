@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 const TagSelection = ({
   workload,
   lecturerStyle,
-  grading,
+  gradingStyle,
   profTags,
   courseTags,
   setWorkload,
   setLecturerStyle,
-  setGrading,
+  setGradingStyle,
   setProfTags,
   setCourseTags,
 }) => {
@@ -107,7 +107,9 @@ const TagSelection = ({
             className={`btn-pill ${
               lecturerStyle === "greatLecturer" ? "active" : ""
             }`}
-            onClick={() => setLecturerStyle("greatLecturer")}
+            onClick={() => {
+              setLecturerStyle("greatLecturer");
+            }}
           >
             Great Lecturer
           </button>
@@ -133,21 +135,25 @@ const TagSelection = ({
           <p>Grading Style (Required)</p>
           <button
             className={`btn-pill ${
-              grading === "lenientGrader" ? "active" : ""
+              gradingStyle === "lenientGrader" ? "active" : ""
             }`}
-            onClick={() => setGrading("lenientGrader")}
+            onClick={() => setGradingStyle("lenientGrader")}
           >
             Lenient Grader
           </button>
           <button
-            className={`btn-pill ${grading === "fairGrader" ? "active" : ""}`}
-            onClick={() => setGrading("fairGrader")}
+            className={`btn-pill ${
+              gradingStyle === "fairGrader" ? "active" : ""
+            }`}
+            onClick={() => setGradingStyle("fairGrader")}
           >
             Fair Grader
           </button>
           <button
-            className={`btn-pill ${grading === "toughGrader" ? "active" : ""}`}
-            onClick={() => setGrading("toughGrader")}
+            className={`btn-pill ${
+              gradingStyle === "toughGrader" ? "active" : ""
+            }`}
+            onClick={() => setGradingStyle("toughGrader")}
           >
             Tough Grader
           </button>
@@ -181,12 +187,12 @@ const TagSelection = ({
 TagSelection.propTypes = {
   workload: PropTypes.string.isRequired,
   lecturerStyle: PropTypes.string.isRequired,
-  grading: PropTypes.string.isRequired,
+  gradingStyle: PropTypes.string.isRequired,
   profTags: PropTypes.array.isRequired,
   courseTags: PropTypes.array.isRequired,
   setWorkload: PropTypes.func.isRequired,
   setLecturerStyle: PropTypes.func.isRequired,
-  setGrading: PropTypes.func.isRequired,
+  setGradingStyle: PropTypes.func.isRequired,
   setCourseTags: PropTypes.func.isRequired,
   setProfTags: PropTypes.func.isRequired,
 };
