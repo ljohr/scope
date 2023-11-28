@@ -16,6 +16,7 @@ import serviceAccount from "./config/scopefb.js";
 import loginRouter from "./routers/loginRouter.js";
 import logoutRouter from "./routers/logoutRouter.js";
 import allMajorsRouter from "./routers/allMajorsRouter.js";
+import newReviewRouter from "./routers/newReviewRouter.js";
 // const { ObjectId } = mongoose.Types;
 
 // sort prof page and courses by
@@ -65,6 +66,8 @@ app.use(loginRouter);
 app.use(logoutRouter);
 app.use(allMajorsRouter);
 
+app.use(newReviewRouter);
+
 app.get("/api/courses", async (req, res, next) => {
   const sessionCookie = req.cookies.userSession || "";
   try {
@@ -88,7 +91,8 @@ app.get("/:deptcode/:profname", async (req, res, next) => {
       department: deptcode.toUpperCase(),
     })
       .populate("professorName")
-      .populate("courseIds");
+      .populate("courseIds")
+      .populate("avgProfRating");
     if (!professor) {
       return res.status(404).json({ message: "Professor not found" });
     }
@@ -114,8 +118,6 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
       return res.status(404).json({ message: "Professor not found" });
     } // Find the course by professorId, department, and courseCode
 
-    console.log("deptcode", deptcode);
-    console.log("courseCode", courseCode);
     // Add find by course to see all profs ani review page i nthe course page
     const course = await CourseModel.findOne({
       professorId: professor._id,
@@ -137,6 +139,7 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
       professorDetails: {
         id: professor._id,
         name: professor.professorName,
+        avgProfRating: professor.avgProfRating,
       },
       reviews: reviews,
     };
@@ -147,77 +150,82 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
   }
 });
 
-app.post("/api/new-review", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
-  try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
-    const reviewData = req.body;
-    // const professorId = new ObjectId(reviewData.professorId);
-    // const courseId = new ObjectId(reviewData.courseId);
-    // const professor = await ProfessorModel.findById(professorId);
-    const professor = await CourseModel.findById("656388cce21362c48f7a2c51");
-    if (!professor) {
-      console.error("Professor not found");
-      return;
-    }
-    // const course = await CourseModel.findById(courseId);
-    // if (!course) {
-    //   console.error("Professor not found");
-    //   return;
-    // }
+// app.post("/api/new-review", async (req, res, next) => {
+//   const sessionCookie = req.cookies.userSession || "";
+//   try {
+//     await admin.auth().verifySessionCookie(sessionCookie, true);
+//     const reviewData = req.body;
+//     // const professorId = new ObjectId(reviewData.professorId);
+//     // const courseId = new ObjectId(reviewData.courseId);
+//     // const professor = await ProfessorModel.findById(professorId);
+//     const professor = await CourseModel.findById("656633b7e847102035e11294");
+//     if (!professor) {
+//       console.error("Professor not found");
+//       return;
+//     }
 
-    // reviewData.profTags = [
-    //   ...reviewData.profTags,
-    //   reviewData.lecturerStyle,
-    //   reviewData.gradingStyle,
-    // ];
+//     const course = await CourseModel.findById("656388cce21362c48f7a2c51");
+//     if (!course) {
+//       console.error("Course not found");
+//       return;
+//     }
 
-    // reviewData.courseTags = [...reviewData.courseTags, reviewData.workload];
+//     reviewData.profTags = [
+//       ...reviewData.profTags,
+//       reviewData.lecturerStyle,
+//       reviewData.gradingStyle,
+//     ];
 
-    // // Update Professor Tags in Professor Document
-    // reviewData.profTags.forEach((tag) => {
-    //   if (Object.prototype.hasOwnProperty.call(professor.profTags, tag)) {
-    //     professor.profTags[tag] += 1;
-    //   }
-    // });
+//     reviewData.courseTags = [...reviewData.courseTags, reviewData.workload];
 
-    // // Update Course Tags in Professor Document
-    // reviewData.courseTags.forEach((tag) => {
-    //   if (Object.prototype.hasOwnProperty.call(professor.courseTags, tag)) {
-    //     professor.courseTags[tag] += 1;
-    //   }
-    // });
+//     // // Update Professor Tags in Professor Document
+//     reviewData.profTags.forEach((tag) => {
+//       if (Object.prototype.hasOwnProperty.call(professor.profTags, tag)) {
+//         professor.profTags[tag] += 1;
+//       }
+//     });
 
-    // // Update Professor Tags in Course Document
-    // reviewData.profTags.forEach((tag) => {
-    //   if (Object.prototype.hasOwnProperty.call(course.profTags, tag)) {
-    //     course.profTags[tag] += 1;
-    //   }
-    // });
+//     // Update Course Tags in Professor Document
+//     reviewData.courseTags.forEach((tag) => {
+//       if (Object.prototype.hasOwnProperty.call(professor.courseTags, tag)) {
+//         professor.courseTags[tag] += 1;
+//       }
+//     });
 
-    // // Update Course Tags in Course Document
-    // reviewData.courseTags.forEach((tag) => {
-    //   if (Object.prototype.hasOwnProperty.call(course.courseTags, tag)) {
-    //     course.courseTags[tag] += 1;
-    //   }
-    // });
+//     // Update Professor Tags in Course Document
+//     reviewData.profTags.forEach((tag) => {
+//       if (Object.prototype.hasOwnProperty.call(course.profTags, tag)) {
+//         course.profTags[tag] += 1;
+//       }
+//     });
 
-    // await course.save();
+//     // Update Course Tags in Course Document
+//     reviewData.courseTags.forEach((tag) => {
+//       if (Object.prototype.hasOwnProperty.call(course.courseTags, tag)) {
+//         course.courseTags[tag] += 1;
+//       }
+//     });
 
-    // Update the ratings
-    professor.totalProfRatingSum += reviewData.profRating;
-    professor.totalProfReviewers += 1;
-    professor.avgProfRating =
-      professor.totalProfRatingSum / professor.totalProfReviewers;
-    await professor.save();
+//     course.totalCourseRatingSum += reviewData.courseRating;
+//     course.totalCourseReviewers += 1;
+//     course.avgCourseRating =
+//       course.totalCourseRatingSum / course.totalCourseReviewers;
 
-    console.log("professor", professor);
-    console.log(reviewData);
-    res.status(200).send({ message: "Review submitted successfully" });
-  } catch (error) {
-    next(error);
-  }
-});
+//     // Update the Professor ratings
+//     professor.totalProfRatingSum += reviewData.profRating;
+//     professor.totalProfReviewers += 1;
+//     professor.avgProfRating =
+//       professor.totalProfRatingSum / professor.totalProfReviewers;
+//     await professor.save();
+//     await course.save();
+
+//     console.log("professor", professor);
+//     console.log(reviewData);
+//     res.status(200).send({ message: "Review submitted successfully" });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // eslint-disable-next-line
 app.use((error, req, res, next) => {

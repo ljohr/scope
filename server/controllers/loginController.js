@@ -1,12 +1,6 @@
 import admin from "firebase-admin";
 import UserModel from "../models/User.js";
-
-const validateAuthHeader = (authHeader) => {
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new Error("Unauthorized: No Bearer Token");
-  }
-  return authHeader.split("Bearer ")[1];
-};
+import validateAuthHeader from "../utils/validateAuthHeader.js";
 
 const getTokenCookie = async (idToken, expiresIn) => {
   const decodedToken = await admin.auth().verifyIdToken(idToken);

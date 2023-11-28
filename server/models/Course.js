@@ -14,9 +14,6 @@ const CourseSchema = new Schema({
   avgCourseRating: { type: Number, default: null },
   totalCourseRatingSum: { type: Number, default: 0 },
   totalCourseReviewers: { type: Number, default: 0 },
-  avgProfRating: { type: Number, default: null },
-  totalProfRatingSum: { type: Number, default: 0 },
-  totalProfReviewers: { type: Number, default: 0 },
   courseTags: {
     heavyWorkload: { type: Number, default: 0 },
     fairWorkload: { type: Number, default: 0 },
@@ -38,13 +35,15 @@ const CourseSchema = new Schema({
   },
   modality: String,
   isCore: { type: Boolean, default: false },
-  weeklyHours: { type: Number, default: null },
   majors: [
     {
       type: ObjectId,
       ref: "Major",
     },
   ],
+  avgWeeklyHours: { type: Number, default: 0 },
+  totalWeeklyHours: { type: Number, default: 0 },
+  totalWeeklyHoursReviewers: { type: Number, default: 0 },
 });
 
 CourseSchema.index({ courseCode: 1, professorId: 1 }, { unique: true });
