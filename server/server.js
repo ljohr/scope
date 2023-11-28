@@ -6,16 +6,17 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
 import "dotenv/config";
-import UserModel from "./models/User.js";
 import CourseModel from "./models/Course.js";
 import ReviewModel from "./models/Review.js";
 import ProfessorModel from "./models/Professor.js";
-import MajorModel from "./models/Majors.js";
 import "./models/Professor.js";
 import connectDB from "./config/connectDB.js";
 import serviceAccount from "./config/scopefb.js";
-import mongoose from "mongoose";
-const { ObjectId } = mongoose.Types;
+// import mongoose from "mongoose";
+import loginRouter from "./routers/loginRouter.js";
+import logoutRouter from "./routers/logoutRouter.js";
+import allMajorsRouter from "./routers/allMajorsRouter.js";
+// const { ObjectId } = mongoose.Types;
 
 // sort prof page and courses by
 // last semester taught -> alphabetical
@@ -59,98 +60,26 @@ app.use(
   })
 );
 
-app.post("/sessionLogin", async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+// Set up user login / logout
+app.use(loginRouter);
+app.use(logoutRouter);
+app.use(allMajorsRouter);
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).send("Unauthorized");
-    return;
-  }
-
-  const idToken = authHeader.split("Bearer ")[1];
-
-  // 5 Days
-  const expiresIn = 60 * 60 * 24 * 5 * 1000;
-
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const sessionCookie = await admin
-      .auth()
-      .createSessionCookie(idToken, { expiresIn });
-    const options = {
-      maxAge: expiresIn,
-      httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-    };
-    const email = decodedToken.email;
-    const fbUserId = decodedToken.uid;
-    let user = await UserModel.findOne({ fbUserId });
-
-    if (!user) {
-      user = await UserModel.create({
-        email,
-        fbUserId,
-      });
-      await user.save();
-    }
-
-    res.cookie("userSession", sessionCookie, options);
-    res.json({ message: "Registration successful", user });
-  } catch (error) {
-    console.log(error);
-    if (error.code && error.code.startsWith("auth/")) {
-      res.status(401).send(error.message);
-    } else {
-      next(error);
-    }
-  }
-});
-
-app.post("/api/sessionLogOut", async (req, res) => {
-  try {
-    res.clearCookie("userSession");
-    res.status(200).send("Successful Logout");
-  } catch (err) {
-    res.status(401).send("Unauthorized: Invalid session");
-  }
-});
-
-app.get("/api/majors", async (req, res) => {
-  const sessionCookie = req.cookies.userSession || "";
-  try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
-    const majors = await MajorModel.find().sort({ code: 1 });
-    res.json(majors);
-  } catch (err) {
-    console.error("Error:", err);
-
-    // Determine the type of error to send the appropriate response
-    if (err.code === "auth/argument-error") {
-      res.status(401).send("Unauthorized: Invalid session");
-    } else {
-      res.status(500).send("Error fetching majors");
-    }
-  }
-});
-
-app.get("/api/courses", async (req, res) => {
+app.get("/api/courses", async (req, res, next) => {
   const sessionCookie = req.cookies.userSession || "";
   try {
     await admin.auth().verifySessionCookie(sessionCookie, true);
     const courses = await CourseModel.find().populate("professorId");
     res.json(courses);
-  } catch (err) {
-    if (err.code === "auth/argument-error") {
-      res.status(401).send("Unauthorized: Invalid session");
-    } else {
-      res.status(500).send("Error fetching courses");
-    }
+  } catch (error) {
+    next(error);
   }
 });
 
-app.get("/:deptcode/:profname", async (req, res) => {
+app.get("/:deptcode/:profname", async (req, res, next) => {
+  const sessionCookie = req.cookies.userSession || "";
   try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
     const { deptcode, profname } = req.params;
     console.log(deptcode, nameFromSlug(profname));
     // Fetch the professor by name and department.
@@ -166,12 +95,14 @@ app.get("/:deptcode/:profname", async (req, res) => {
 
     res.json(professor);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 
-app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
+app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
+  const sessionCookie = req.cookies.userSession || "";
   try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
     const { deptcode, profname, courseCode } = req.params;
     // use the simple react searchbar wit hthe json course data i get back
     const professor = await ProfessorModel.findOne({
@@ -212,12 +143,14 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
 
     res.json(responseData);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 
-app.post("/api/new-review", async (req, res) => {
+app.post("/api/new-review", async (req, res, next) => {
+  const sessionCookie = req.cookies.userSession || "";
   try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
     const reviewData = req.body;
     // const professorId = new ObjectId(reviewData.professorId);
     // const courseId = new ObjectId(reviewData.courseId);
@@ -282,14 +215,18 @@ app.post("/api/new-review", async (req, res) => {
     console.log(reviewData);
     res.status(200).send({ message: "Review submitted successfully" });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
 // eslint-disable-next-line
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+app.use((error, req, res, next) => {
+  if (error.code === "auth/argument-error") {
+    res.status(401).send("Unauthorized: Invalid session");
+  } else {
+    console.log(error);
+    res.status(500).send("Error fetching data");
+  }
 });
 
 async function startServer() {
