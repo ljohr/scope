@@ -18,7 +18,6 @@ const Login = () => {
     ev.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         setCurrentUser(user);
         navigate("/");

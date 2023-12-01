@@ -12,6 +12,7 @@ const getTokenCookie = async (idToken, expiresIn) => {
 };
 
 const findOrCreateUser = async (fbUserId, email) => {
+  console.log(fbUserId, email);
   let user = await UserModel.findOne({ fbUserId });
 
   if (!user) {
@@ -36,6 +37,7 @@ const loginController = async (req, res, next) => {
     );
     const user = await findOrCreateUser(decodedToken.uid, decodedToken.email);
 
+    console.log(user);
     const options = {
       maxAge: expiresIn,
       httpOnly: true,
