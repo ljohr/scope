@@ -125,10 +125,10 @@ const CourseSingle = () => {
               <h3>Course Overall</h3>
               <p>Average Professor Rating:</p>
               <div className="prof-rating">
-                {courseInfo.avgProfRating.toFixed(2)}
+                {professor.avgProfRating.toFixed(2)}
                 <Rating
                   name="half-rating"
-                  defaultValue={courseInfo.avgProfRating}
+                  defaultValue={professor.avgProfRating}
                   precision={0.1}
                   readOnly
                 />

@@ -57,7 +57,9 @@ app.use(
   })
 );
 
-app.post("/sessionLogin", async (req, res, next) => {
+app.post("api/registerUser", async (req, res, next) => {});
+
+app.post("/api/sessionLogin", async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -228,6 +230,7 @@ app.post("/api/sessionLogOut", async (req, res) => {
 //   }
 // });
 
+<<<<<<< Updated upstream
 // app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
 //   try {
 //     const { deptcode, profname, courseCode } = req.params;
@@ -236,11 +239,30 @@ app.post("/api/sessionLogOut", async (req, res) => {
 //       professorName: nameFromSlug(profname),
 //       department: deptcode.toUpperCase(),
 //     });
+=======
+app.get("/:deptcode/:profname", async (req, res) => {
+  const sessionCookie = req.cookies.userSession || "";
+  try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    const { deptcode, profname } = req.params;
+    console.log(deptcode, nameFromSlug(profname));
+    // Fetch the professor by name and department.
+    const professor = await ProfessorModel.findOne({
+      professorName: nameFromSlug(profname),
+      department: deptcode.toUpperCase(),
+    })
+      .populate("professorName")
+      .populate("courseIds");
+    if (!professor) {
+      return res.status(404).json({ message: "Professor not found" });
+    }
+>>>>>>> Stashed changes
 
 //     if (!professor) {
 //       return res.status(404).json({ message: "Professor not found" });
 //     } // Find the course by professorId, department, and courseCode
 
+<<<<<<< Updated upstream
 //     console.log("deptcode", deptcode);
 //     console.log("courseCode", courseCode);
 //     // Add find by course to see all profs ani review page i nthe course page
@@ -249,6 +271,18 @@ app.post("/api/sessionLogOut", async (req, res) => {
 //       department: deptcode.toUpperCase(),
 //       courseCode: courseCode.toUpperCase(),
 //     });
+=======
+app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
+  const sessionCookie = req.cookies.userSession || "";
+  try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    const { deptcode, profname, courseCode } = req.params;
+    // use the simple react searchbar wit hthe json course data i get back
+    const professor = await ProfessorModel.findOne({
+      professorName: nameFromSlug(profname),
+      department: deptcode.toUpperCase(),
+    });
+>>>>>>> Stashed changes
 
 //     if (!course) {
 //       return res.status(404).json({ message: "Course not found" });
@@ -268,11 +302,46 @@ app.post("/api/sessionLogOut", async (req, res) => {
 //       reviews: reviews,
 //     };
 
+<<<<<<< Updated upstream
 //     res.json(responseData);
 //   } catch (error) {
 //     res.status(500).json({ message: error.message });
 //   }
 // });
+=======
+    const reviews = await ReviewModel.find({ courseId: course._id }).sort({
+      createdAt: -1,
+    });
+
+    // Structure the response to include the course details and the reviews
+    const responseData = {
+      courseInfo: course,
+      professorDetails: {
+        id: professor._id,
+        name: professor.professorName,
+        avgProfRating: professor.avgProfRating,
+      },
+      reviews: reviews,
+    };
+
+    res.json(responseData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/api/new-review", async (req, res, next) => {
+  const sessionCookie = req.cookies.userSession || "";
+  try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    const reviewData = req.body;
+    console.log(reviewData);
+    res.status(200).send({ message: "Review submitted successfully" });
+  } catch (error) {
+    next(error);
+  }
+});
+>>>>>>> Stashed changes
 
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
