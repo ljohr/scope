@@ -230,7 +230,10 @@ app.post("/api/sessionLogOut", async (req, res) => {
 //   }
 // });
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> parent of ea191b0 (Added coursework hours and started server logic for part)
 // app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
 //   try {
 //     const { deptcode, profname, courseCode } = req.params;
@@ -239,6 +242,7 @@ app.post("/api/sessionLogOut", async (req, res) => {
 //       professorName: nameFromSlug(profname),
 //       department: deptcode.toUpperCase(),
 //     });
+<<<<<<< HEAD
 =======
 app.get("/:deptcode/:profname", async (req, res) => {
   const sessionCookie = req.cookies.userSession || "";
@@ -257,12 +261,17 @@ app.get("/:deptcode/:profname", async (req, res) => {
       return res.status(404).json({ message: "Professor not found" });
     }
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of ea191b0 (Added coursework hours and started server logic for part)
 
 //     if (!professor) {
 //       return res.status(404).json({ message: "Professor not found" });
 //     } // Find the course by professorId, department, and courseCode
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> parent of ea191b0 (Added coursework hours and started server logic for part)
 //     console.log("deptcode", deptcode);
 //     console.log("courseCode", courseCode);
 //     // Add find by course to see all profs ani review page i nthe course page
@@ -271,6 +280,7 @@ app.get("/:deptcode/:profname", async (req, res) => {
 //       department: deptcode.toUpperCase(),
 //       courseCode: courseCode.toUpperCase(),
 //     });
+<<<<<<< HEAD
 =======
 app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
   const sessionCookie = req.cookies.userSession || "";
@@ -283,6 +293,8 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
       department: deptcode.toUpperCase(),
     });
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of ea191b0 (Added coursework hours and started server logic for part)
 
 //     if (!course) {
 //       return res.status(404).json({ message: "Course not found" });
@@ -302,12 +314,16 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res) => {
 //       reviews: reviews,
 //     };
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> parent of ea191b0 (Added coursework hours and started server logic for part)
 //     res.json(responseData);
 //   } catch (error) {
 //     res.status(500).json({ message: error.message });
 //   }
 // });
+<<<<<<< HEAD
 =======
     const reviews = await ReviewModel.find({ courseId: course._id }).sort({
       createdAt: -1,
@@ -342,6 +358,8 @@ app.post("/api/new-review", async (req, res, next) => {
   }
 });
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of ea191b0 (Added coursework hours and started server logic for part)
 
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
