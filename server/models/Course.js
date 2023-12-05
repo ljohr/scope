@@ -38,7 +38,6 @@ const CourseSchema = new Schema({
   },
   modality: String,
   isCore: { type: Boolean, default: false },
-  weeklyHours: { type: Number, default: null },
   majors: [
     {
       type: ObjectId,

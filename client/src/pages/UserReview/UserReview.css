@@ -6,30 +6,14 @@
   padding: 3% 0;
 }
 
-.user-review {
-  padding: 2rem;
-  margin-bottom: 3%;
-  background-image: linear-gradient(
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.05)
-  );
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
-  height: 100%;
-}
-
 .user-review h3 {
   margin-bottom: 3%;
-}
-
-.user-review p {
-  margin-bottom: 0.8%;
 }
 
 .rating-container,
 .semester-container,
 .course-tags,
 .prof-tags,
-.weekly-hours,
 .user-comment {
   margin-bottom: 4%;
 }
@@ -40,14 +24,12 @@
 
 .semester-container h4,
 .course-tags h4,
-.prof-tags h4,
-.weekly-hours h4,
-.comment-container h4 {
+.prof-tags h4 {
   margin-bottom: 1.5%;
 }
 
 .semester-container select {
-  padding: 0.6% 1%;
+  padding: 0.8% 1.6%;
   margin-right: 0.5rem;
 }
 
@@ -70,6 +52,16 @@
   justify-content: center;
 }
 
+.user-review {
+  padding: 2rem;
+  margin-bottom: 3%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
+}
+
 .btn-pill:hover {
   background-color: rgb(238, 238, 238);
 }
@@ -80,18 +72,4 @@
 
 .active:hover {
   background-color: rgb(196, 255, 214);
-}
-
-.grading-tags,
-.other-tags {
-  padding-top: 2%;
-}
-
-.rating-info-btn {
-  background-color: rgb(204, 255, 225);
-  padding: 0.5rem 0.6rem;
-}
-
-.rating-text {
-  margin-right: 0.3rem;
 }
