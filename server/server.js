@@ -135,11 +135,8 @@ app.get("/api/majors", async (req, res) => {
 app.get("/api/courses", async (req, res) => {
   const sessionCookie = req.cookies.userSession || "";
   try {
-    console.log("incourses");
     await admin.auth().verifySessionCookie(sessionCookie, true);
-    console.log("here");
     const courses = await CourseModel.find().populate("professorId");
-    console.log(courses);
     res.json(courses);
   } catch (err) {
     if (err.code === "auth/argument-error") {
