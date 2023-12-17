@@ -31,4 +31,9 @@
 
 .course-title {
   font-size: 1.2rem;
+  margin-bottom: 2%;
+}
+
+.pagination-container {
+  padding-top: 3%;
 }

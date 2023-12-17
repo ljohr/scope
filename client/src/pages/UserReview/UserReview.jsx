@@ -102,7 +102,7 @@ const UserReview = () => {
         );
         console.log("After axios.post", response);
         toast.success("Review submitted successfully!");
-        // navigate(`/${deptcode}/${profname}/${coursecode}`);
+        navigate(`/${deptcode}/${profname}/${coursecode}`);
       } catch (error) {
         console.error("Error submitting review:", error);
         toast.error("Error submitting review.");
@@ -138,7 +138,7 @@ const UserReview = () => {
   return (
     <main className="user-review-main">
       {dataLoaded ? (
-        <>
+        <div className="main-container">
           <Link to={`/${deptcode}/${profname}/${coursecode}`}>
             <h1>
               {courseInfo.courseCode} - {courseInfo.courseName}
@@ -291,9 +291,29 @@ const UserReview = () => {
                     })}
                 </div>
               </div>
+              <div>
+                {courseInfo.avgWeeklyHours == 0 ? (
+                  ""
+                ) : (
+                  <>
+                    <p>Average Coursework Hours</p>
+                    <Slider
+                      className="coursehours-avg-slider"
+                      aria-label="Temperature"
+                      valueLabelDisplay="on"
+                      defaultValue={courseInfo.avgWeeklyHours}
+                      step={1}
+                      marks
+                      min={0}
+                      max={15}
+                      disabled
+                    />
+                  </>
+                )}
+              </div>
             </section>
           </div>
-        </>
+        </div>
       ) : (
         <CircularProgress />
       )}

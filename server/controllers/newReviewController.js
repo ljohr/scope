@@ -67,6 +67,10 @@ const updateCourse = async (course, reviewData, newReview) => {
   course.avgWeeklyHours =
     course.totalWeeklyHours / course.totalWeeklyHoursReviewers;
 
+  course.totalProfRatingSum += reviewData.profRating;
+  course.totalProfReviewers += 1;
+  course.avgProfRating = course.totalProfRatingSum / course.totalProfReviewers;
+
   await course.save();
 };
 
@@ -108,13 +112,13 @@ const newReviewController = async (req, res, next) => {
     // const professorId = new ObjectId(reviewData.professorId);
     // const courseId = new ObjectId(reviewData.courseId);
     // const professor = await ProfessorModel.findById(professorId);
-    const professor = await ProfessorModel.findById("656633b7e847102035e11294");
+    const professor = await ProfessorModel.findById(reviewData.professorId);
     if (!professor) {
       console.error("Professor not found");
       return;
     }
 
-    const course = await CourseModel.findById("656388cce21362c48f7a2c51");
+    const course = await CourseModel.findById(reviewData.courseId);
     if (!course) {
       console.error("Course not found");
       return;

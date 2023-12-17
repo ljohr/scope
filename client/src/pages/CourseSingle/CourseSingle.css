@@ -6,10 +6,17 @@
   padding: 3% 0;
 }
 
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 72%;
+}
+
 .container {
   padding-top: 3%;
   display: grid;
-  width: 72%;
   grid-template-columns: 2fr 1fr;
   gap: 2%;
 }
@@ -91,3 +98,18 @@
 /* .review-btn {
 
 } */
+
+.add-review-btn {
+  margin-top: 1%;
+}
+
+.review-btn {
+  background-color: #b3ffc9c7;
+}
+.review-btn:hover {
+  background-color: rgba(212, 255, 224, 0.834);
+}
+
+.coursework-title {
+  padding-top: 1%;
+}

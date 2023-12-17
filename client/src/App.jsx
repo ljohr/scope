@@ -11,7 +11,7 @@ import Majors from "./pages/Majors/Majors";
 import TopRated from "./pages/TopRated/TopRated";
 import ProfessorSingle from "./pages/ProfessorSingle/ProfessorSingle";
 import CourseSingle from "./pages/CourseSingle/CourseSingle";
-import MajorSingle from "./pages/MajorSingle/MajorSingle";
+import MajorProfs from "./pages/MajorProfs/MajorProfs";
 import Core from "./pages/Core/Core";
 import Login from "./pages/LoginRegister/Login";
 import Register from "./pages/LoginRegister/Register";
@@ -19,6 +19,7 @@ import ResetPassword from "./pages/LoginRegister/ResetPassword";
 import PageNotFound from "./pages/PageNotFound/PageNotFound.jsx";
 import UserReview from "./pages/UserReview/UserReview.jsx";
 import UserProvider from "./utils/UserProvider.jsx";
+import MajorCourses from "./pages/MajorCourses/MajorCourses.jsx";
 
 axios.defaults.baseURL = "http://localhost:4000";
 
@@ -85,8 +86,12 @@ const router = createBrowserRouter([
         element: <CourseSingle />,
       },
       {
-        path: "/major/:id",
-        element: <MajorSingle />,
+        path: "/:deptcode/professors",
+        element: <MajorProfs />,
+      },
+      {
+        path: "/:deptcode/all-courses",
+        element: <MajorCourses />,
       },
       {
         path: "/:deptcode/:profname/:coursecode/new-review",

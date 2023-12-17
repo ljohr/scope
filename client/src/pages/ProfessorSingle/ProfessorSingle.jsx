@@ -23,8 +23,6 @@ const ProfessorSingle = () => {
         console.log(error);
         if (error.response && error.response.status === 404) {
           navigate("/page-not-found");
-          console.log("hi?");
-          console.log(error);
         } else if (error.response && error.response.status === 401) {
           toast.error("Please login to view this page!");
           navigate("/login");
@@ -33,7 +31,7 @@ const ProfessorSingle = () => {
     };
 
     fetchCourse();
-  }, [deptcode, profname, navigate]);
+  }, [deptcode, profname, professor.courseIds, navigate]);
 
   return (
     <main className="prof-single-main">
@@ -49,9 +47,11 @@ const ProfessorSingle = () => {
                 <h4>
                   {course.courseCode}: {course.courseName}
                 </h4>
-                <p>Average Instructor Rating: {professor.avgProfRating}</p>
-                <p>Average Course Rating: {course.avgCourseRating}</p>
-                <p>Total Reviewers: {course.totalProfReviewers}</p>
+                <p>Average Instructor Rating: {course.avgProfRating}</p>
+                <p>
+                  Average Course Rating: {course.avgCourseRating.toFixed(2)}
+                </p>
+                <p>Total Reviewers: {course.totalCourseReviewers}</p>
               </div>
               <Link to={courseReviewUrl} className="see-all-btn">
                 See Course Reviews

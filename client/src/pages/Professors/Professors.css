@@ -1,5 +1,49 @@
-.professors-main {
+.profs-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 5% 0;
+  padding: 5% var(--horizontal-padding);
+}
+
+.all-profs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 3%;
+}
+
+.profs-single {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
+  min-height: 200px;
+  min-width: 350px;
+}
+
+.profs-single:hover {
+  transform: scale(1.01);
+}
+
+.major-code {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.profs-name {
+  font-size: 1rem;
+}
+
+.profs-links {
+  padding: 2% 0;
+}
+
+.prof-code {
+  margin-bottom: 2%;
 }

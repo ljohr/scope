@@ -14,6 +14,9 @@ const CourseSchema = new Schema({
   avgCourseRating: { type: Number, default: null },
   totalCourseRatingSum: { type: Number, default: 0 },
   totalCourseReviewers: { type: Number, default: 0 },
+  avgProfRating: { type: Number, default: null },
+  totalProfRatingSum: { type: Number, default: 0 },
+  totalProfReviewers: { type: Number, default: 0 },
   courseTags: {
     heavyWorkload: { type: Number, default: 0 },
     fairWorkload: { type: Number, default: 0 },

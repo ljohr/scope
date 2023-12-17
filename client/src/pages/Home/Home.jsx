@@ -16,13 +16,12 @@ function Hero() {
     <section className="hero">
       <div className="home-info">
         <h1>Course Evaluations for BC Students</h1>
-        {/* <h1>Finally, Easy to Use Course Evaluations for Boston College</h1> */}
 
         <h3 className="review-line">
           <span className="review-count"></span> Reviews and counting
         </h3>
         <div className="btn-container">
-          <Link to="/#how-to-use">
+          <Link to="/register">
             <button>Join to Read Reviews</button>
           </Link>
         </div>

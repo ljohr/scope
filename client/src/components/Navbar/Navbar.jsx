@@ -29,24 +29,27 @@ const Navbar = () => {
               <span>Scope</span>
             </Link>
           </li>
-          <li>
-            <Link to="/courses">Courses</Link>
-          </li>
-          <li>
-            <Link to="/professors">Professors</Link>
-          </li>
-          <li>
-            <Link to="/top-rated">Top Rated</Link>
-          </li>
-          <li>
-            <Link to="/majors">Majors</Link>
-          </li>
-          <li>
-            <Link to="/core">Core</Link>
-          </li>
+          {currentUser ? (
+            <>
+              <li>
+                <Link to="/courses">Courses</Link>
+              </li>
+              <li>
+                <Link to="/professors">Professors</Link>
+              </li>
+              <li>
+                <Link to="/majors">Majors</Link>
+              </li>
+              <li>
+                <Link to="/core">Core</Link>
+              </li>
+            </>
+          ) : (
+            ""
+          )}
         </ul>
       </nav>
-      <nav className="nav-search">
+      {/* <nav className="nav-search">
         <form>
           <input
             type="text"
@@ -57,7 +60,7 @@ const Navbar = () => {
             Search
           </button>
         </form>
-      </nav>
+      </nav> */}
       <nav className="nav-login">
         <ul>
           {currentUser ? (

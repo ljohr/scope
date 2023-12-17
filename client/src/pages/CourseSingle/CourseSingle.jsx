@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import Rating from "@mui/material/Rating";
 import CircularProgress from "@mui/material/CircularProgress";
+import Slider from "@mui/material/Slider";
 import "./CourseSingle.css";
 
 const CourseSingle = () => {
@@ -21,7 +22,6 @@ const CourseSingle = () => {
         const res = await axios.get(
           `/api/${deptcode}/${profname}/${coursecode}`
         );
-        console.log(res.data);
         setCourseInfo(res.data.courseInfo);
         setProfessor(res.data.professorDetails);
         setReviews(res.data.reviews);
@@ -35,18 +35,31 @@ const CourseSingle = () => {
     fetchCourse();
   }, [deptcode, profname, coursecode, navigate]);
 
-  // if (dataLoaded) {
+  const courseHourAvg = [
+    {
+      value: courseInfo.avgWeeklyHours,
+      label: courseInfo.avgWeeklyHours,
+    },
+  ];
+
+  function valuetext() {
+    return courseInfo.avgWeeklyHours;
+  }
+
   return (
     <main className="course-single-main">
       {dataLoaded ? (
-        <>
+        <div className="main-container">
           <h1>
             {courseInfo.courseCode} - {courseInfo.courseName}
           </h1>
           <Link to={`/${deptcode}/${profname}`}>
             <h2>{professor.name}</h2>
           </Link>
-          <Link to={`/${deptcode}/${profname}/${coursecode}/new-review`}>
+          <Link
+            className="add-review-btn"
+            to={`/${deptcode}/${profname}/${coursecode}/new-review`}
+          >
             <button className="review-btn">Add a Review!</button>
           </Link>
           <div className="container">
@@ -81,15 +94,12 @@ const CourseSingle = () => {
                         : ""}
                     </p>
                     {/* {review.userComments ? ( */}
-                    {review ? (
-                      <p className="review-comment">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Repudiandae debitis, libero accusantium omnis illo totam
-                        tenetur autem qui nulla, iure explicabo! Pariatur
-                        aliquid commodi quos explicabo impedit sed et eum!
-                      </p>
+                    {review.userComment ? (
+                      <p className="review-comment">{review.userComment}</p>
                     ) : (
-                      <></>
+                      <p>
+                        Provided by students during end of semester evaluations.
+                      </p>
                     )}
                     <div className="review-all-ratings">
                       <div className="prof-rating">
@@ -132,10 +142,10 @@ const CourseSingle = () => {
               <h3>Course Overall</h3>
               <p>Average Professor Rating:</p>
               <div className="prof-rating">
-                {professor.avgProfRating.toFixed(2)}
+                {courseInfo.avgProfRating.toFixed(2)}
                 <Rating
                   name="half-rating"
-                  defaultValue={professor.avgProfRating}
+                  defaultValue={courseInfo.avgProfRating}
                   precision={0.1}
                   readOnly
                 />
@@ -181,15 +191,35 @@ const CourseSingle = () => {
                     })}
                 </div>
               </div>
+              <div>
+                {courseInfo.avgWeeklyHours == 0 ? (
+                  ""
+                ) : (
+                  <>
+                    <p className="coursework-title">Average Coursework Hours</p>
+                    <Slider
+                      className="coursehours-avg-slider"
+                      aria-label="Hours"
+                      defaultValue={courseInfo.avgWeeklyHours}
+                      getAriaValueText={valuetext}
+                      step={null}
+                      min={0}
+                      max={15}
+                      valueLabelDisplay="auto"
+                      marks={courseHourAvg}
+                      disabled
+                    />
+                  </>
+                )}
+              </div>
             </section>
           </div>
-        </>
+        </div>
       ) : (
         <CircularProgress />
       )}
     </main>
   );
-  // }
 };
 
 export default CourseSingle;

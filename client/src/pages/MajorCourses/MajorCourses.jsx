@@ -1,27 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "@mui/material/Pagination";
 import axios from "axios";
+import "./MajorCourses.css";
 import toSlug from "../../utils/toSlug";
-import "./Professors.css";
 
-const Professors = () => {
-  const [professors, setProfessors] = useState([]);
+const MajorCourses = () => {
+  const [courses, setCourses] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const limit = 12;
   const navigate = useNavigate();
+  const { deptcode } = useParams();
 
   useEffect(() => {
-    const fetchProfessors = async () => {
+    const fetchCourses = async () => {
       try {
         const response = await axios.get(
-          `/api/professors?page=${page}&limit=${limit}`
+          `/api/${deptcode}/all-courses?page=${page}&limit=${limit}`
         );
-        setProfessors(response.data.professors);
-        console.log(response);
-        console.log(professors);
+        setCourses(response.data.courses);
         setTotalPages(Math.ceil(response.data.totalPages));
       } catch (error) {
         if (error.status === 404) {
@@ -33,8 +32,8 @@ const Professors = () => {
       }
     };
 
-    fetchProfessors();
-  }, [navigate, page]);
+    fetchCourses();
+  }, [navigate, deptcode, page]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -42,20 +41,23 @@ const Professors = () => {
 
   return (
     <div className="profs-container">
-      <h1>Professors</h1>
+      <h1>{deptcode.toUpperCase()} - All Courses</h1>
       <section className="all-profs">
-        {professors.map((prof) => {
-          const coursesURL = `/${prof.department}/${toSlug(
-            prof.professorName
-          )}`;
+        {courses.map((course) => {
           return (
-            <div key={prof._id} className="profs-single">
+            <div key={course._id} className="profs-single">
               <div className="prof-info">
-                <h4 className="prof-code">{prof.professorName}</h4>
-                <p className="prof-name">{prof.department}</p>
+                <h4 className="prof-code">{course.courseCode}</h4>
+                <h4 className="prof-code">{course.courseName}</h4>
+                <p className="prof-code">{course.professorId.professorName}</p>
               </div>
               <div className="major-links">
-                <Link className="light-green-btn" to={coursesURL}>
+                <Link
+                  className="light-green-btn"
+                  to={`/${deptcode}/${toSlug(
+                    course.professorId.professorName
+                  )}/${course.courseCode}`}
+                >
                   See All Course Reviews
                 </Link>
               </div>
@@ -75,4 +77,4 @@ const Professors = () => {
   );
 };
 
-export default Professors;
+export default MajorCourses;

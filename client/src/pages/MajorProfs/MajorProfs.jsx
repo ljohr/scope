@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "@mui/material/Pagination";
 import axios from "axios";
-import "./Majors.css";
+import toSlug from "../../utils/toSlug";
+import "./MajorProfs.css";
 
-const Majors = () => {
-  const [majors, setMajors] = useState([]);
+const MajorProfs = () => {
+  const [professors, setProfessors] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const limit = 12;
   const navigate = useNavigate();
+  const { deptcode } = useParams();
 
   useEffect(() => {
-    const fetchMajors = async () => {
+    const fetchProfessors = async () => {
       try {
         const response = await axios.get(
-          `/api/majors?page=${page}&limit=${limit}`
+          `/api/${deptcode}/professors?page=${page}&limit=${limit}`
         );
-        setMajors(response.data.majors);
+        setProfessors(response.data.professors);
         setTotalPages(Math.ceil(response.data.totalPages));
       } catch (error) {
         if (error.status === 404) {
@@ -30,32 +32,30 @@ const Majors = () => {
       }
     };
 
-    fetchMajors();
-  }, [navigate, page]);
+    fetchProfessors();
+  }, [navigate, deptcode, page]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
   return (
-    <div className="majors-container">
-      <h1>Majors</h1>
-      <section className="all-majors">
-        {majors.map((major) => {
-          const profsURL = `/${major.code}/professors`;
-          const coursesURL = `/${major.code}/all-courses`;
+    <div className="profs-container">
+      <h1>Professors</h1>
+      <section className="all-profs">
+        {professors.map((prof) => {
+          const coursesURL = `/${prof.department}/${toSlug(
+            prof.professorName
+          )}`;
           return (
-            <div key={major._id} className="major-single">
-              <div className="major-info">
-                <h4 className="major-code">{major.code}</h4>
-                <p className="major-name">{major.name}</p>
+            <div key={prof._id} className="profs-single">
+              <div className="prof-info">
+                <h4 className="prof-code">{prof.professorName}</h4>
+                <p className="prof-name">{prof.department}</p>
               </div>
               <div className="major-links">
-                <Link className="light-green-btn" to={profsURL}>
-                  See All Professors
-                </Link>
                 <Link className="light-green-btn" to={coursesURL}>
-                  See All Courses
+                  See All Course Reviews
                 </Link>
               </div>
             </div>
@@ -74,4 +74,4 @@ const Majors = () => {
   );
 };
 
-export default Majors;
+export default MajorProfs;
