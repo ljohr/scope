@@ -119,11 +119,11 @@ app.post("/api/sessionLogin", async (req, res, next) => {
 });
 
 app.get("/api/majors", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const majors = await MajorModel.find()
       .sort({ code: 1 })
       .skip((page - 1) * limit)
@@ -162,12 +162,12 @@ app.get("/api/courses", async (req, res, next) => {
 });
 
 app.get("/api/:deptcode/professors", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   const deptcode = req.params.deptcode.toUpperCase();
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const professors = await ProfessorModel.find({ department: deptcode })
       .sort({ professorName: 1 })
       .skip((page - 1) * limit)
@@ -186,12 +186,12 @@ app.get("/api/:deptcode/professors", async (req, res, next) => {
 });
 
 app.get("/api/:deptcode/all-courses", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   const deptcode = req.params.deptcode.toUpperCase();
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const courses = await CourseModel.find({ department: deptcode })
       .sort({ courseCode: 1 })
       .skip((page - 1) * limit)
@@ -211,11 +211,11 @@ app.get("/api/:deptcode/all-courses", async (req, res, next) => {
 });
 
 app.get("/api/professors", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const professors = await ProfessorModel.find()
       .sort({ professorName: 1 })
       .skip((page - 1) * limit)
@@ -243,9 +243,9 @@ app.get("/api/professors", async (req, res, next) => {
 // });
 
 app.get("/:deptcode/:profname", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const { deptcode, profname } = req.params;
     // Fetch the professor by name and department.
     const professor = await ProfessorModel.findOne({
@@ -266,9 +266,9 @@ app.get("/:deptcode/:profname", async (req, res, next) => {
 });
 
 app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const { deptcode, profname, courseCode } = req.params;
     // use the simple react searchbar wit hthe json course data i get back
     const professor = await ProfessorModel.findOne({
@@ -313,9 +313,9 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
 });
 
 app.post("/api/new-review", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const reviewData = req.body;
     // const professorId = new ObjectId(reviewData.professorId);
     // const courseId = new ObjectId(reviewData.courseId);
