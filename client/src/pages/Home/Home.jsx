@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import StudentsTalking from "../../assets/students-talking.svg";
 import "./Home.css";
 
 const Home = () => {
@@ -28,7 +29,7 @@ function Hero() {
       </div>
       <div className="home-img">
         <img
-          src="/src/assets/students-talking.svg"
+          src={StudentsTalking}
           alt="students-students"
           className="talking-students"
         />
