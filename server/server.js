@@ -140,11 +140,11 @@ app.get("/api/majors", async (req, res, next) => {
 });
 
 app.get("/api/courses", async (req, res, next) => {
-  const sessionCookie = req.cookies.userSession || "";
+  // const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   try {
-    await admin.auth().verifySessionCookie(sessionCookie, true);
+    // await admin.auth().verifySessionCookie(sessionCookie, true);
     const courses = await CourseModel.find()
       .sort({ courseCode: 1 })
       .skip((page - 1) * limit)
