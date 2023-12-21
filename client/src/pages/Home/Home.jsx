@@ -28,7 +28,7 @@ function Hero() {
       </div>
       <div className="home-img">
         <img
-          src="../src/assets/students-talking.svg"
+          src="/src/assets/students-talking.svg"
           alt="students-students"
           className="talking-students"
         />

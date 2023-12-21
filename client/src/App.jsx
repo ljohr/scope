@@ -21,7 +21,7 @@ import UserReview from "./pages/UserReview/UserReview.jsx";
 import UserProvider from "./utils/UserProvider.jsx";
 import MajorCourses from "./pages/MajorCourses/MajorCourses.jsx";
 
-axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.baseURL = "https://scopeapi.onrender.com";
 
 const LayOut = () => {
   return (
