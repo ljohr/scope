@@ -59,7 +59,7 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: "https://scopeapp.onrender.com/",
+    origin: "https://scopeapp.onrender.com",
   })
 );
 
