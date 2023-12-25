@@ -1,11 +1,10 @@
 # All Folders
 */node_modules
 */.env
-
 # Client
 
 # Server
-server/config/scopefb.json
+server/config/scopefb.js
 server/dbScripts
 
 # Logs
