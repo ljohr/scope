@@ -3,7 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "@mui/material/Pagination";
 import axios from "axios";
-import "./Majors.css";
+import MajorFilter from "../../components/MajorFilter/MajorFilter";
+import styles from "./Majors.module.css";
 
 const Majors = () => {
   const [majors, setMajors] = useState([]);
@@ -38,37 +39,41 @@ const Majors = () => {
   };
 
   return (
-    <div className="majors-container">
+    <div className={styles.majorsContainer}>
       <h1>Majors</h1>
-      <section className="all-majors">
-        {majors.map((major) => {
-          const profsURL = `/${major.code}/professors`;
-          const coursesURL = `/${major.code}/all-courses`;
-          return (
-            <div key={major._id} className="major-single">
-              <div className="major-info">
-                <h4 className="major-code">{major.code}</h4>
-                <p className="major-name">{major.name}</p>
+
+      <div className={styles.container}>
+        <MajorFilter />
+        <section className={styles.allMajors}>
+          {majors.map((major) => {
+            const profsURL = `/${major.code}/professors`;
+            const coursesURL = `/${major.code}/all-courses`;
+            return (
+              <div key={major._id} className={styles.majorSingle}>
+                <div className={styles.majorInfo}>
+                  <h4 className={styles.majorCode}>{major.code}</h4>
+                  <p className={styles.majorName}>{major.name}</p>
+                </div>
+                <div className={styles.majorLinks}>
+                  <Link className="light-green-btn" to={profsURL}>
+                    See All Professors
+                  </Link>
+                  <Link className="light-green-btn" to={coursesURL}>
+                    See All Courses
+                  </Link>
+                </div>
               </div>
-              <div className="major-links">
-                <Link className="light-green-btn" to={profsURL}>
-                  See All Professors
-                </Link>
-                <Link className="light-green-btn" to={coursesURL}>
-                  See All Courses
-                </Link>
-              </div>
-            </div>
-          );
-        })}
-      </section>
-      <div className="pagination-container">
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
-        />
+            );
+          })}
+        </section>
+        <div className="pagination-container">
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </div>
       </div>
     </div>
   );

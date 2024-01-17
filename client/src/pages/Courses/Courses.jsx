@@ -3,8 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Rating from "@mui/material/Rating";
 import toSlug from "../../utils/toSlug";
-import "./Courses.css";
+import MajorFilter from "../../components/MajorFilter/MajorFilter";
+import styles from "./Courses.module.css";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -21,6 +23,7 @@ const Courses = () => {
         );
         setCourses(response.data.courses);
         setTotalPages(Math.ceil(response.data.totalPages));
+        console.log(courses);
       } catch (error) {
         if (error.status === 404) {
           console.log(error);
@@ -32,38 +35,55 @@ const Courses = () => {
     };
 
     fetchCourses();
-  }, [navigate, page]);
+  }, [navigate, page, courses]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
   return (
-    <main className="courses-container">
+    <main className={styles.coursesContainer}>
       <h1>Courses</h1>
-      <section className="all-courses">
-        {courses.map((course) => {
-          return (
-            <div key={course._id} className="course-single">
-              <div className="course-info">
-                <h4 className="course-title">{course.courseCode}</h4>
-                <h4 className="course-title">{course.courseName}</h4>
-                <p>{course.professorId.professorName}</p>
+      <div className={styles.container}>
+        <MajorFilter />
+        <section className={styles.allCourses}>
+          {courses.map((course) => {
+            return (
+              <div key={course._id} className={styles.courseSingle}>
+                <div className={styles.courseInfo}>
+                  <h4 className={styles.courseTitle}>{course.courseCode}</h4>
+                  <h4 className={styles.courseTitle}>{course.courseName}</h4>
+                  <p>{course.professorId.professorName}</p>
+                </div>
+                <div className={styles.ratingInfo}>
+                  <p>
+                    {(
+                      course.totalCourseRatingSum / course.totalProfReviewers
+                    ).toFixed(2)}
+                  </p>
+                  <Rating
+                    name="half-rating"
+                    defaultValue={(
+                      course.totalCourseRatingSum / course.totalProfReviewers
+                    ).toFixed(2)}
+                    precision={0.1}
+                    readOnly
+                  />
+                </div>
+                <Link
+                  className="light-green-btn"
+                  to={`/${course.department}/${toSlug(
+                    course.professorId.professorName
+                  )}/${course.courseCode}`}
+                >
+                  See All Reviews
+                </Link>
               </div>
-
-              <Link
-                className="light-green-btn"
-                to={`/${course.department}/${toSlug(
-                  course.professorId.professorName
-                )}/${course.courseCode}`}
-              >
-                See All Reviews
-              </Link>
-            </div>
-          );
-        })}
-      </section>
-      <div className="pagination-container">
+            );
+          })}
+        </section>
+      </div>
+      <div className={styles.paginationContainer}>
         <Pagination
           count={totalPages}
           page={page}

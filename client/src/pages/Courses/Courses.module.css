@@ -1,19 +1,26 @@
-.majors-container {
+.container {
+  display: grid;
+  gap: 3rem;
+  width: 100%;
+  padding: 1% 5%;
+}
+
+.coursesContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5% var(--horizontal-padding);
+  padding: 5% 3%;
 }
 
-.all-majors {
+.allCourses {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-top: 3%;
+  width: 100%;
 }
 
-.major-single {
+.courseSingle {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -24,22 +31,22 @@
   );
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
   min-height: 200px;
-  min-width: 350px;
+  min-width: 300px;
+  /* why did this fix the overflow..?? */
 }
 
-.major-single:hover {
-  transform: scale(1.01);
-}
-
-.major-code {
+.courseTitle {
   font-size: 1.2rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 2%;
 }
 
-.major-name {
-  font-size: 1rem;
+.ratingInfo {
+  display: flex;
+  align-items: center;
+  padding-top: 3%;
+  gap: 0.3rem;
 }
 
-.major-links {
-  padding: 2% 0;
+.paginationContainer {
+  padding-top: 3%;
 }

@@ -1,4 +1,4 @@
-.courses-container {
+.profsContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6,15 +6,14 @@
   padding: 5% var(--horizontal-padding);
 }
 
-.all-courses {
+.allProfs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  width: 100%;
   margin-top: 3%;
 }
 
-.course-single {
+.profsSingle {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -25,15 +24,26 @@
   );
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
   min-height: 200px;
-  min-width: 300px;
-  /* why did this fix the overflow..?? */
+  min-width: 350px;
 }
 
-.course-title {
+.profsSingle:hover {
+  transform: scale(1.01);
+}
+
+.majorCode {
   font-size: 1.2rem;
-  margin-bottom: 2%;
+  margin-bottom: 0.4rem;
 }
 
-.pagination-container {
-  padding-top: 3%;
+.profsName {
+  font-size: 1rem;
+}
+
+.profsLinks {
+  padding: 2% 0;
+}
+
+.profCode {
+  margin-bottom: 2%;
 }

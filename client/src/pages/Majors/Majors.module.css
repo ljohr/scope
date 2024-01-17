@@ -1,4 +1,4 @@
-.profs-container {
+.majorsContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6,14 +6,14 @@
   padding: 5% var(--horizontal-padding);
 }
 
-.all-profs {
+.allMajors {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 3%;
 }
 
-.profs-single {
+.majorSingle {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -27,23 +27,19 @@
   min-width: 350px;
 }
 
-.profs-single:hover {
+.majorSingle:hover {
   transform: scale(1.01);
 }
 
-.major-code {
+.majorCode {
   font-size: 1.2rem;
   margin-bottom: 0.4rem;
 }
 
-.profs-name {
+.majorName {
   font-size: 1rem;
 }
 
-.profs-links {
+.majorLinks {
   padding: 2% 0;
-}
-
-.prof-code {
-  margin-bottom: 2%;
 }

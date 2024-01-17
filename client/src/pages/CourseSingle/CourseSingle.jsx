@@ -110,7 +110,7 @@ const CourseSingle = () => {
                           defaultValue={review.profRating}
                           precision={0.1}
                           readOnly
-                        />{" "}
+                        />
                       </div>
                       <div className="course-rating">
                         <p>Course Rating: </p>

@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 import Pagination from "@mui/material/Pagination";
 import axios from "axios";
 import toSlug from "../../utils/toSlug";
-import "./Professors.css";
+import MajorFilter from "../../components/MajorFilter/MajorFilter";
+import styles from "./Professors.module.css";
 
 const Professors = () => {
   const [professors, setProfessors] = useState([]);
@@ -34,42 +35,45 @@ const Professors = () => {
     };
 
     fetchProfessors();
-  }, [navigate, page]);
+  }, [navigate, page, professors]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
   return (
-    <div className="profs-container">
+    <div className={styles.profsContainer}>
       <h1>Professors</h1>
-      <section className="all-profs">
-        {professors.map((prof) => {
-          const coursesURL = `/${prof.department}/${toSlug(
-            prof.professorName
-          )}`;
-          return (
-            <div key={prof._id} className="profs-single">
-              <div className="prof-info">
-                <h4 className="prof-code">{prof.professorName}</h4>
-                <p className="prof-name">{prof.department}</p>
+      <div className={styles.container}>
+        <MajorFilter />
+        <section className={styles.allProfs}>
+          {professors.map((prof) => {
+            const coursesURL = `/${prof.department}/${toSlug(
+              prof.professorName
+            )}`;
+            return (
+              <div key={prof._id} className={styles.profsSingle}>
+                <div className={styles.profInfo}>
+                  <h4 className={styles.profCode}>{prof.professorName}</h4>
+                  <p className={styles.profName}>{prof.department}</p>
+                </div>
+                <div className="major-links">
+                  <Link className="light-green-btn" to={coursesURL}>
+                    See All Course Reviews
+                  </Link>
+                </div>
               </div>
-              <div className="major-links">
-                <Link className="light-green-btn" to={coursesURL}>
-                  See All Course Reviews
-                </Link>
-              </div>
-            </div>
-          );
-        })}
-      </section>
-      <div className="pagination-container">
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
-        />
+            );
+          })}
+        </section>
+        <div className="pagination-container">
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </div>
       </div>
     </div>
   );
