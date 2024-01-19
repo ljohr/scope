@@ -121,7 +121,7 @@ const courses = [
   { label: "XRBC - XRBC", code: "XRBC" },
 ];
 
-const MajorFilter = () => {
+const MajorFilter = ({ onMajorSelect }) => {
   return (
     <div className={styles.sidebar}>
       <Autocomplete
@@ -129,6 +129,7 @@ const MajorFilter = () => {
         id="combo-box-demo"
         options={courses}
         sx={{ width: "100%" }}
+        onChange={(event, newValue) => onMajorSelect(newValue)}
         className={styles.filter}
         renderInput={(params) => (
           <TextField {...params} label="Filter By Major" />

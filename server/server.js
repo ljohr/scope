@@ -50,7 +50,7 @@ const nameFromSlug = (slug) => {
 
 initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://scope-a8a0d.firebaseio.com",
+  databaseURL: "http://localhost:5173",
 });
 
 app.use(express.json());
@@ -59,7 +59,7 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: "https://scopeapp.onrender.com",
+    origin: "http://localhost:5173",
   })
 );
 
@@ -119,16 +119,23 @@ app.post("/api/sessionLogin", async (req, res, next) => {
 });
 
 app.get("/api/majors", async (req, res, next) => {
-  // const sessionCookie = req.cookies.userSession || "";
+  const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
+  const majorCode = req.query.major;
+  console.log(majorCode);
   try {
-    // await admin.auth().verifySessionCookie(sessionCookie, true);
-    const majors = await MajorModel.find()
+    let query = {};
+    if (majorCode) {
+      query = { code: majorCode.toUpperCase() };
+    }
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    const majors = await MajorModel.find(query)
       .sort({ code: 1 })
       .skip((page - 1) * limit)
       .limit(limit);
-    const totalDocs = await MajorModel.countDocuments();
+    const totalDocs = await MajorModel.countDocuments(query);
+    console.log(majors);
     res.json({
       majors,
       totalPages: Math.ceil(totalDocs / limit),
@@ -140,17 +147,23 @@ app.get("/api/majors", async (req, res, next) => {
 });
 
 app.get("/api/courses", async (req, res, next) => {
-  // const sessionCookie = req.cookies.userSession || "";
+  const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
+  const majorCode = req.query.major;
   try {
-    // await admin.auth().verifySessionCookie(sessionCookie, true);
-    const courses = await CourseModel.find()
+    let query = {};
+    if (majorCode) {
+      query = { department: majorCode.toUpperCase() };
+    }
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    const courses = await CourseModel.find(query)
       .sort({ courseCode: 1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate("professorId");
-    const totalDocs = await CourseModel.countDocuments();
+    const totalDocs = await CourseModel.countDocuments(query);
+    console.log(totalDocs);
     res.json({
       courses,
       totalPages: Math.ceil(totalDocs / limit),
@@ -162,12 +175,12 @@ app.get("/api/courses", async (req, res, next) => {
 });
 
 app.get("/api/:deptcode/professors", async (req, res, next) => {
-  // const sessionCookie = req.cookies.userSession || "";
+  const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   const deptcode = req.params.deptcode.toUpperCase();
   try {
-    // await admin.auth().verifySessionCookie(sessionCookie, true);
+    await admin.auth().verifySessionCookie(sessionCookie, true);
     const professors = await ProfessorModel.find({ department: deptcode })
       .sort({ professorName: 1 })
       .skip((page - 1) * limit)
@@ -186,12 +199,12 @@ app.get("/api/:deptcode/professors", async (req, res, next) => {
 });
 
 app.get("/api/:deptcode/all-courses", async (req, res, next) => {
-  // const sessionCookie = req.cookies.userSession || "";
+  const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   const deptcode = req.params.deptcode.toUpperCase();
   try {
-    // await admin.auth().verifySessionCookie(sessionCookie, true);
+    await admin.auth().verifySessionCookie(sessionCookie, true);
     const courses = await CourseModel.find({ department: deptcode })
       .sort({ courseCode: 1 })
       .skip((page - 1) * limit)
@@ -211,16 +224,21 @@ app.get("/api/:deptcode/all-courses", async (req, res, next) => {
 });
 
 app.get("/api/professors", async (req, res, next) => {
-  // const sessionCookie = req.cookies.userSession || "";
+  const sessionCookie = req.cookies.userSession || "";
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
+  const majorCode = req.query.major;
   try {
-    // await admin.auth().verifySessionCookie(sessionCookie, true);
-    const professors = await ProfessorModel.find()
+    let query = {};
+    if (majorCode) {
+      query = { department: majorCode.toUpperCase() };
+    }
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    const professors = await ProfessorModel.find(query)
       .sort({ professorName: 1 })
       .skip((page - 1) * limit)
       .limit(limit);
-    const totalDocs = await ProfessorModel.countDocuments();
+    const totalDocs = await ProfessorModel.countDocuments(query);
     res.json({
       professors,
       totalPages: Math.ceil(totalDocs / limit),

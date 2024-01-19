@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "@mui/material/Pagination";
@@ -9,30 +9,37 @@ import styles from "./Majors.module.css";
 const Majors = () => {
   const [majors, setMajors] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [selectedMajorCode, setSelectedMajorCode] = useState("");
   const [page, setPage] = useState(1);
   const limit = 12;
   const navigate = useNavigate();
+  const fetchMajors = useCallback(async () => {
+    try {
+      const url = selectedMajorCode
+        ? `/api/majors?major=${selectedMajorCode}&page=${page}&limit=${limit}`
+        : `/api/majors?page=${page}&limit=${limit}`;
+      const response = await axios.get(url);
+      setMajors(response.data.majors);
+      setTotalPages(Math.ceil(response.data.totalPages));
+    } catch (error) {
+      if (error.status === 404) {
+        console.log(error);
+      } else if (error.status === 401) {
+        toast.error("Please login to view this page!");
+        navigate("/login");
+      }
+    }
+  }, [selectedMajorCode, page, limit, navigate]);
+
+  const handleMajorSelect = useCallback((major) => {
+    console.log(major.code);
+    setSelectedMajorCode(major ? major.code : "");
+    setPage(1);
+  }, []);
 
   useEffect(() => {
-    const fetchMajors = async () => {
-      try {
-        const response = await axios.get(
-          `/api/majors?page=${page}&limit=${limit}`
-        );
-        setMajors(response.data.majors);
-        setTotalPages(Math.ceil(response.data.totalPages));
-      } catch (error) {
-        if (error.status === 404) {
-          console.log(error);
-        } else if (error.status === 401) {
-          toast.error("Please login to view this page!");
-          navigate("/login");
-        }
-      }
-    };
-
     fetchMajors();
-  }, [navigate, page]);
+  }, [fetchMajors]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -43,7 +50,8 @@ const Majors = () => {
       <h1>Majors</h1>
 
       <div className={styles.container}>
-        <MajorFilter />
+        <MajorFilter onMajorSelect={handleMajorSelect} />
+
         <section className={styles.allMajors}>
           {majors.map((major) => {
             const profsURL = `/${major.code}/professors`;

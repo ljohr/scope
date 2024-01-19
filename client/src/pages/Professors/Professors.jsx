@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "@mui/material/Pagination";
@@ -11,31 +11,36 @@ const Professors = () => {
   const [professors, setProfessors] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
+  const [selectedMajorCode, setSelectedMajorCode] = useState("");
   const limit = 12;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProfessors = async () => {
-      try {
-        const response = await axios.get(
-          `/api/professors?page=${page}&limit=${limit}`
-        );
-        setProfessors(response.data.professors);
-        console.log(response);
-        console.log(professors);
-        setTotalPages(Math.ceil(response.data.totalPages));
-      } catch (error) {
-        if (error.status === 404) {
-          console.log(error);
-        } else if (error.status === 401) {
-          toast.error("Please login to view this page!");
-          navigate("/login");
-        }
+  const fetchProfessors = useCallback(async () => {
+    try {
+      const url = selectedMajorCode
+        ? `/api/professors?major=${selectedMajorCode}&page=${page}&limit=${limit}`
+        : `/api/professors?page=${page}&limit=${limit}`;
+      const response = await axios.get(url);
+      setProfessors(response.data.professors);
+      setTotalPages(Math.ceil(response.data.totalPages));
+    } catch (error) {
+      if (error.status === 404) {
+        console.log(error);
+      } else if (error.status === 401) {
+        toast.error("Please login to view this page!");
+        navigate("/login");
       }
-    };
+    }
+  }, [navigate, page, selectedMajorCode]);
 
+  const handleMajorSelect = useCallback((major) => {
+    setSelectedMajorCode(major ? major.code : "");
+    setPage(1);
+  }, []);
+
+  useEffect(() => {
     fetchProfessors();
-  }, [navigate, page, professors]);
+  }, [fetchProfessors]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -45,7 +50,7 @@ const Professors = () => {
     <div className={styles.profsContainer}>
       <h1>Professors</h1>
       <div className={styles.container}>
-        <MajorFilter />
+        <MajorFilter onMajorSelect={handleMajorSelect} />
         <section className={styles.allProfs}>
           {professors.map((prof) => {
             const coursesURL = `/${prof.department}/${toSlug(
