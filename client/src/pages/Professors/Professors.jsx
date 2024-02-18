@@ -47,7 +47,7 @@ const Professors = () => {
   };
 
   return (
-    <div className={styles.profsContainer}>
+    <main className={styles.profsContainer}>
       <h1>Professors</h1>
       <div className={styles.container}>
         <MajorFilter onMajorSelect={handleMajorSelect} />
@@ -71,16 +71,16 @@ const Professors = () => {
             );
           })}
         </section>
-        <div className="pagination-container">
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-          />
-        </div>
       </div>
-    </div>
+      <div className={styles.paginationContainer}>
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </div>
+    </main>
   );
 };
 

@@ -32,12 +32,15 @@
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
   min-height: 200px;
   min-width: 300px;
-  /* why did this fix the overflow..?? */
+}
+
+.courseSingle:hover {
+  transform: scale(1.01);
 }
 
 .courseTitle {
   font-size: 1.2rem;
-  margin-bottom: 2%;
+  margin-bottom: 0.4rem;
 }
 
 .ratingInfo {

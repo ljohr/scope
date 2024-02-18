@@ -1,16 +1,23 @@
+.container {
+  display: grid;
+  gap: 3rem;
+  width: 100%;
+  padding: 1% 5%;
+}
+
 .majorsContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5% var(--horizontal-padding);
+  padding: 5% 3%;
 }
 
 .allMajors {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-top: 3%;
+  width: 100%;
 }
 
 .majorSingle {
@@ -24,7 +31,7 @@
   );
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
   min-height: 200px;
-  min-width: 350px;
+  min-width: 300px;
 }
 
 .majorSingle:hover {
@@ -42,4 +49,8 @@
 
 .majorLinks {
   padding: 2% 0;
+}
+
+.paginationContainer {
+  padding-top: 3%;
 }

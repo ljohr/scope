@@ -20,6 +20,7 @@ import allMajorsRouter from "./routers/allMajorsRouter.js";
 import newReviewRouter from "./routers/newReviewRouter.js";
 import MajorModel from "./models/Majors.js";
 // const { ObjectId } = mongoose.Types;
+import profSearch from "./profSearch.js";
 
 // sort prof page and courses by
 // last semester taught -> alphabetical
@@ -358,7 +359,7 @@ app.post("/api/new-review", async (req, res, next) => {
 
     reviewData.courseTags = [...reviewData.courseTags, reviewData.workload];
 
-    // // Update Professor Tags in Professor Document
+    // Update Professor Tags in Professor Document
     reviewData.profTags.forEach((tag) => {
       if (Object.prototype.hasOwnProperty.call(professor.profTags, tag)) {
         professor.profTags[tag] += 1;
@@ -418,6 +419,12 @@ app.post("/api/new-review", async (req, res, next) => {
   }
 });
 
+app.get("/search/profSearch/:searchQuery", async (req, res, next) => {
+  const searchQuery = req.params.searchQuery;
+  const allProfs = await profSearch(searchQuery);
+  console.log(allProfs);
+});
+
 // eslint-disable-next-line
 app.use((error, req, res, next) => {
   if (error.code === "auth/argument-error") {
@@ -430,7 +437,6 @@ app.use((error, req, res, next) => {
 
 async function startServer() {
   try {
-    // await connectDB();
     await connectDB();
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

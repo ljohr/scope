@@ -46,7 +46,7 @@ const Majors = () => {
   };
 
   return (
-    <div className={styles.majorsContainer}>
+    <main className={styles.majorsContainer}>
       <h1>Majors</h1>
 
       <div className={styles.container}>
@@ -74,16 +74,16 @@ const Majors = () => {
             );
           })}
         </section>
-        <div className="pagination-container">
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-          />
-        </div>
       </div>
-    </div>
+      <div className={styles.paginationContainer}>
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </div>
+    </main>
   );
 };
 
