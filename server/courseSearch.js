@@ -1,14 +1,14 @@
-import ProfessorModel from "./models/Professor.js";
+import CourseModel from "./models/Course.js";
 
 const profSearch = async (searchQuery, page = 1, pageSize = 10) => {
   const skip = (page - 1) * pageSize;
-  const result = await ProfessorModel.aggregate([
+  const result = await CourseModel.aggregate([
     {
       $search: {
-        index: "prof_search",
+        index: "course_search",
         text: {
           query: searchQuery,
-          path: "professorName",
+          path: "courseName",
         },
       },
     },

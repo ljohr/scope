@@ -14,6 +14,7 @@ import CourseSingle from "./pages/CourseSingle/CourseSingle";
 import MajorProfs from "./pages/MajorProfs/MajorProfs";
 import Core from "./pages/Core/Core";
 import Search from "./pages/Search/Search.jsx";
+import SearchResults from "./pages/SearchResults/SearchResults.jsx";
 import Login from "./pages/LoginRegister/Login";
 import Register from "./pages/LoginRegister/Register";
 import ResetPassword from "./pages/LoginRegister/ResetPassword";
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <Search />,
+      },
+      {
+        path: "/results",
+        element: <SearchResults />,
       },
       {
         path: "/reset-password",

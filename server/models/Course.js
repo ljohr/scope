@@ -5,6 +5,7 @@ const { ObjectId } = mongoose.Schema.Types;
 const CourseSchema = new Schema({
   courseName: { type: String, index: true },
   courseCode: { type: String, index: true },
+  professorName: { type: String, index: true },
   professorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Professor",

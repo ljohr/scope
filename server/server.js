@@ -21,6 +21,7 @@ import newReviewRouter from "./routers/newReviewRouter.js";
 import MajorModel from "./models/Majors.js";
 // const { ObjectId } = mongoose.Types;
 import profSearch from "./profSearch.js";
+import courseSearch from "./courseSearch.js";
 
 // sort prof page and courses by
 // last semester taught -> alphabetical
@@ -422,7 +423,13 @@ app.post("/api/new-review", async (req, res, next) => {
 app.get("/search/profSearch/:searchQuery", async (req, res, next) => {
   const searchQuery = req.params.searchQuery;
   const allProfs = await profSearch(searchQuery);
-  console.log(allProfs);
+  res.json(allProfs);
+});
+
+app.get("/search/courseSearch/:searchQuery", async (req, res, next) => {
+  const searchQuery = req.params.searchQuery;
+  const allCourses = await courseSearch(searchQuery);
+  res.json(allCourses);
 });
 
 // eslint-disable-next-line

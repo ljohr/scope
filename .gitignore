@@ -5,7 +5,7 @@
 
 # Server
 server/config/scopefb.js
-server/dbScripts
+server/scripts
 
 # Logs
 logs
