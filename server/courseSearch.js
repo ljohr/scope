@@ -1,8 +1,9 @@
 import CourseModel from "./models/Course.js";
 
-const profSearch = async (searchQuery, page = 1, pageSize = 10) => {
+const courseSearch = async (searchQuery, page, pageSize) => {
   const skip = (page - 1) * pageSize;
-  const result = await CourseModel.aggregate([
+
+  const results = await CourseModel.aggregate([
     {
       $search: {
         index: "course_search",
@@ -16,7 +17,27 @@ const profSearch = async (searchQuery, page = 1, pageSize = 10) => {
     { $limit: pageSize },
   ]);
 
-  return result;
+  const totalCountResult = await CourseModel.aggregate([
+    {
+      $search: {
+        index: "course_search",
+        text: {
+          query: searchQuery,
+          path: "courseName",
+        },
+      },
+    },
+    {
+      $count: "total",
+    },
+  ]);
+
+  const totalDocs = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+
+  return {
+    results,
+    totalPages: Math.ceil(totalDocs / pageSize),
+  };
 };
 
-export default profSearch;
+export default courseSearch;

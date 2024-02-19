@@ -1,8 +1,9 @@
 import ProfessorModel from "./models/Professor.js";
 
-const profSearch = async (searchQuery, page = 1, pageSize = 10) => {
+const profSearch = async (searchQuery, page, pageSize) => {
   const skip = (page - 1) * pageSize;
-  const result = await ProfessorModel.aggregate([
+
+  const results = await ProfessorModel.aggregate([
     {
       $search: {
         index: "prof_search",
@@ -16,7 +17,27 @@ const profSearch = async (searchQuery, page = 1, pageSize = 10) => {
     { $limit: pageSize },
   ]);
 
-  return result;
+  const totalCountResult = await ProfessorModel.aggregate([
+    {
+      $search: {
+        index: "prof_search",
+        text: {
+          query: searchQuery,
+          path: "professorName",
+        },
+      },
+    },
+    {
+      $count: "total",
+    },
+  ]);
+
+  const totalDocs = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+
+  return {
+    results,
+    totalPages: Math.ceil(totalDocs / pageSize),
+  };
 };
 
 export default profSearch;
