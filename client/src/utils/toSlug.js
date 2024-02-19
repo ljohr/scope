@@ -1,5 +1,5 @@
 const toSlug = (name) => {
-  return name.toLowerCase().split(" ").join("-");
+  return name.replace(/-/g, "-hyphen-").toLowerCase().split(" ").join("-");
 };
 
 export default toSlug;

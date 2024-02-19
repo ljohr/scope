@@ -32,11 +32,17 @@ app.use(helmet());
 
 const nameFromSlug = (slug) => {
   return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .split("-hyphen-")
+    .map((segment) =>
+      segment
+        .split("-")
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ")
+    )
+    .join("-");
 };
-
 // const nameToSlug = (name) => {
 //   return name.toLowerCase().split(" ").join("-");
 // };
@@ -267,6 +273,7 @@ app.get("/:deptcode/:profname", async (req, res, next) => {
   try {
     // await admin.auth().verifySessionCookie(sessionCookie, true);
     const { deptcode, profname } = req.params;
+    console.log(nameFromSlug(profname));
     // Fetch the professor by name and department.
     const professor = await ProfessorModel.findOne({
       professorName: nameFromSlug(profname),
@@ -421,14 +428,18 @@ app.post("/api/new-review", async (req, res, next) => {
 });
 
 app.get("/search/profSearch/:searchQuery", async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
   const searchQuery = req.params.searchQuery;
-  const allProfs = await profSearch(searchQuery);
+  const allProfs = await profSearch(searchQuery, page, limit);
   res.json(allProfs);
 });
 
 app.get("/search/courseSearch/:searchQuery", async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
   const searchQuery = req.params.searchQuery;
-  const allCourses = await courseSearch(searchQuery);
+  const allCourses = await courseSearch(searchQuery, page, limit);
   res.json(allCourses);
 });
 

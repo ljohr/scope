@@ -69,9 +69,10 @@ const Courses = () => {
                   </p>
                   <Rating
                     name="half-rating"
-                    defaultValue={parseFloat(
+                    value={parseFloat(
                       (
-                        course.totalCourseRatingSum / course.totalProfReviewers
+                        course.totalCourseRatingSum /
+                          course.totalProfReviewers || 0
                       ).toFixed(2)
                     )}
                     precision={0.1}
