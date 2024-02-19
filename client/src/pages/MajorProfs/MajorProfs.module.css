@@ -1,0 +1,67 @@
+.profsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5% 3%;
+}
+
+.innerContainer {
+  display: grid;
+  gap: 3rem;
+  width: 100%;
+  padding: 1% 5%;
+}
+
+.allProfs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.profsSingle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
+  min-height: 200px;
+  min-width: 350px;
+}
+
+.profsSingle:hover {
+  transform: scale(1.01);
+}
+
+.majorCode {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.profsName {
+  font-size: 1rem;
+}
+
+.profsLinks {
+  padding: 2% 0;
+}
+
+.profCode {
+  margin-bottom: 2%;
+}
+
+.ratingInfo {
+  display: flex;
+  align-items: center;
+  padding-top: 3%;
+  gap: 0.3rem;
+}
+
+.paginationContainer {
+  padding-top: 3%;
+}

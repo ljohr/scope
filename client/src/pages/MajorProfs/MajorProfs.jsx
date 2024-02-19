@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Pagination from "@mui/material/Pagination";
+import { Rating, Pagination } from "@mui/material";
 import axios from "axios";
 import toSlug from "../../utils/toSlug";
-import "./MajorProfs.css";
+import styles from "./MajorProfs.module.css";
 
 const MajorProfs = () => {
   const [professors, setProfessors] = useState([]);
@@ -40,29 +40,44 @@ const MajorProfs = () => {
   };
 
   return (
-    <div className="profs-container">
+    <main className={styles.profsContainer}>
       <h1>Professors</h1>
-      <section className="all-profs">
-        {professors.map((prof) => {
-          const coursesURL = `/${prof.department}/${toSlug(
-            prof.professorName
-          )}`;
-          return (
-            <div key={prof._id} className="profs-single">
-              <div className="prof-info">
-                <h4 className="prof-code">{prof.professorName}</h4>
-                <p className="prof-name">{prof.department}</p>
+      <div className={styles.innerContainer}>
+        <section className={styles.allProfs}>
+          {professors.map((prof) => {
+            const coursesURL = `/${prof.department}/${toSlug(
+              prof.professorName
+            )}`;
+            return (
+              <div key={prof._id}>
+                <div className={styles.profsSingle}>
+                  <div className={styles.profInfo}>
+                    <h4 className={styles.profName}>{prof.professorName}</h4>
+                    <p className={styles.profsName}>{prof.department}</p>
+
+                    <div className={styles.ratingInfo}>
+                      <p>{prof.avgProfRating.toFixed(2)}</p>
+                      <Rating
+                        name="half-rating"
+                        value={parseFloat(prof.avgProfRating.toFixed(2))}
+                        precision={0.1}
+                        readOnly
+                      />
+                    </div>
+                  </div>
+
+                  <div className="major-links">
+                    <Link className="light-green-btn" to={coursesURL}>
+                      See All Course Reviews
+                    </Link>
+                  </div>
+                </div>
               </div>
-              <div className="major-links">
-                <Link className="light-green-btn" to={coursesURL}>
-                  See All Course Reviews
-                </Link>
-              </div>
-            </div>
-          );
-        })}
-      </section>
-      <div className="pagination-container">
+            );
+          })}
+        </section>
+      </div>
+      <div className={styles.paginationContainer}>
         <Pagination
           count={totalPages}
           page={page}
@@ -70,7 +85,7 @@ const MajorProfs = () => {
           color="primary"
         />
       </div>
-    </div>
+    </main>
   );
 };
 

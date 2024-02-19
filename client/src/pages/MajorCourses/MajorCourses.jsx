@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Pagination from "@mui/material/Pagination";
+import { Rating, Pagination } from "@mui/material";
 import axios from "axios";
-import "./MajorCourses.css";
 import toSlug from "../../utils/toSlug";
+import styles from "./MajorCourses.module.css";
 
 const MajorCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -40,32 +40,50 @@ const MajorCourses = () => {
   };
 
   return (
-    <div className="profs-container">
+    <main className={styles.coursesContainer}>
       <h1>{deptcode.toUpperCase()} - All Courses</h1>
-      <section className="all-profs">
-        {courses.map((course) => {
-          return (
-            <div key={course._id} className="profs-single">
-              <div className="prof-info">
-                <h4 className="prof-code">{course.courseCode}</h4>
-                <h4 className="prof-code">{course.courseName}</h4>
-                <p className="prof-code">{course.professorId.professorName}</p>
-              </div>
-              <div className="major-links">
+      <div className={styles.container}>
+        <section className={styles.allCourses}>
+          {courses.map((course) => {
+            return (
+              <div key={course._id} className={styles.courseSingle}>
+                <div className={styles.courseInfo}>
+                  <h4 className={styles.courseTitle}>{course.courseCode}</h4>
+                  <h4 className={styles.courseTitle}>{course.courseName}</h4>
+                  <p>{course.professorId.professorName}</p>
+                </div>
+                <div className={styles.ratingInfo}>
+                  <p>
+                    {(
+                      course.totalCourseRatingSum / course.totalProfReviewers
+                    ).toFixed(2)}
+                  </p>
+                  <Rating
+                    name="half-rating"
+                    value={parseFloat(
+                      (
+                        course.totalCourseRatingSum /
+                          course.totalProfReviewers || 0
+                      ).toFixed(2)
+                    )}
+                    precision={0.1}
+                    readOnly
+                  />
+                </div>
                 <Link
                   className="light-green-btn"
-                  to={`/${deptcode}/${toSlug(
+                  to={`/${course.department}/${toSlug(
                     course.professorId.professorName
                   )}/${course.courseCode}`}
                 >
-                  See All Course Reviews
+                  See All Reviews
                 </Link>
               </div>
-            </div>
-          );
-        })}
-      </section>
-      <div className="pagination-container">
+            );
+          })}
+        </section>
+      </div>
+      <div className={styles.paginationContainer}>
         <Pagination
           count={totalPages}
           page={page}
@@ -73,7 +91,7 @@ const MajorCourses = () => {
           color="primary"
         />
       </div>
-    </div>
+    </main>
   );
 };
 
