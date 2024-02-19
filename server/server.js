@@ -43,9 +43,6 @@ const nameFromSlug = (slug) => {
     )
     .join("-");
 };
-// const nameToSlug = (name) => {
-//   return name.toLowerCase().split(" ").join("-");
-// };
 
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000, // 15 minutes
