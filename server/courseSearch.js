@@ -3,7 +3,8 @@ import CourseModel from "./models/Course.js";
 const courseSearch = async (searchQuery, page, pageSize) => {
   const skip = (page - 1) * pageSize;
 
-  const results = await CourseModel.aggregate([
+  // First search attempt using courseName
+  let results = await CourseModel.aggregate([
     {
       $search: {
         index: "course_search",
@@ -17,13 +18,31 @@ const courseSearch = async (searchQuery, page, pageSize) => {
     { $limit: pageSize },
   ]);
 
+  // If no results found, try again using courseCode
+  if (results.length === 0) {
+    results = await CourseModel.aggregate([
+      {
+        $search: {
+          index: "course_search",
+          text: {
+            query: searchQuery,
+            path: "courseCode",
+          },
+        },
+      },
+      { $skip: skip },
+      { $limit: pageSize },
+    ]);
+  }
+
+  // Determine total count based on which path yielded results
   const totalCountResult = await CourseModel.aggregate([
     {
       $search: {
         index: "course_search",
         text: {
           query: searchQuery,
-          path: "courseName",
+          path: results.length > 0 ? "courseName" : "courseCode",
         },
       },
     },
