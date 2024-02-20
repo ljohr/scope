@@ -1,0 +1,40 @@
+/* Search Page Styling */
+.searchBlock {
+  display: flex;
+}
+
+.searchBlock select {
+  padding: 0 1rem;
+}
+
+.searchBlock form input {
+  padding: 1rem 1.2rem;
+  min-width: 30rem;
+}
+
+.searchBlock form button {
+  padding: 1rem 1.2rem;
+  border: 1px solid rgb(198, 198, 198);
+}
+
+/* Navbar SearchBar Styling */
+.searchNav {
+  display: flex;
+  font-size: 0.85rem;
+}
+
+.searchNav select {
+  padding: 0 0.3rem;
+  border: 1px solid rgba(194, 194, 194, 0.598);
+  border-right: none;
+}
+
+.searchNav form input {
+  border: 1px solid rgba(194, 194, 194, 0.598);
+  padding: 0.5rem 0.5rem;
+  min-width: 3rem;
+}
+
+.searchNav form button {
+  border: 1px solid rgba(194, 194, 194, 0.598);
+}

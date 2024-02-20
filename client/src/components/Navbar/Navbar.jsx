@@ -4,6 +4,8 @@ import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebaseConfig";
 import { UserContext } from "../../utils/UserContext";
+import SearchBar from "../SearchBar/SearchBar";
+import searchStyles from "../SearchBar/SearchBar.module.css";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -52,18 +54,9 @@ const Navbar = () => {
           )}
         </ul>
       </nav>
-      {/* <nav className="nav-search">
-        <form>
-          <input
-            type="text"
-            placeholder="Find a Review"
-            className="search-bar"
-          />
-          <button type="submit" className="search-btn">
-            Search
-          </button>
-        </form>
-      </nav> */}
+      <nav>
+        <SearchBar className={searchStyles.searchNav} />
+      </nav>
       <nav className="nav-login">
         <ul>
           {currentUser ? (

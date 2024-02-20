@@ -49,16 +49,16 @@ const SearchResults = () => {
 
   return (
     <main className={styles.resultsMain}>
+      <h1>Search Results</h1>
       <div className={styles.container}>
-        <h2>Search Results</h2>
         <section className={styles.allResults}>
           {results.map((result, index) => {
             if (type === "Course") {
               return (
-                <div key={index}>
-                  <div className={styles.courseInfo}>
-                    <h4 className={styles.courseTitle}>{result.courseCode}</h4>
-                    <h4 className={styles.courseTitle}>{result.courseName}</h4>
+                <div key={index} className={styles.resultSingle}>
+                  <div className={styles.resultInfo}>
+                    <h4 className={styles.resultTitle}>{result.courseCode}</h4>
+                    <h4 className={styles.resultTitle}>{result.courseName}</h4>
                     <p>{result.professorName}</p>
                   </div>
                   <div className={styles.ratingInfo}>

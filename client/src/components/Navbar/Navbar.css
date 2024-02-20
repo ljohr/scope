@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1% var(--horizontal-padding);
+  padding: 1% 10%;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -31,7 +31,7 @@
   font-size: 1.2rem;
 }
 
-.nav-bar button {
+.nav-login button {
   padding: 0.3rem 0.7rem;
   border: none;
   border-radius: 1rem;
@@ -40,7 +40,7 @@
   font-weight: 600;
 }
 
-.nav-bar button:hover {
+.nav-login button:hover {
   background-color: rgba(224, 224, 224, 0.314);
 }
 
