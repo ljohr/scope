@@ -4,8 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Rating from "@mui/material/Rating";
-import CircularProgress from "@mui/material/CircularProgress";
-import Slider from "@mui/material/Slider";
+import { CircularProgress, Slider } from "@mui/material";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import "./CourseSingle.css";
 

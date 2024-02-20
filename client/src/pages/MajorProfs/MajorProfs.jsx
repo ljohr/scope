@@ -41,7 +41,7 @@ const MajorProfs = () => {
 
   return (
     <main className={styles.profsContainer}>
-      <h1>Professors</h1>
+      <h1>{deptcode.toUpperCase()} - All Professors</h1>
       <div className={styles.innerContainer}>
         <section className={styles.allProfs}>
           {professors.map((prof) => {
@@ -52,8 +52,8 @@ const MajorProfs = () => {
               <div key={prof._id}>
                 <div className={styles.profsSingle}>
                   <div className={styles.profInfo}>
+                    <h4 className={styles.profsDept}>{prof.department}</h4>
                     <h4 className={styles.profName}>{prof.professorName}</h4>
-                    <p className={styles.profsName}>{prof.department}</p>
 
                     <div className={styles.ratingInfo}>
                       <p>{prof.avgProfRating.toFixed(2)}</p>

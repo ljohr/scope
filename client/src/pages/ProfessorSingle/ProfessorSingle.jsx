@@ -2,16 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import "./ProfessorSingle.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
-// const nameToSlug = (name) => {
-//   return name.toLowerCase().split(" ").join("-");
-// };
-
 const ProfessorSingle = () => {
   const { deptcode, profname } = useParams();
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [professor, setProfessor] = useState({});
   const navigate = useNavigate();
 
@@ -19,7 +17,14 @@ const ProfessorSingle = () => {
     const fetchCourse = async () => {
       try {
         const response = await axios.get(`/${deptcode}/${profname}`);
-        setProfessor(response.data);
+        const sortedCourses = response.data.courseIds.sort((a, b) =>
+          a.courseCode.localeCompare(b.courseCode)
+        );
+        setProfessor({
+          ...response.data,
+          courseIds: sortedCourses,
+        });
+        setDataLoaded(true);
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 404) {
@@ -41,33 +46,38 @@ const ProfessorSingle = () => {
           <title>{professor.professorName || "Professor Info"} | Scope</title>
         </Helmet>
       </HelmetProvider>
-      <main className="prof-single-main">
-        <h1>{professor.professorName}</h1>
-        <h3 className="course-dept">{professor.department}</h3>
-        <section className="prof-courses">
-          {professor.courseIds?.map((course) => {
-            const courseReviewUrl = `/${deptcode}/${profname}/${course.courseCode}`;
-            return (
-              <div key={course._id} className="prof-course">
-                <div className="prof-course-info">
-                  {/* sort by course code */}
-                  <h4>
-                    {course.courseCode}: {course.courseName}
-                  </h4>
-                  <p>Average Instructor Rating: {course.avgProfRating}</p>
-                  <p>
-                    Average Course Rating: {course.avgCourseRating.toFixed(2)}
-                  </p>
-                  <p>Total Reviewers: {course.totalCourseReviewers}</p>
+      {dataLoaded ? (
+        <main className="prof-single-main">
+          <h1>{professor.professorName}</h1>
+          <Link className="course-dept" to={`/${deptcode}/professors`}>
+            {professor.department}
+          </Link>
+          <section className="prof-courses">
+            {professor.courseIds?.map((course) => {
+              const courseReviewUrl = `/${deptcode}/${profname}/${course.courseCode}`;
+              return (
+                <div key={course._id} className="prof-course">
+                  <div className="prof-course-info">
+                    <h4>
+                      {course.courseCode} {course.courseName}
+                    </h4>
+                    <p>Average Instructor Rating: {course.avgProfRating}</p>
+                    <p>
+                      Average Course Rating: {course.avgCourseRating.toFixed(2)}
+                    </p>
+                    <p>Total Reviewers: {course.totalCourseReviewers}</p>
+                  </div>
+                  <Link to={courseReviewUrl} className="see-all-btn">
+                    See Course Reviews
+                  </Link>
                 </div>
-                <Link to={courseReviewUrl} className="see-all-btn">
-                  See Course Reviews
-                </Link>
-              </div>
-            );
-          })}
-        </section>
-      </main>
+              );
+            })}
+          </section>
+        </main>
+      ) : (
+        <CircularProgress />
+      )}
     </>
   );
 };

@@ -276,7 +276,6 @@ app.get("/:deptcode/:profname", async (req, res, next) => {
       professorName: nameFromSlug(profname),
       department: deptcode.toUpperCase(),
     })
-      .populate("professorName")
       .populate("courseIds")
       .populate("avgProfRating");
     if (!professor) {
