@@ -20,8 +20,9 @@ import allMajorsRouter from "./routers/allMajorsRouter.js";
 import newReviewRouter from "./routers/newReviewRouter.js";
 import MajorModel from "./models/Majors.js";
 // const { ObjectId } = mongoose.Types;
-import profSearch from "./profSearch.js";
-import courseSearch from "./courseSearch.js";
+import profSearch from "./controllers/profSearch.js";
+import courseSearch from "./controllers/courseSearch.js";
+import fetchUserReviews from "./controllers/fetchUserReviews.js";
 
 // sort prof page and courses by
 // last semester taught -> alphabetical
@@ -439,6 +440,35 @@ app.get("/search/courseSearch/:searchQuery", async (req, res, next) => {
   res.json(allCourses);
 });
 
+app.get("/api/user/reviews", async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).send("Unauthorized");
+    console.log(authHeader);
+    return;
+  }
+
+  const idToken = authHeader.split("Bearer ")[1];
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const firebaseUID = decodedToken.uid;
+
+    const user = await UserModel.findOne({ fbUserId: firebaseUID });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const reviews = await ReviewModel.find({ userId: user._id }).populate(
+      "courseId"
+    );
+
+    res.json(reviews);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // eslint-disable-next-line
 app.use((error, req, res, next) => {
   if (error.code === "auth/argument-error") {
@@ -452,6 +482,8 @@ app.use((error, req, res, next) => {
 async function startServer() {
   try {
     await connectDB();
+    const rev = await fetchUserReviews();
+    console.log(rev);
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });

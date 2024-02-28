@@ -52,10 +52,8 @@ const ReviewSchema = new Schema(
     endofSemesterRev: { type: Boolean, default: false },
     endofSemesterSection: Number,
     flagInappropriate: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
   },
-  { timestamps: { createdAt: false, updatedAt: false } }
+  { timestamps: true }
 );
 
 const ReviewModel = mongoose.model("Review", ReviewSchema);

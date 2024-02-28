@@ -1,4 +1,4 @@
-import CourseModel from "./models/Course.js";
+import CourseModel from "../models/Course.js";
 
 const courseSearch = async (searchQuery, page, pageSize) => {
   const skip = (page - 1) * pageSize;

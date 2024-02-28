@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1% 10%;
+  padding: 1.5% 10%;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -36,12 +36,12 @@
   border: none;
   border-radius: 1rem;
   color: #fff;
-  background-color: rgba(181, 181, 181, 0.314);
+  background-color: rgba(171, 171, 171, 0.376);
   font-weight: 600;
 }
 
 .nav-login button:hover {
-  background-color: rgba(224, 224, 224, 0.314);
+  background-color: rgba(202, 202, 202, 0.314);
 }
 
 .nav-search .search-bar {

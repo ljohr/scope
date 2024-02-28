@@ -45,9 +45,6 @@ const Navbar = () => {
               <li>
                 <Link to="/core">Core</Link>
               </li>
-              <li>
-                <Link to="/search">Search</Link>
-              </li>
             </>
           ) : (
             ""

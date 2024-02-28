@@ -13,7 +13,6 @@ import ProfessorSingle from "./pages/ProfessorSingle/ProfessorSingle";
 import CourseSingle from "./pages/CourseSingle/CourseSingle";
 import MajorProfs from "./pages/MajorProfs/MajorProfs";
 import Core from "./pages/Core/Core";
-import Search from "./pages/Search/Search.jsx";
 import SearchResults from "./pages/SearchResults/SearchResults.jsx";
 import Login from "./pages/LoginRegister/Login";
 import Register from "./pages/LoginRegister/Register";
@@ -22,6 +21,7 @@ import PageNotFound from "./pages/PageNotFound/PageNotFound.jsx";
 import UserReview from "./pages/UserReview/UserReview.jsx";
 import UserProvider from "./utils/UserProvider.jsx";
 import MajorCourses from "./pages/MajorCourses/MajorCourses.jsx";
+import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 
 axios.defaults.baseURL = "http://localhost:4000";
 
@@ -76,8 +76,8 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "/search",
-        element: <Search />,
+        path: "/dashboard",
+        element: <Dashboard />,
       },
       {
         path: "/results",

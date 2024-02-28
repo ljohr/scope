@@ -1,4 +1,4 @@
-import ProfessorModel from "./models/Professor.js";
+import ProfessorModel from "../models/Professor.js";
 
 const profSearch = async (searchQuery, page, pageSize) => {
   const skip = (page - 1) * pageSize;
