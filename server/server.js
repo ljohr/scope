@@ -78,6 +78,27 @@ app.use(logoutRouter);
 
 app.use(newReviewRouter);
 
+app.get("/api/auth/validateSession", async (req, res, next) => {
+  const sessionCookie = req.cookies.userSession || "";
+  try {
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+    res.status(200).json({ isAuthenticated: true });
+  } catch (error) {
+    if (
+      error.code === "auth/argument-error" ||
+      error.code === "auth/session-cookie-expired" ||
+      error.code === "auth/session-cookie-revoked"
+    ) {
+      res.status(401).json({
+        isAuthenticated: false,
+        message: "Session is invalid or expired.",
+      });
+    } else {
+      next(error);
+    }
+  }
+});
+
 app.post("/api/sessionLogin", async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -104,6 +125,7 @@ app.post("/api/sessionLogin", async (req, res, next) => {
     };
     const email = decodedToken.email;
     const fbUserId = decodedToken.uid;
+    let createdUser = false;
     let user = await UserModel.findOne({ fbUserId });
 
     if (!user) {
@@ -111,11 +133,15 @@ app.post("/api/sessionLogin", async (req, res, next) => {
         email,
         fbUserId,
       });
+      createdUser = true;
       await user.save();
     }
 
     res.cookie("userSession", sessionCookie, options);
-    res.json({ message: "Registration successful", user });
+    res.json({
+      message: createdUser ? "Registration successful" : "Login successful",
+      user,
+    });
   } catch (error) {
     console.log(error);
     if (error.code && error.code.startsWith("auth/")) {
