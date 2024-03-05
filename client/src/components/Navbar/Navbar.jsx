@@ -3,7 +3,7 @@ import axios from "axios";
 import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebaseConfig";
-import { UserContext } from "../../utils/UserContext";
+import { UserContext } from "../../providers/UserContext";
 import SearchBar from "../SearchBar/SearchBar";
 import searchStyles from "../SearchBar/SearchBar.module.css";
 import "./Navbar.css";

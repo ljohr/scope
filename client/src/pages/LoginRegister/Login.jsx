@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { auth } from "../../config/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
-import { UserContext } from "../../utils/UserContext";
+import { UserContext } from "../../providers/UserContext";
 import "./LoginRegister.css";
 axios.defaults.withCredentials = true;
 

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import UserProvider from "./utils/UserProvider.jsx";
+import UserProvider from "./providers/UserProvider.jsx";
 import "normalize.css";
 import "./index.css";
 import "./App.css";
