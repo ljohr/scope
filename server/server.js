@@ -23,6 +23,8 @@ import MajorModel from "./models/Majors.js";
 import profSearch from "./controllers/profSearch.js";
 import courseSearch from "./controllers/courseSearch.js";
 import fetchUserReviews from "./controllers/fetchUserReviews.js";
+import { newReviewController } from "./controllers/newReviewController.js";
+import validateReviewData from "./controllers/validateReview.js";
 
 // sort prof page and courses by
 // last semester taught -> alphabetical
@@ -337,88 +339,19 @@ app.get("/api/:deptcode/:profname/:courseCode", async (req, res, next) => {
 });
 
 app.post("/api/new-review", async (req, res, next) => {
-  // const sessionCookie = req.cookies.userSession || "";
+  const sessionCookie = req.cookies.userSession || "";
   try {
-    // await admin.auth().verifySessionCookie(sessionCookie, true);
+    await admin.auth().verifySessionCookie(sessionCookie, true);
+
+    const validationErrors = validateReviewData(req.body);
+    if (validationErrors) {
+      return res.status(400).send({ errors: validationErrors });
+    }
+
     const reviewData = req.body;
-    // const professorId = new ObjectId(reviewData.professorId);
-    // const courseId = new ObjectId(reviewData.courseId);
-    // const professor = await ProfessorModel.findById(professorId);
-    const professor = await ProfessorModel.findById("656633b7e847102035e11294");
-    if (!professor) {
-      console.error("Professor not found");
-      return;
-    }
+    const { status, message } = await newReviewController(reviewData);
 
-    const course = await CourseModel.findById("656388cce21362c48f7a2c51");
-    if (!course) {
-      console.error("Course not found");
-      return;
-    }
-
-    reviewData.profTags = [
-      ...reviewData.profTags,
-      reviewData.lecturerStyle,
-      reviewData.gradingStyle,
-    ];
-
-    reviewData.courseTags = [...reviewData.courseTags, reviewData.workload];
-
-    // Update Professor Tags in Professor Document
-    reviewData.profTags.forEach((tag) => {
-      if (Object.prototype.hasOwnProperty.call(professor.profTags, tag)) {
-        professor.profTags[tag] += 1;
-      }
-    });
-
-    // Update Course Tags in Professor Document
-    reviewData.courseTags.forEach((tag) => {
-      if (Object.prototype.hasOwnProperty.call(professor.courseTags, tag)) {
-        professor.courseTags[tag] += 1;
-      }
-    });
-
-    // Update Professor Tags in Course Document
-    reviewData.profTags.forEach((tag) => {
-      if (Object.prototype.hasOwnProperty.call(course.profTags, tag)) {
-        course.profTags[tag] += 1;
-      }
-    });
-
-    // Update Course Tags in Course Document
-    reviewData.courseTags.forEach((tag) => {
-      if (Object.prototype.hasOwnProperty.call(course.courseTags, tag)) {
-        course.courseTags[tag] += 1;
-      }
-    });
-
-    course.totalCourseRatingSum += reviewData.courseRating;
-    course.totalCourseReviewers += 1;
-    course.avgCourseRating =
-      course.totalCourseRatingSum / course.totalCourseReviewers;
-
-    course.totalProfRatingSum += reviewData.profRating;
-    course.totalProfReviewers += 1;
-    course.avgProfRating =
-      course.totalProfRatingSum / course.totalProfReviewers;
-
-    course.totalWeeklyHours += course.courseworkHours;
-    course.totalWeeklyHoursReviewers += 1;
-    course.avgWeeklyHours =
-      course.totalWeeklyHours / course.totalWeeklyHoursReviewers;
-
-    // Update the Professor ratings
-    professor.totalProfRatingSum += reviewData.profRating;
-    professor.totalProfReviewers += 1;
-    professor.avgProfRating =
-      professor.totalProfRatingSum / professor.totalProfReviewers;
-
-    await professor.save();
-    await course.save();
-
-    console.log("professor", professor);
-    console.log(reviewData);
-    res.status(200).send({ message: "Review submitted successfully" });
+    res.status(status).send({ message });
   } catch (error) {
     next(error);
   }
@@ -482,6 +415,7 @@ app.use((error, req, res, next) => {
 async function startServer() {
   try {
     await connectDB();
+    console.log("connected");
     const rev = await fetchUserReviews();
     console.log(rev);
     app.listen(PORT, () => {
