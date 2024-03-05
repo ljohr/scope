@@ -49,6 +49,8 @@ const Dashboard = () => {
                 <h3>{review.courseId.courseCode}</h3>
                 <p>{review.courseId.courseName}</p>
                 <p>{review.userComment}</p>
+                <p>{parseFloat(review.courseRating).toFixed(2)}</p>
+                <p>{parseFloat(review.profRating).toFixed(2)}</p>
               </div>
             );
           })}
