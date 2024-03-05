@@ -1,7 +1,10 @@
+import mongoose from "mongoose";
 import CourseModel from "../models/Course.js";
 import ProfessorModel from "../models/Professor.js";
 import ReviewModel from "../models/Review.js";
 import UserModel from "../models/User.js";
+
+const { ObjectId } = mongoose.Types;
 
 const updateTags = (newTags, tagsToUpdate) => {
   newTags.forEach((tag) => {
@@ -69,12 +72,14 @@ const updateProfessor = async (professor, reviewData) => {
 
 const newReviewController = async (reviewData) => {
   try {
-    const professor = await ProfessorModel.findById(reviewData.professorId);
+    const professorId = new ObjectId(reviewData.professorId);
+    const professor = await ProfessorModel.findById(professorId);
     if (!professor) {
       return { status: 404, message: "Professor not found" };
     }
 
-    const course = await CourseModel.findById(reviewData.courseId);
+    const courseId = new ObjectId(reviewData.courseId);
+    const course = await CourseModel.findById(courseId);
     if (!course) {
       return { status: 404, message: "Course not found" };
     }
@@ -83,6 +88,7 @@ const newReviewController = async (reviewData) => {
     if (!user) {
       return { status: 404, message: "User not found" };
     }
+
     const newReview = await createReviewDoc(reviewData, user);
     await updateCourse(course, reviewData, newReview);
     await updateProfessor(professor, reviewData, newReview);

@@ -67,15 +67,10 @@ const UserReview = () => {
       isValid = false;
     }
     if (isValid) {
-      console.log("Before axios.post");
-      // console.log(, );
       try {
         const auth = getAuth();
         const idToken = await getIdToken(auth.currentUser);
-        console.log("idToken", idToken);
-
-        console.log("Inside try block, before axios.post");
-        const response = await axios.post(
+        await axios.post(
           "/api/new-review",
           {
             professorId: professor.id,
@@ -100,7 +95,6 @@ const UserReview = () => {
             },
           }
         );
-        console.log("After axios.post", response);
         toast.success("Review submitted successfully!");
         navigate(`/${deptcode}/${profname}/${coursecode}`);
       } catch (error) {

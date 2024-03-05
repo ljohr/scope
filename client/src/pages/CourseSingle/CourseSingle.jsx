@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
+import { UserContext } from "../../providers/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Rating from "@mui/material/Rating";
@@ -9,6 +10,8 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import "./CourseSingle.css";
 
 const CourseSingle = () => {
+  const { currentUser } = useContext(UserContext);
+  const [mongoUser, setMongoUser] = useState(null);
   const { deptcode, profname, coursecode } = useParams();
   const [dataLoaded, setDataLoaded] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
@@ -41,6 +44,10 @@ const CourseSingle = () => {
       label: courseInfo.avgWeeklyHours,
     },
   ];
+
+  const handleEdit = () => {
+    console.log("trying");
+  };
 
   function valuetext() {
     return courseInfo.avgWeeklyHours;
@@ -134,6 +141,12 @@ const CourseSingle = () => {
                             readOnly
                           />{" "}
                         </div>
+                        {/* Check if the current user is the author of the review */}
+                        {currentUser && review.userId === currentUser.uid && (
+                          <button onClick={() => handleEdit(review)}>
+                            Edit
+                          </button>
+                        )}
                       </div>
                       {review.courseTags &&
                         Object.entries(review.courseTags).map(

@@ -14,48 +14,45 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const loginUser = (ev) => {
+  const loginUser = async (ev) => {
     ev.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        setCurrentUser(user);
-        navigate("/");
-        user
-          .getIdToken(true)
-          .then((idToken) => {
-            axios.post(
-              "/api/sessionLogin",
-              {},
-              {
-                headers: {
-                  Authorization: `Bearer ${idToken}`,
-                },
-              }
-            );
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        console.log(errorCode);
-        switch (errorCode) {
-          case "auth/user-not-found":
-            toast.error("User does not exist!");
-            break;
-          case "auth/invalid-login-credentials":
-            toast.error("Incorrect Password!");
-            break;
-          case "auth/too-many-requests":
-            toast.error(
-              "Too many frequent login attempts. Try gain in a few seconds."
-            );
-            break;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      setCurrentUser(user);
+
+      const idToken = await user.getIdToken(true);
+      await axios.post(
+        "/api/sessionLogin",
+        {},
+        {
+          headers: { Authorization: `Bearer ${idToken}` },
         }
-      });
+      );
+
+      navigate("/"); // Redirect user after login
+    } catch (error) {
+      console.error(error);
+      handleLoginError(error.code); // Handle login errors
+    }
+  };
+
+  const handleLoginError = (errorCode) => {
+    if (errorCode == "auth/too-many-requests") {
+      toast.error(
+        "Too many frequent login attempts. Try again in a few seconds."
+      );
+    } else {
+      toast.error(
+        "Login failed. Please check if this is the right email/password combination."
+      );
+    }
   };
 
   return (
