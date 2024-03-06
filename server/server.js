@@ -75,24 +75,39 @@ app.use(
 app.use(logoutRouter);
 // app.use(allMajorsRouter);
 
-app.get("/api/auth/validateSession", sessionCookieValidator, (req, res) => {
-  res.status(200).json({ isAuthenticated: true });
-});
-
-app.get("/api/user/:fbUid", idTokenValidator, async (req, res, next) => {
-  const fbUid = req.decodedToken.uid;
-
+app.get("/api/userId", idTokenValidator, async (req, res) => {
   try {
-    const user = await UserModel.findOne({ fbUid });
+    const fbUserId = req.uid;
+    const user = await UserModel.findOne({ fbUserId });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(user);
+
+    res.json({ userId: user._id.toString() });
   } catch (error) {
     console.error("Error fetching user from MongoDB:", error);
     res.status(500).json({ message: "Error fetching user" });
   }
 });
+
+app.get("/api/auth/validateSession", sessionCookieValidator, (req, res) => {
+  res.status(200).json({ isAuthenticated: true });
+});
+
+// app.get("/api/user/:fbUid", idTokenValidator, async (req, res, next) => {
+//   const fbUid = req.decodedToken.uid;
+
+//   try {
+//     const user = await UserModel.findOne({ fbUid });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     res.json(user);
+//   } catch (error) {
+//     console.error("Error fetching user from MongoDB:", error);
+//     res.status(500).json({ message: "Error fetching user" });
+//   }
+// });
 
 app.post("/api/sessionLogin", idTokenValidator, async (req, res, next) => {
   const decodedToken = req.decodedToken;
@@ -388,22 +403,6 @@ app.get(
   }
 );
 
-app.get(
-  "/search/courseSearch/:searchQuery",
-  sessionCookieValidator,
-  async (req, res, next) => {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 12;
-      const searchQuery = req.params.searchQuery;
-      const allCourses = await courseSearch(searchQuery, page, limit);
-      res.json(allCourses);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 app.get("/api/user/reviews", idTokenValidator, async (req, res, next) => {
   const decodedToken = req.decodedToken;
 
@@ -423,6 +422,22 @@ app.get("/api/user/reviews", idTokenValidator, async (req, res, next) => {
     next(error);
   }
 });
+
+app.get(
+  "/search/courseSearch/:searchQuery",
+  sessionCookieValidator,
+  async (req, res, next) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 12;
+      const searchQuery = req.params.searchQuery;
+      const allCourses = await courseSearch(searchQuery, page, limit);
+      res.json(allCourses);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // eslint-disable-next-line
 app.use((error, req, res, next) => {

@@ -13,6 +13,7 @@ const idTokenValidator = async (req, res, next) => {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     req.decodedToken = decodedToken;
     req.idToken = idToken;
+    req.uid = decodedToken.uid;
     next();
   } catch (error) {
     console.error("Authentication error:", error);

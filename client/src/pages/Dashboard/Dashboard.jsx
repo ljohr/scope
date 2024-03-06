@@ -9,31 +9,30 @@ import styles from "./Dashboard.module.css";
 const Dashboard = () => {
   const [reviews, setReviews] = useState([]);
 
-  const fetchUserReviews = async () => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const idToken = await user.getIdToken(true);
-          const response = await axios.get("/api/user/reviews", {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          });
-          console.log(response.data);
-          setReviews(response.data);
-        } catch (error) {
-          // need to add error handling
-          console.error("Error fetching reviews:", error);
-        }
-      } else {
-        // need to add error handling for when user is not logged in
-        console.log("No user is currently signed in.");
-      }
-    });
+  const fetchUserReviews = async (user) => {
+    try {
+      const idToken = await user.getIdToken(true);
+      const response = await axios.get("/api/user/reviews", {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+      setReviews(response.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
   };
 
   useEffect(() => {
-    fetchUserReviews();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchUserReviews(user);
+      } else {
+        console.log("No user is currently signed in.");
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (

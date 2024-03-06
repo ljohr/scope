@@ -11,12 +11,13 @@ import "./CourseSingle.css";
 
 const CourseSingle = () => {
   const { currentUser } = useContext(UserContext);
-  const [mongoUser, setMongoUser] = useState(null);
   const { deptcode, profname, coursecode } = useParams();
   const [dataLoaded, setDataLoaded] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
   const [professor, setProfessor] = useState({});
   const [reviews, setReviews] = useState([]);
+
+  const [curReviewUid, setCurReviewUid] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +37,25 @@ const CourseSingle = () => {
     };
 
     fetchCourse();
-  }, [deptcode, profname, coursecode, navigate]);
+
+    if (currentUser) {
+      const fetchUserId = async () => {
+        try {
+          const idToken = await currentUser.getIdToken(true);
+          const response = await axios.get("/api/userId", {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
+          setCurReviewUid(response.data.userId);
+        } catch (error) {
+          console.error("Failed to fetch user ID:", error);
+        }
+      };
+
+      fetchUserId();
+    }
+  }, [currentUser, deptcode, profname, coursecode, navigate]);
 
   const courseHourAvg = [
     {
@@ -49,9 +68,9 @@ const CourseSingle = () => {
     console.log("trying");
   };
 
-  function valuetext() {
+  const valuetext = () => {
     return courseInfo.avgWeeklyHours;
-  }
+  };
 
   return (
     <>
@@ -142,7 +161,7 @@ const CourseSingle = () => {
                           />{" "}
                         </div>
                         {/* Check if the current user is the author of the review */}
-                        {currentUser && review.userId === currentUser.uid && (
+                        {currentUser && review.userId === curReviewUid && (
                           <button onClick={() => handleEdit(review)}>
                             Edit
                           </button>
