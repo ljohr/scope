@@ -8,13 +8,13 @@ import axios from "axios";
 import Rating from "@mui/material/Rating";
 import CircularProgress from "@mui/material/CircularProgress";
 import Slider from "@mui/material/Slider";
-import StarRating from "./components/StarRating";
-import TagSelection from "./components/TagSelection";
-import "./UserReview.css";
+import StarRating from "../UserReview/components/StarRating";
+import TagSelection from "../UserReview/components/TagSelection";
+import "./UpdateReview.css";
 
-const UserReview = () => {
+const UpdateReview = () => {
   const { currentUser } = useContext(UserContext);
-  const { deptcode, profname, coursecode } = useParams();
+  const { deptcode, profname, coursecode, reviewId } = useParams();
   const [dataLoaded, setDataLoaded] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
   const [professor, setProfessor] = useState({});
@@ -54,9 +54,6 @@ const UserReview = () => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const hasTrueValue = (obj) =>
-    Object.values(obj).some((value) => value === true);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     let isValid = true;
@@ -71,37 +68,23 @@ const UserReview = () => {
       console.log("Validation failed");
       isValid = false;
     }
-    if (!hasTrueValue(workload)) {
+    if (!workload) {
       toast.error("Please select a workload.");
       console.log("Validation failed");
       isValid = false;
     }
-    if (!hasTrueValue(lecturerStyle)) {
+    if (!lecturerStyle) {
       toast.error("Please select a lecture style.");
       console.log("Validation failed");
       isValid = false;
     }
-    if (!hasTrueValue(gradingStyle)) {
+    if (!gradingStyle) {
       toast.error("Please select a grading style.");
       console.log("Validation failed");
       isValid = false;
     }
     if (courseworkHours == 0) {
       toast.error("Please select hours between 1-15.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (
-      !reviewHeadline ||
-      reviewHeadline.length > 60 ||
-      reviewHeadline.length < 5
-    ) {
-      toast.error("Please enter a review headline between 10-60 characters.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (!userComment || userComment.length > 300 || userComment.length < 10) {
-      toast.error("Please enter a comment between 10-300 characters.");
       console.log("Validation failed");
       isValid = false;
     }
@@ -145,6 +128,21 @@ const UserReview = () => {
 
   useEffect(() => {
     if (!currentUser) return;
+    const validateUser = async () => {
+      try {
+        const res = await axios.get(`/api/validate-user-review/${reviewId}`);
+        console.log(res.data);
+        console.log(currentUser);
+        if (res.data.fbUserId != currentUser.uid) {
+          toast.error("You do not have permission to edit this review.");
+          console.error("Error fetching review");
+          return;
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+        toast.error("You do not have permission to edit this review.");
+      }
+    };
 
     const fetchCourse = async () => {
       try {
@@ -166,8 +164,41 @@ const UserReview = () => {
         }
       }
     };
+
+    const fetchReviewData = async () => {
+      try {
+        const auth = getAuth();
+        const idToken = await getIdToken(auth.currentUser);
+        const res = await axios.get(`/api/fetch-review/${reviewId}`, {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        console.log(res.data);
+        // setProfRating(res.data.profRating);
+        // setCourseRating(res.data.courseRating);
+        // setTerm(res.data.semesterTaken[term]);
+        // setYear(res.data.semesterTaken[year]);
+        // setWorkload(res.data.workload);
+        // // setLecturerStyle(res.data.lecturerStyle);
+        // // setGradingStyle(res.data.gradingStyle);
+        // setCourseTags(res.data.courseTags);
+        // setProfTags(res.data.profTags);
+        // // setCourseworkHours(res.data.courseworkHours);
+        // setReviewHeadline(res.data.reviewHeadline);
+        // setUserComment(res.data.userComment);
+      } catch (error) {
+        console.error("An error occurred:", error);
+        toast.error("You do not have permission to edit this review.");
+      }
+    };
+
+    validateUser();
     fetchCourse();
-  }, [deptcode, profname, coursecode]);
+    fetchReviewData();
+
+    console.log("workload", workload);
+  }, [deptcode, profname, coursecode, currentUser, reviewId]);
 
   return (
     <main className="user-review-main">
@@ -355,4 +386,4 @@ const UserReview = () => {
   );
 };
 
-export default UserReview;
+export default UpdateReview;

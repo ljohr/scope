@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../providers/UserContext";
@@ -20,42 +20,41 @@ const CourseSingle = () => {
   const [curReviewUid, setCurReviewUid] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        const res = await axios.get(
-          `/api/${deptcode}/${profname}/${coursecode}`
-        );
-        setCourseInfo(res.data.courseInfo);
-        setProfessor(res.data.professorDetails);
-        setReviews(res.data.reviews);
-        setDataLoaded(true);
-      } catch (error) {
-        toast.error("Please login to view this page!");
-        navigate("/login");
-      }
-    };
+  const fetchCourse = useCallback(async () => {
+    try {
+      const res = await axios.get(`/api/${deptcode}/${profname}/${coursecode}`);
+      setCourseInfo(res.data.courseInfo);
+      setProfessor(res.data.professorDetails);
+      setReviews(res.data.reviews);
+      setDataLoaded(true);
+    } catch (error) {
+      toast.error("Please login to view this page!");
+      navigate("/login");
+    }
+    //eslint-disable-next-line
+  }, [deptcode, profname, coursecode]);
 
+  const fetchUserId = useCallback(async () => {
+    try {
+      const idToken = await currentUser.getIdToken(true);
+      const response = await axios.get("/api/userId", {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+      setCurReviewUid(response.data.userId);
+    } catch (error) {
+      console.error("Failed to fetch user ID:", error);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
     fetchCourse();
 
     if (currentUser) {
-      const fetchUserId = async () => {
-        try {
-          const idToken = await currentUser.getIdToken(true);
-          const response = await axios.get("/api/userId", {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          });
-          setCurReviewUid(response.data.userId);
-        } catch (error) {
-          console.error("Failed to fetch user ID:", error);
-        }
-      };
-
       fetchUserId();
     }
-  }, [currentUser, deptcode, profname, coursecode, navigate]);
+  }, [currentUser]);
 
   const courseHourAvg = [
     {
@@ -63,10 +62,6 @@ const CourseSingle = () => {
       label: courseInfo.avgWeeklyHours,
     },
   ];
-
-  const handleEdit = () => {
-    console.log("trying");
-  };
 
   const valuetext = () => {
     return courseInfo.avgWeeklyHours;
@@ -162,7 +157,13 @@ const CourseSingle = () => {
                         </div>
                         {/* Check if the current user is the author of the review */}
                         {currentUser && review.userId === curReviewUid && (
-                          <button onClick={() => handleEdit(review)}>
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/${deptcode}/${profname}/${coursecode}/update-review/${review._id}`
+                              )
+                            }
+                          >
                             Edit
                           </button>
                         )}

@@ -49,10 +49,12 @@ const UserProvider = ({ children }) => {
           setSessionCache(isAuthenticated);
         }
       } catch (error) {
+        if (currentUser) {
+          toast.error("Authentication error. Please login again.");
+        }
         console.error("Error validating session:", error);
         localStorage.removeItem("sessionCache");
         setCurrentUser(null);
-        toast.error("Authentication error. Please login again.");
         logoutUser();
       }
     };

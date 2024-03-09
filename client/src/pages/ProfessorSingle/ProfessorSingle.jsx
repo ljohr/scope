@@ -37,7 +37,7 @@ const ProfessorSingle = () => {
     };
 
     fetchCourse();
-  }, [deptcode, profname, professor.courseIds, navigate]);
+  }, [deptcode, profname, navigate]);
 
   return (
     <>
@@ -61,7 +61,10 @@ const ProfessorSingle = () => {
                     <h4>
                       {course.courseCode} {course.courseName}
                     </h4>
-                    <p>Average Instructor Rating: {course.avgProfRating}</p>
+                    <p>
+                      Average Instructor Rating:{" "}
+                      {course.avgProfRating.toFixed(2)}
+                    </p>
                     <p>
                       Average Course Rating: {course.avgCourseRating.toFixed(2)}
                     </p>

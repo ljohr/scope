@@ -13,11 +13,11 @@ import ProfessorModel from "./models/Professor.js";
 import "./models/Professor.js";
 import connectDB from "./config/connectDB.js";
 import serviceAccount from "./config/scopefb.js";
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 import loginRouter from "./routers/loginRouter.js";
 import logoutRouter from "./routers/logoutRouter.js";
 import MajorModel from "./models/Majors.js";
-// const { ObjectId } = mongoose.Types;
+const { ObjectId } = mongoose.Types;
 import profSearch from "./controllers/profSearch.js";
 import courseSearch from "./controllers/courseSearch.js";
 import fetchUserReviews from "./controllers/fetchUserReviews.js";
@@ -25,6 +25,7 @@ import { newReviewController } from "./controllers/newReviewController.js";
 import validateReviewData from "./utils/validateReview.js";
 import idTokenValidator from "./middleware/idTokenValidator.js";
 import sessionCookieValidator from "./middleware/sessionCookieValidator.js";
+import updateReviewController from "./controllers/updateReviewController.js";
 // sort prof page and courses by
 // last semester taught -> alphabetical
 
@@ -94,20 +95,21 @@ app.get("/api/auth/validateSession", sessionCookieValidator, (req, res) => {
   res.status(200).json({ isAuthenticated: true });
 });
 
-// app.get("/api/user/:fbUid", idTokenValidator, async (req, res, next) => {
-//   const fbUid = req.decodedToken.uid;
-
-//   try {
-//     const user = await UserModel.findOne({ fbUid });
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     res.json(user);
-//   } catch (error) {
-//     console.error("Error fetching user from MongoDB:", error);
-//     res.status(500).json({ message: "Error fetching user" });
-//   }
-// });
+app.get(
+  "/api/validate-user-review/:reviewId",
+  sessionCookieValidator,
+  async (req, res) => {
+    const { reviewId } = req.params;
+    try {
+      const review = await ReviewModel.findOne({ _id: new ObjectId(reviewId) });
+      const user = await UserModel.findOne({ _id: review.userId });
+      res.status(200).json({ fbUserId: user.fbUserId.toString() });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).json({ message: "Error fetching user" });
+    }
+  }
+);
 
 app.post("/api/sessionLogin", idTokenValidator, async (req, res, next) => {
   const decodedToken = req.decodedToken;
@@ -172,7 +174,6 @@ app.get("/api/majors", sessionCookieValidator, async (req, res, next) => {
       .skip((page - 1) * limit)
       .limit(limit);
     const totalDocs = await MajorModel.countDocuments(query);
-    console.log(majors);
     res.json({
       majors,
       totalPages: Math.ceil(totalDocs / limit),
@@ -198,7 +199,6 @@ app.get("/api/courses", sessionCookieValidator, async (req, res, next) => {
       .limit(limit)
       .populate("professorId");
     const totalDocs = await CourseModel.countDocuments(query);
-    console.log(totalDocs);
     res.json({
       courses,
       totalPages: Math.ceil(totalDocs / limit),
@@ -373,19 +373,46 @@ app.get(
 
 app.post("/api/new-review", sessionCookieValidator, async (req, res, next) => {
   try {
-    const validationErrors = validateReviewData(req.body);
-    if (validationErrors) {
-      return res.status(400).send({ errors: validationErrors });
-    }
+    // const validationErrors = validateReviewData(req.body);
+    // if (validationErrors) {
+    //   return res.status(400).send({ errors: validationErrors });
+    // }
 
     const reviewData = req.body;
-    const { status, message } = await newReviewController(reviewData);
+    console.log(reviewData);
+    // const { status, message } = await newReviewController(reviewData);
 
-    res.status(status).send({ message });
+    // res.status(status).send({ message });
+    res.status(200).send("testing");
   } catch (error) {
     next(error);
   }
 });
+
+app.post(
+  "/api/update-review/:reviewId",
+  sessionCookieValidator,
+  async (req, res, next) => {
+    try {
+      const validationErrors = validateReviewData(req.body);
+      if (validationErrors) {
+        return res.status(400).send({ errors: validationErrors });
+      }
+
+      const { reviewId } = req.params;
+      const reviewData = req.body;
+
+      const { status, message } = await updateReviewController(
+        reviewId,
+        reviewData
+      );
+
+      res.status(status).send({ message });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 app.get(
   "/search/profSearch/:searchQuery",
@@ -433,6 +460,20 @@ app.get(
       const searchQuery = req.params.searchQuery;
       const allCourses = await courseSearch(searchQuery, page, limit);
       res.json(allCourses);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+app.get(
+  `/api/fetch-review/:reviewId`,
+  idTokenValidator,
+  async (req, res, next) => {
+    const reviewId = req.params.reviewId;
+    try {
+      const review = await ReviewModel.findOne({ _id: new ObjectId(reviewId) });
+      console.log(review);
     } catch (error) {
       next(error);
     }

@@ -21,6 +21,7 @@ import PageNotFound from "./pages/PageNotFound/PageNotFound.jsx";
 import UserReview from "./pages/UserReview/UserReview.jsx";
 import MajorCourses from "./pages/MajorCourses/MajorCourses.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import UpdateReview from "./pages/UpdateReview/UpdateReview.jsx";
 
 axios.defaults.baseURL = "http://localhost:4000";
 
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
       {
         path: "/:deptcode/:profname/:coursecode/new-review",
         element: <UserReview />,
+      },
+      {
+        path: "/:deptcode/:profname/:coursecode/update-review/:reviewId",
+        element: <UpdateReview />,
       },
       {
         path: "/page-not-found",

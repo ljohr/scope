@@ -1,5 +1,22 @@
 import PropTypes from "prop-types";
 
+const handleSelectionChange = (setState, selectedKey) => {
+  setState((currentState) => ({
+    ...Object.keys(currentState).reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {}),
+    [selectedKey]: true,
+  }));
+};
+
+const multiSelectChange = (setState, selectedKey) => {
+  setState((currentState) => ({
+    ...currentState,
+    [selectedKey]: !currentState[selectedKey],
+  }));
+};
+
 const TagSelection = ({
   workload,
   lecturerStyle,
@@ -12,21 +29,6 @@ const TagSelection = ({
   setProfTags,
   setCourseTags,
 }) => {
-  const toggleProf = (tag) => {
-    setProfTags((prevTags) =>
-      prevTags.includes(tag)
-        ? prevTags.filter((t) => t !== tag)
-        : [...prevTags, tag]
-    );
-  };
-  const toggleCourse = (tag) => {
-    setCourseTags((prevTags) =>
-      prevTags.includes(tag)
-        ? prevTags.filter((t) => t !== tag)
-        : [...prevTags, tag]
-    );
-  };
-
   return (
     <>
       <div className="course-tags">
@@ -34,27 +36,21 @@ const TagSelection = ({
         <div className="workload-tags">
           <p>Workload (Required)</p>
           <button
-            className={`btn-pill ${
-              workload === "lightWorkload" ? "active" : ""
-            }`}
-            onClick={() => setWorkload("lightWorkload")}
+            className={`btn-pill ${workload["lightWorkload"] ? "active" : ""}`}
+            onClick={() => handleSelectionChange(setWorkload, "lightWorkload")}
           >
             Light Workload
           </button>
 
           <button
-            className={`btn-pill ${
-              workload === "fairWorkload" ? "active" : ""
-            }`}
-            onClick={() => setWorkload("fairWorkload")}
+            className={`btn-pill ${workload["fairWorkload"] ? "active" : ""}`}
+            onClick={() => handleSelectionChange(setWorkload, "fairWorkload")}
           >
             Fair Workload
           </button>
           <button
-            className={`btn-pill ${
-              workload === "heavyWorkload" ? "active" : ""
-            }`}
-            onClick={() => setWorkload("heavyWorkload")}
+            className={`btn-pill ${workload["heavyWorkload"] ? "active" : ""}`}
+            onClick={() => handleSelectionChange(setWorkload, "heavyWorkload")}
           >
             Heavy Workload
           </button>
@@ -63,36 +59,38 @@ const TagSelection = ({
           <p>Other Tags (Optional)</p>
           <button
             className={`btn-pill ${
-              courseTags.includes("followsTextbook") ? "active" : ""
+              courseTags["followsTextbook"] ? "active" : ""
             }`}
-            onClick={() => toggleCourse("followsTextbook")}
+            onClick={() => multiSelectChange(setCourseTags, "followsTextbook")}
             value="followsTextbook"
           >
             Follows Textbook
           </button>
           <button
             className={`btn-pill ${
-              courseTags.includes("participationHeavy") ? "active" : ""
+              courseTags["participationHeavy"] ? "active" : ""
             }`}
-            onClick={() => toggleCourse("participationHeavy")}
+            onClick={() =>
+              multiSelectChange(setCourseTags, "participationHeavy")
+            }
             value="participationHeavy"
           >
             Participation Heavy
           </button>
           <button
             className={`btn-pill ${
-              courseTags.includes("discussionBased") ? "active" : ""
+              courseTags["discussionBased"] ? "active" : ""
             }`}
-            onClick={() => toggleCourse("discussionBased")}
+            onClick={() => multiSelectChange(setCourseTags, "discussionBased")}
             value="discussionBased"
           >
             Discussion Based
           </button>
           <button
             className={`btn-pill ${
-              courseTags.includes("noFinalProject") ? "active" : ""
+              courseTags["noFinalProject"] ? "active" : ""
             }`}
-            onClick={() => toggleCourse("noFinalProject")}
+            onClick={() => multiSelectChange(setCourseTags, "noFinalProject")}
             value="noFinalProject"
           >
             Final Project Instead of Exam
@@ -105,27 +103,31 @@ const TagSelection = ({
           <p>Lecture Style (Required)</p>
           <button
             className={`btn-pill ${
-              lecturerStyle === "greatLecturer" ? "active" : ""
+              lecturerStyle["greatLecturer"] ? "active" : ""
             }`}
             onClick={() => {
-              setLecturerStyle("greatLecturer");
+              handleSelectionChange(setLecturerStyle, "greatLecturer");
             }}
           >
             Great Lecturer
           </button>
           <button
             className={`btn-pill ${
-              lecturerStyle === "fairLecturer" ? "active" : ""
+              lecturerStyle["fairLecturer"] ? "active" : ""
             }`}
-            onClick={() => setLecturerStyle("fairLecturer")}
+            onClick={() =>
+              handleSelectionChange(setLecturerStyle, "fairLecturer")
+            }
           >
             Fair Lecturer
           </button>
           <button
             className={`btn-pill ${
-              lecturerStyle === "confusingLecturer" ? "active" : ""
+              lecturerStyle["confusingLecturer"] ? "active" : ""
             }`}
-            onClick={() => setLecturerStyle("confusingLecturer")}
+            onClick={() =>
+              handleSelectionChange(setLecturerStyle, "confusingLecturer")
+            }
           >
             Confusing Lecturer
           </button>
@@ -135,25 +137,27 @@ const TagSelection = ({
           <p>Grading Style (Required)</p>
           <button
             className={`btn-pill ${
-              gradingStyle === "lenientGrader" ? "active" : ""
+              gradingStyle["lenientGrader"] ? "active" : ""
             }`}
-            onClick={() => setGradingStyle("lenientGrader")}
+            onClick={() =>
+              handleSelectionChange(setGradingStyle, "lenientGrader")
+            }
           >
             Lenient Grader
           </button>
           <button
-            className={`btn-pill ${
-              gradingStyle === "fairGrader" ? "active" : ""
-            }`}
-            onClick={() => setGradingStyle("fairGrader")}
+            className={`btn-pill ${gradingStyle["fairGrader"] ? "active" : ""}`}
+            onClick={() => handleSelectionChange(setGradingStyle, "fairGrader")}
           >
             Fair Grader
           </button>
           <button
             className={`btn-pill ${
-              gradingStyle === "toughGrader" ? "active" : ""
+              gradingStyle["toughGrader"] ? "active" : ""
             }`}
-            onClick={() => setGradingStyle("toughGrader")}
+            onClick={() =>
+              handleSelectionChange(setGradingStyle, "toughGrader")
+            }
           >
             Tough Grader
           </button>
@@ -161,19 +165,15 @@ const TagSelection = ({
         <div className="other-tags">
           <p>Other Tags (Optional)</p>
           <button
-            className={`btn-pill ${
-              profTags.includes("approachable") ? "active" : ""
-            }`}
-            onClick={() => toggleProf("approachable")}
+            className={`btn-pill ${profTags["approachable"] ? "active" : ""}`}
+            onClick={() => multiSelectChange(setProfTags, "approachable")}
             value="approachable"
           >
             Approachable
           </button>
           <button
-            className={`btn-pill ${
-              profTags.includes("willingToHelp") ? "active" : ""
-            }`}
-            onClick={() => toggleProf("willingToHelp")}
+            className={`btn-pill ${profTags["willingToHelp"] ? "active" : ""}`}
+            onClick={() => multiSelectChange(setProfTags, "willingToHelp")}
             value="willingToHelp"
           >
             Willing To Help
@@ -185,11 +185,11 @@ const TagSelection = ({
 };
 
 TagSelection.propTypes = {
-  workload: PropTypes.string.isRequired,
-  lecturerStyle: PropTypes.string.isRequired,
-  gradingStyle: PropTypes.string.isRequired,
-  profTags: PropTypes.array.isRequired,
-  courseTags: PropTypes.array.isRequired,
+  workload: PropTypes.object.isRequired,
+  lecturerStyle: PropTypes.object.isRequired,
+  gradingStyle: PropTypes.object.isRequired,
+  profTags: PropTypes.object.isRequired,
+  courseTags: PropTypes.object.isRequired,
   setWorkload: PropTypes.func.isRequired,
   setLecturerStyle: PropTypes.func.isRequired,
   setGradingStyle: PropTypes.func.isRequired,

@@ -1,25 +1,44 @@
 import Joi from "joi";
 
 const reviewSchema = Joi.object({
-  courseId: Joi.string().required(),
   professorId: Joi.string().required(),
+  courseId: Joi.string().required(),
   fbUid: Joi.string().required(),
+
   year: Joi.number()
     .integer()
     .min(2013)
     .max(new Date().getFullYear())
     .required(),
+
   term: Joi.string().required(),
   courseRating: Joi.number().min(0).max(5).required(),
   profRating: Joi.number().min(0).max(5).required(),
-  courseworkHours: Joi.number().min(0).required(),
   userComment: Joi.string().required(),
-  courseTags: Joi.array().items(Joi.string()).required(),
-  profTags: Joi.array().items(Joi.string()).required(),
   reviewHeadline: Joi.string().max(255).required(),
-  workload: Joi.string(),
-  lecturerStyle: Joi.string(),
-  gradingStyle: Joi.string(),
+  courseworkHours: Joi.number().min(1).max(15).required(),
+  profTags: Joi.object().pattern(/.*/, [Joi.boolean(), Joi.boolean()]),
+  courseTags: Joi.object().pattern(/.*/, [
+    Joi.boolean(),
+    Joi.boolean(),
+    Joi.boolean(),
+    Joi.boolean(),
+  ]),
+  workload: Joi.object().pattern(/.*/, [
+    Joi.boolean(),
+    Joi.boolean(),
+    Joi.boolean(),
+  ]),
+  lecturerStyle: Joi.object().pattern(/.*/, [
+    Joi.boolean(),
+    Joi.boolean(),
+    Joi.boolean(),
+  ]),
+  gradingStyle: Joi.object().pattern(/.*/, [
+    Joi.boolean(),
+    Joi.boolean(),
+    Joi.boolean(),
+  ]),
 });
 
 const validateReviewData = (data) => {
