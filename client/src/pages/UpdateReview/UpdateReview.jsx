@@ -12,6 +12,9 @@ import StarRating from "../UserReview/components/StarRating";
 import TagSelection from "../UserReview/components/TagSelection";
 import "./UpdateReview.css";
 
+const hasTrueValue = (obj) =>
+  Object.values(obj).some((value) => value === true);
+
 const UpdateReview = () => {
   const { currentUser } = useContext(UserContext);
   const { deptcode, profname, coursecode, reviewId } = useParams();
@@ -68,17 +71,18 @@ const UpdateReview = () => {
       console.log("Validation failed");
       isValid = false;
     }
-    if (!workload) {
+
+    if (!hasTrueValue(workload)) {
       toast.error("Please select a workload.");
       console.log("Validation failed");
       isValid = false;
     }
-    if (!lecturerStyle) {
+    if (!hasTrueValue(lecturerStyle)) {
       toast.error("Please select a lecture style.");
       console.log("Validation failed");
       isValid = false;
     }
-    if (!gradingStyle) {
+    if (!hasTrueValue(gradingStyle)) {
       toast.error("Please select a grading style.");
       console.log("Validation failed");
       isValid = false;
@@ -102,7 +106,7 @@ const UpdateReview = () => {
             profTags,
             courseTags,
             term,
-            year,
+            year: Number(year),
             workload,
             lecturerStyle,
             gradingStyle,
@@ -137,6 +141,27 @@ const UpdateReview = () => {
           toast.error("You do not have permission to edit this review.");
           console.error("Error fetching review");
           return;
+        } else {
+          setProfRating(res.data.reviewData.profRating);
+          setCourseRating(res.data.reviewData.courseRating);
+          setTerm(res.data.reviewData.semesterTaken[term]);
+          setYear(res.data.reviewData.semesterTaken[year]);
+          setWorkload(res.data.reviewData.workload);
+          setLecturerStyle(res.data.reviewData.lecturerStyle);
+          setGradingStyle(res.data.reviewData.gradingStyle);
+          setCourseTags(res.data.reviewData.courseTags);
+          setProfTags(res.data.reviewData.profTags);
+          setCourseworkHours(res.data.reviewData.courseworkHours);
+          setReviewHeadline(res.data.reviewData.reviewHeadline);
+          setUserComment(res.data.reviewData.userComment);
+          console.log(
+            "res",
+            workload,
+            lecturerStyle,
+            gradingStyle,
+            profTags,
+            courseTags
+          );
         }
       } catch (error) {
         console.error("An error occurred:", error);
@@ -165,39 +190,8 @@ const UpdateReview = () => {
       }
     };
 
-    const fetchReviewData = async () => {
-      try {
-        const auth = getAuth();
-        const idToken = await getIdToken(auth.currentUser);
-        const res = await axios.get(`/api/fetch-review/${reviewId}`, {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        console.log(res.data);
-        // setProfRating(res.data.profRating);
-        // setCourseRating(res.data.courseRating);
-        // setTerm(res.data.semesterTaken[term]);
-        // setYear(res.data.semesterTaken[year]);
-        // setWorkload(res.data.workload);
-        // // setLecturerStyle(res.data.lecturerStyle);
-        // // setGradingStyle(res.data.gradingStyle);
-        // setCourseTags(res.data.courseTags);
-        // setProfTags(res.data.profTags);
-        // // setCourseworkHours(res.data.courseworkHours);
-        // setReviewHeadline(res.data.reviewHeadline);
-        // setUserComment(res.data.userComment);
-      } catch (error) {
-        console.error("An error occurred:", error);
-        toast.error("You do not have permission to edit this review.");
-      }
-    };
-
     validateUser();
     fetchCourse();
-    fetchReviewData();
-
-    console.log("workload", workload);
   }, [deptcode, profname, coursecode, currentUser, reviewId]);
 
   return (
@@ -268,7 +262,7 @@ const UpdateReview = () => {
                 </p>
                 <Slider
                   aria-label="Temperature"
-                  defaultValue={0}
+                  defaultValue={courseworkHours}
                   valueLabelDisplay="auto"
                   step={1}
                   marks
@@ -282,7 +276,8 @@ const UpdateReview = () => {
                 <input
                   className="user-headline"
                   type="text"
-                  placeholder="Set a title summarizing your experience"
+                  placeholder={"Set a title summarizing your experience"}
+                  value={userComment}
                   onChange={(e) => setReviewHeadline(e.target.value)}
                 />
               </div>
@@ -292,6 +287,7 @@ const UpdateReview = () => {
                   className="user-comment"
                   name="user-comment"
                   rows="7"
+                  value={userComment}
                   placeholder="Describe your experience: key takeaways, teaching style, workload, and any tips for future students!"
                   onChange={(e) => setUserComment(e.target.value)}
                 />
@@ -364,9 +360,9 @@ const UpdateReview = () => {
                     <p>Average Coursework Hours</p>
                     <Slider
                       className="coursehours-avg-slider"
-                      aria-label="Temperature"
                       valueLabelDisplay="on"
                       defaultValue={courseInfo.avgWeeklyHours}
+                      valueLabelFormat={(value) => value.toFixed(2)}
                       step={1}
                       marks
                       min={0}

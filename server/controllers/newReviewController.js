@@ -7,9 +7,9 @@ import UserModel from "../models/User.js";
 const { ObjectId } = mongoose.Types;
 
 const updateTags = (newTags, tagsToUpdate) => {
-  newTags.forEach((tag) => {
-    if (Object.prototype.hasOwnProperty.call(tagsToUpdate, tag)) {
-      tagsToUpdate[tag] += 1;
+  Object.keys(newTags).forEach((key) => {
+    if (newTags[key]) {
+      tagsToUpdate[key] += 1;
     }
   });
 };
@@ -38,6 +38,7 @@ const createReviewDoc = async (reviewData, user) => {
   user.totalCoursesRated += 1;
 
   await user.save();
+
   return newReview;
 };
 

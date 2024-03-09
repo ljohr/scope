@@ -103,7 +103,9 @@ app.get(
     try {
       const review = await ReviewModel.findOne({ _id: new ObjectId(reviewId) });
       const user = await UserModel.findOne({ _id: review.userId });
-      res.status(200).json({ fbUserId: user.fbUserId.toString() });
+      res
+        .status(200)
+        .json({ fbUserId: user.fbUserId.toString(), reviewData: review });
     } catch (error) {
       console.error("Error fetching data:", error);
       res.status(500).json({ message: "Error fetching user" });
@@ -373,17 +375,17 @@ app.get(
 
 app.post("/api/new-review", sessionCookieValidator, async (req, res, next) => {
   try {
-    // const validationErrors = validateReviewData(req.body);
-    // if (validationErrors) {
-    //   return res.status(400).send({ errors: validationErrors });
-    // }
+    console.log(req.body);
+    const validationErrors = validateReviewData(req.body);
+    if (validationErrors) {
+      console.log(validationErrors);
+      return res.status(400).send({ errors: validationErrors });
+    }
 
     const reviewData = req.body;
-    console.log(reviewData);
-    // const { status, message } = await newReviewController(reviewData);
+    const { status, message } = await newReviewController(reviewData);
 
-    // res.status(status).send({ message });
-    res.status(200).send("testing");
+    res.status(status).send({ message });
   } catch (error) {
     next(error);
   }
@@ -466,19 +468,19 @@ app.get(
   }
 );
 
-app.get(
-  `/api/fetch-review/:reviewId`,
-  idTokenValidator,
-  async (req, res, next) => {
-    const reviewId = req.params.reviewId;
-    try {
-      const review = await ReviewModel.findOne({ _id: new ObjectId(reviewId) });
-      console.log(review);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+// app.get(
+//   `/api/fetch-review/:reviewId`,
+//   idTokenValidator,
+//   async (req, res, next) => {
+//     const reviewId = req.params.reviewId;
+//     try {
+//       const review = await ReviewModel.findOne({ _id: new ObjectId(reviewId) });
+//       console.log(review);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 
 // eslint-disable-next-line
 app.use((error, req, res, next) => {

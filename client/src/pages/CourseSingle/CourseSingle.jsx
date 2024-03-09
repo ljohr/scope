@@ -256,6 +256,7 @@ const CourseSingle = () => {
                         min={0}
                         max={15}
                         valueLabelDisplay="auto"
+                        valueLabelFormat={(value) => value.toFixed(2)}
                         marks={courseHourAvg}
                         disabled
                       />

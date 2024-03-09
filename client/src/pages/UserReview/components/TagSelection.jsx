@@ -29,6 +29,14 @@ const TagSelection = ({
   setProfTags,
   setCourseTags,
 }) => {
+  console.log(
+    "workload",
+    workload,
+    lecturerStyle,
+    gradingStyle,
+    profTags,
+    courseTags
+  );
   return (
     <>
       <div className="course-tags">

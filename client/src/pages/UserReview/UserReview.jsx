@@ -119,7 +119,7 @@ const UserReview = () => {
             profTags,
             courseTags,
             term,
-            year,
+            year: Number(year),
             workload,
             lecturerStyle,
             gradingStyle,
@@ -167,7 +167,7 @@ const UserReview = () => {
       }
     };
     fetchCourse();
-  }, [deptcode, profname, coursecode]);
+  }, [deptcode, profname, coursecode, currentUser]);
 
   return (
     <main className="user-review-main">
@@ -333,9 +333,9 @@ const UserReview = () => {
                     <p>Average Coursework Hours</p>
                     <Slider
                       className="coursehours-avg-slider"
-                      aria-label="Temperature"
                       valueLabelDisplay="on"
                       defaultValue={courseInfo.avgWeeklyHours}
+                      valueLabelFormat={(value) => value.toFixed(2)}
                       step={1}
                       marks
                       min={0}
