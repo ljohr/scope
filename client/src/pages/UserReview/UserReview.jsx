@@ -300,6 +300,7 @@ const UserReview = () => {
               <div className="allTags">
                 <p>Course Tags:</p>
                 <div className="courseTags">
+                  {console.log("courseInfo.courseTags", courseInfo.courseTags)}
                   {Object.entries(courseInfo.courseTags)
                     .sort((a, b) => b[1] - a[1])
                     .map(([key, value]) => {
@@ -313,6 +314,7 @@ const UserReview = () => {
                 </div>
                 <p>Professor Tags:</p>
                 <div className="courseTags">
+                  {console.log(courseInfo.profTag)}
                   {Object.entries(courseInfo.profTags)
                     .sort((a, b) => b[1] - a[1])
                     .map(([key, value]) => {

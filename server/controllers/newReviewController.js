@@ -38,13 +38,17 @@ const createReviewDoc = async (reviewData, user) => {
   user.totalCoursesRated += 1;
 
   await user.save();
-
-  return newReview;
 };
 
 const updateCourse = async (course, reviewData) => {
+  // Get all professor tags
   updateTags(reviewData.profTags, course.profTags);
+  updateTags(reviewData.lecturerStyle, course.profTags);
+  updateTags(reviewData.gradingStyle, course.profTags);
+
+  // Get all course tags
   updateTags(reviewData.courseTags, course.courseTags);
+  updateTags(reviewData.workload, course.courseTags);
 
   course.totalCourseRatingSum += reviewData.courseRating;
   course.totalCourseReviewers += 1;
@@ -64,8 +68,14 @@ const updateCourse = async (course, reviewData) => {
 };
 
 const updateProfessor = async (professor, reviewData) => {
+  // Get all professor tags
   updateTags(reviewData.profTags, professor.profTags);
+  updateTags(reviewData.lecturerStyle, professor.profTags);
+  updateTags(reviewData.gradingStyle, professor.profTags);
+
+  // Get all professor course tags
   updateTags(reviewData.courseTags, professor.courseTags);
+  updateTags(reviewData.workload, professor.courseTags);
 
   professor.totalProfRatingSum += reviewData.profRating;
   professor.totalProfReviewers += 1;
@@ -93,9 +103,9 @@ const newReviewController = async (reviewData) => {
       return { status: 404, message: "User not found" };
     }
 
-    const newReview = await createReviewDoc(reviewData, user);
-    await updateCourse(course, reviewData, newReview);
-    await updateProfessor(professor, reviewData, newReview);
+    await createReviewDoc(reviewData, user);
+    await updateCourse(course, reviewData);
+    await updateProfessor(professor, reviewData);
     return { status: 200, message: "Review submitted successfully" };
   } catch (error) {
     return { status: 500, message: "Error submitting review" };

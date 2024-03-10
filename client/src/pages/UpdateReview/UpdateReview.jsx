@@ -97,7 +97,7 @@ const UpdateReview = () => {
         const auth = getAuth();
         const idToken = await getIdToken(auth.currentUser);
         await axios.post(
-          "/api/new-review",
+          `/api/update-review/${reviewId}`,
           {
             professorId: professor.id,
             courseId: courseInfo._id,
@@ -132,7 +132,7 @@ const UpdateReview = () => {
 
   useEffect(() => {
     if (!currentUser) return;
-    const validateUser = async () => {
+    const validateAndGetData = async () => {
       try {
         const res = await axios.get(`/api/validate-user-review/${reviewId}`);
         console.log(res.data);
@@ -142,26 +142,19 @@ const UpdateReview = () => {
           console.error("Error fetching review");
           return;
         } else {
-          setProfRating(res.data.reviewData.profRating);
-          setCourseRating(res.data.reviewData.courseRating);
-          setTerm(res.data.reviewData.semesterTaken[term]);
-          setYear(res.data.reviewData.semesterTaken[year]);
-          setWorkload(res.data.reviewData.workload);
-          setLecturerStyle(res.data.reviewData.lecturerStyle);
-          setGradingStyle(res.data.reviewData.gradingStyle);
-          setCourseTags(res.data.reviewData.courseTags);
-          setProfTags(res.data.reviewData.profTags);
-          setCourseworkHours(res.data.reviewData.courseworkHours);
-          setReviewHeadline(res.data.reviewData.reviewHeadline);
-          setUserComment(res.data.reviewData.userComment);
-          console.log(
-            "res",
-            workload,
-            lecturerStyle,
-            gradingStyle,
-            profTags,
-            courseTags
-          );
+          const reviewData = res.data.reviewData;
+          setProfRating(reviewData.profRating);
+          setCourseRating(reviewData.courseRating);
+          setTerm(reviewData.semesterTaken.term);
+          setYear(reviewData.semesterTaken.year);
+          setWorkload(reviewData.workload);
+          setLecturerStyle(reviewData.lecturerStyle);
+          setGradingStyle(reviewData.gradingStyle);
+          setCourseTags(reviewData.courseTags);
+          setProfTags(reviewData.profTags);
+          setCourseworkHours(reviewData.courseworkHours);
+          setReviewHeadline(reviewData.reviewHeadline);
+          setUserComment(reviewData.userComment);
         }
       } catch (error) {
         console.error("An error occurred:", error);
@@ -190,7 +183,7 @@ const UpdateReview = () => {
       }
     };
 
-    validateUser();
+    validateAndGetData();
     fetchCourse();
   }, [deptcode, profname, coursecode, currentUser, reviewId]);
 
@@ -208,7 +201,7 @@ const UpdateReview = () => {
           </Link>
           <div className="container">
             <section className="user-review">
-              <h3>Submit Your Review</h3>
+              <h3>Update Your Review</h3>
               <div className="rating-container">
                 <h4>Overall Professor Rating</h4>
                 <StarRating rating={profRating} setRating={setProfRating} />
@@ -222,6 +215,7 @@ const UpdateReview = () => {
                 <select
                   name="term"
                   id="termDropdown"
+                  value={term}
                   onChange={(e) => setTerm(e.target.value)}
                 >
                   <option key="Spring" value="Spring">
@@ -237,6 +231,7 @@ const UpdateReview = () => {
                 <select
                   name="year"
                   id="yearDropdown"
+                  value={year}
                   onChange={(e) => setYear(e.target.value)}
                 >
                   <GetYears />
@@ -277,7 +272,7 @@ const UpdateReview = () => {
                   className="user-headline"
                   type="text"
                   placeholder={"Set a title summarizing your experience"}
-                  value={userComment}
+                  value={reviewHeadline}
                   onChange={(e) => setReviewHeadline(e.target.value)}
                 />
               </div>

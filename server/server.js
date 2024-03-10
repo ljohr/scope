@@ -99,7 +99,7 @@ app.get(
   "/api/validate-user-review/:reviewId",
   sessionCookieValidator,
   async (req, res) => {
-    const { reviewId } = req.params;
+    const reviewId = req.params.reviewId;
     try {
       const review = await ReviewModel.findOne({ _id: new ObjectId(reviewId) });
       const user = await UserModel.findOne({ _id: review.userId });
@@ -365,7 +365,7 @@ app.get(
         },
         reviews: reviews,
       };
-
+      console.log(course);
       res.json(responseData);
     } catch (error) {
       next(error);
@@ -375,7 +375,6 @@ app.get(
 
 app.post("/api/new-review", sessionCookieValidator, async (req, res, next) => {
   try {
-    console.log(req.body);
     const validationErrors = validateReviewData(req.body);
     if (validationErrors) {
       console.log(validationErrors);
@@ -401,7 +400,7 @@ app.post(
         return res.status(400).send({ errors: validationErrors });
       }
 
-      const { reviewId } = req.params;
+      const reviewId = req.params.reviewId;
       const reviewData = req.body;
 
       const { status, message } = await updateReviewController(
