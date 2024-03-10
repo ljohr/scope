@@ -23,6 +23,7 @@ import MajorCourses from "./pages/MajorCourses/MajorCourses.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import UpdateReview from "./pages/UpdateReview/UpdateReview.jsx";
 import ThankYou from "./pages/ThankYou/ThankYou.jsx";
+import NewThankYou from "./pages/ThankYou/NewThankYou.jsx";
 
 axios.defaults.baseURL = "http://localhost:4000";
 
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
       {
         path: "/:deptcode/:profname/thank-you",
         element: <ThankYou />,
+      },
+      {
+        path: "/:deptcode/:profname/thank-you/new-post",
+        element: <NewThankYou />,
       },
       {
         path: "/:deptcode/:profname/:coursecode",

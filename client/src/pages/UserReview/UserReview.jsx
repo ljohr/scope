@@ -190,7 +190,7 @@ const UserReview = () => {
       }
     };
     fetchCourse();
-  }, [deptcode, profname, coursecode, currentUser]);
+  }, [deptcode, profname, coursecode, currentUser, navigate]);
 
   return (
     <main className="user-review-main">

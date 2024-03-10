@@ -304,12 +304,12 @@ app.get("/api/professors", sessionCookieValidator, async (req, res, next) => {
 // });
 
 app.get(
-  "/:deptcode/:profname",
+  "/api/course-single/:deptcode/:profname",
   sessionCookieValidator,
   async (req, res, next) => {
     try {
       const { deptcode, profname } = req.params;
-      console.log(nameFromSlug(profname));
+      console.log(profname, nameFromSlug(profname));
       // Fetch the professor by name and department.
       const professor = await ProfessorModel.findOne({
         professorName: nameFromSlug(profname),
@@ -322,6 +322,77 @@ app.get(
       }
 
       res.json(professor);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+app.get(
+  "/api/get-professor/:deptcode/:profname",
+  sessionCookieValidator,
+  async (req, res, next) => {
+    try {
+      const { deptcode, profname } = req.params;
+      const professor = await ProfessorModel.findOne({
+        professorName: nameFromSlug(profname),
+        department: deptcode.toUpperCase(),
+      });
+      if (!professor) {
+        console.log(professor);
+        return res.status(404).json({ message: "Professor not found" });
+      }
+      res.json(professor);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+app.get(
+  "/api/thankYou/:deptcode/:profname",
+  sessionCookieValidator,
+  async (req, res, next) => {
+    try {
+      const { deptcode, profname } = req.params;
+      const professor = await ProfessorModel.findOne({
+        professorName: nameFromSlug(profname),
+        department: deptcode.toUpperCase(),
+      });
+      if (!professor) {
+        console.log(professor);
+        return res.status(404).json({ message: "Professor not found" });
+      }
+      const professorId = professor._id;
+      const posts = await ThankYouModel.find({
+        professorId: professorId,
+      }).sort({
+        createdAt: -1,
+      });
+
+      res.json({ posts, professor });
+    } catch (error) {
+      console.log("inerror");
+      next(error);
+    }
+  }
+);
+
+app.post(
+  "/api/thankYou/:deptcode/:profname",
+  idTokenValidator,
+  async (req, res, next) => {
+    try {
+      const validationErrors = validateThanksPost(req.body);
+      if (validationErrors) {
+        console.log(validationErrors);
+        return res.status(400).send({ errors: validationErrors });
+      }
+
+      const reviewData = req.body;
+      const { status, message } = await newThanksController(reviewData);
+
+      res.status(status).send({ message });
     } catch (error) {
       next(error);
     }
@@ -483,35 +554,6 @@ app.get(
   }
 );
 
-app.get("/api/thank-you/", idTokenValidator, async (req, res, next) => {
-  try {
-    const professorId = req.body.professorId;
-    const posts = await ThankYouModel.find({ professorId: professorId }).sort({
-      createdAt: -1,
-    });
-
-    res.json(posts);
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post("/api/thank-you/", idTokenValidator, async (req, res, next) => {
-  try {
-    const validationErrors = validateThanksPost(req.body);
-    if (validationErrors) {
-      console.log(validationErrors);
-      return res.status(400).send({ errors: validationErrors });
-    }
-
-    const reviewData = req.body;
-    const { status, message } = await newThanksController(reviewData);
-
-    res.status(status).send({ message });
-  } catch (error) {
-    next(error);
-  }
-});
 // app.get(
 //   `/api/fetch-review/:reviewId`,
 //   idTokenValidator,

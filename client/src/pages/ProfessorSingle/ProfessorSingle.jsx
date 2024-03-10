@@ -16,7 +16,9 @@ const ProfessorSingle = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`/${deptcode}/${profname}`);
+        const response = await axios.get(
+          `/api/course-single/${deptcode}/${profname}`
+        );
         const sortedCourses = response.data.courseIds.sort((a, b) =>
           a.courseCode.localeCompare(b.courseCode)
         );

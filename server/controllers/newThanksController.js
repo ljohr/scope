@@ -9,6 +9,8 @@ const createPost = async (reviewData, user) => {
   await ThankYouModel.create({
     professorId: reviewData.professorId,
     userId: user._id,
+    pseudonym: reviewData.pseudonym,
+    commentHeadline: reviewData.commentHeadline,
     userComment: reviewData.userComment,
   });
 };
@@ -34,7 +36,8 @@ const newThanksController = async (reviewData) => {
     if (existingReviewCount >= 1) {
       return {
         status: 400,
-        message: "You have already left a message for this professor!",
+        message:
+          "You have already left a thank you message for this professor!",
       };
     }
 

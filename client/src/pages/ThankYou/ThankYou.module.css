@@ -1,6 +1,38 @@
+.thankYouContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3% 0;
+}
+
 .loadingContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 5rem;
+}
+.postContainer {
+  width: 80%;
+}
+
+.postSingle {
+  padding: 2rem;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
+  height: 100%;
+  margin: 2rem 0;
+}
+
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.6rem;
+}
+
+.postSingle:hover {
+  transform: scale(1.005);
 }
