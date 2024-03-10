@@ -15,7 +15,7 @@ const updateTags = (newTags, tagsToUpdate) => {
 };
 
 const createReviewDoc = async (reviewData, user) => {
-  const newReview = await ReviewModel.create({
+  await ReviewModel.create({
     professorId: reviewData.professorId,
     courseId: reviewData.courseId,
     userId: user._id,
@@ -34,10 +34,6 @@ const createReviewDoc = async (reviewData, user) => {
     courseTags: reviewData.courseTags,
     profTags: reviewData.profTags,
   });
-
-  user.totalCoursesRated += 1;
-
-  await user.save();
 };
 
 const updateCourse = async (course, reviewData) => {
@@ -101,6 +97,15 @@ const newReviewController = async (reviewData) => {
     const user = await UserModel.findOne({ fbUserId: reviewData.fbUid });
     if (!user) {
       return { status: 404, message: "User not found" };
+    }
+
+    const existingReviewCount = await ReviewModel.countDocuments({
+      userId: user._id,
+      courseId: courseId,
+    });
+
+    if (existingReviewCount >= 1) {
+      return { status: 400, message: "You have already reviewed this course" };
     }
 
     await createReviewDoc(reviewData, user);

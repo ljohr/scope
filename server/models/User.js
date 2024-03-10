@@ -16,11 +16,6 @@ const UserSchema = new Schema(
         rating: Number,
       },
     ],
-    totalCoursesRated: {
-      type: Number,
-      default: 0,
-    },
-    coursesTaken: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
   },
   { timestamps: true }
 );

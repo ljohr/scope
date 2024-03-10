@@ -5,6 +5,12 @@ import { UserContext } from "../../providers/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Rating from "@mui/material/Rating";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import { CircularProgress, Slider } from "@mui/material";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import "./CourseSingle.css";
@@ -16,8 +22,10 @@ const CourseSingle = () => {
   const [courseInfo, setCourseInfo] = useState({});
   const [professor, setProfessor] = useState({});
   const [reviews, setReviews] = useState([]);
-
   const [curReviewUid, setCurReviewUid] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
+
   const navigate = useNavigate();
 
   const fetchCourse = useCallback(async () => {
@@ -31,8 +39,7 @@ const CourseSingle = () => {
       toast.error("Please login to view this page!");
       navigate("/login");
     }
-    //eslint-disable-next-line
-  }, [deptcode, profname, coursecode]);
+  }, [deptcode, profname, coursecode, navigate]);
 
   const fetchUserId = useCallback(async () => {
     try {
@@ -54,7 +61,7 @@ const CourseSingle = () => {
     if (currentUser) {
       fetchUserId();
     }
-  }, [currentUser]);
+  }, [currentUser, fetchCourse, fetchUserId]);
 
   const courseHourAvg = [
     {
@@ -65,6 +72,31 @@ const CourseSingle = () => {
 
   const valuetext = () => {
     return courseInfo.avgWeeklyHours;
+  };
+
+  const handleClickOpen = (reviewId) => {
+    setOpenDialog(true);
+    setSelectedReviewId(reviewId);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+    setSelectedReviewId(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const idToken = await currentUser.getIdToken(true);
+      await axios.delete(`/api/reviews/${selectedReviewId}`, {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+      handleClose();
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -155,36 +187,71 @@ const CourseSingle = () => {
                             readOnly
                           />{" "}
                         </div>
-                        {/* Check if the current user is the author of the review */}
-                        {currentUser && review.userId === curReviewUid && (
-                          <button
-                            onClick={() =>
-                              navigate(
-                                `/${deptcode}/${profname}/${coursecode}/update-review/${review._id}`
-                              )
-                            }
-                          >
-                            Edit
-                          </button>
-                        )}
+                        <div className="change-btn-container">
+                          {/* Check if the current user is the author of the review */}
+                          {currentUser && review.userId === curReviewUid && (
+                            <>
+                              <button
+                                className="edit-btn"
+                                onClick={() =>
+                                  navigate(
+                                    `/${deptcode}/${profname}/${coursecode}/update-review/${review._id}`
+                                  )
+                                }
+                              >
+                                Edit Review
+                              </button>
+                              <button
+                                className="delete-btn"
+                                onClick={() => handleClickOpen(review._id)}
+                              >
+                                Delete Review
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
-                      {review.courseTags &&
-                        Object.entries(review.courseTags).map(
-                          ([key, value]) => {
-                            return (
-                              value && (
-                                <div key={key} className="btn-pill">
-                                  {value}
-                                  {key}
-                                </div>
-                              )
-                            );
-                          }
-                        )}
+                      <div className="user-tags">
+                        {review.courseTags &&
+                          Object.entries(review.courseTags).map(
+                            ([key, value]) => {
+                              return (
+                                value && (
+                                  <div key={key} className="btn-pill">
+                                    {value}
+                                    {key}
+                                  </div>
+                                )
+                              );
+                            }
+                          )}
+                      </div>
                     </div>
                   );
                 })}
               </section>
+
+              <Dialog
+                open={openDialog}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {"Confirm Deletion"}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    Are you sure you want to delete this review?
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose}>Cancel</Button>
+                  <Button onClick={handleDelete} color="primary" autoFocus>
+                    Delete
+                  </Button>
+                </DialogActions>
+              </Dialog>
               <section className="course-overall">
                 <h3>Course Overall</h3>
                 <p>Average Professor Rating:</p>

@@ -96,8 +96,8 @@ const UpdateReview = () => {
       try {
         const auth = getAuth();
         const idToken = await getIdToken(auth.currentUser);
-        await axios.post(
-          `/api/update-review/${reviewId}`,
+        await axios.put(
+          `/api/reviews/${reviewId}`,
           {
             professorId: professor.id,
             courseId: courseInfo._id,

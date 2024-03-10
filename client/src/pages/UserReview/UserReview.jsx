@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { GetYears } from "../../utils/GetYears";
@@ -57,91 +57,115 @@ const UserReview = () => {
   const hasTrueValue = (obj) =>
     Object.values(obj).some((value) => value === true);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    let isValid = true;
+  const handleSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      let isValid = true;
 
-    if (!profRating) {
-      toast.error("Please rate the professor 1-5.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (!courseRating) {
-      toast.error("Please rate the course 1-5.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (!hasTrueValue(workload)) {
-      toast.error("Please select a workload.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (!hasTrueValue(lecturerStyle)) {
-      toast.error("Please select a lecture style.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (!hasTrueValue(gradingStyle)) {
-      toast.error("Please select a grading style.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (courseworkHours == 0) {
-      toast.error("Please select hours between 1-15.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (
-      !reviewHeadline ||
-      reviewHeadline.length > 60 ||
-      reviewHeadline.length < 5
-    ) {
-      toast.error("Please enter a review headline between 10-60 characters.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (!userComment || userComment.length > 300 || userComment.length < 10) {
-      toast.error("Please enter a comment between 10-300 characters.");
-      console.log("Validation failed");
-      isValid = false;
-    }
-    if (isValid) {
-      try {
-        const auth = getAuth();
-        const idToken = await getIdToken(auth.currentUser);
-        await axios.post(
-          "/api/new-review",
-          {
-            professorId: professor.id,
-            courseId: courseInfo._id,
-            profRating,
-            courseRating,
-            profTags,
-            courseTags,
-            term,
-            year: Number(year),
-            workload,
-            lecturerStyle,
-            gradingStyle,
-            courseworkHours,
-            reviewHeadline,
-            userComment,
-            fbUid: user.uid,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          }
-        );
-        toast.success("Review submitted successfully!");
-        navigate(`/${deptcode}/${profname}/${coursecode}`);
-      } catch (error) {
-        console.error("Error submitting review:", error);
-        toast.error("Error submitting review.");
+      if (!profRating) {
+        toast.error("Please rate the professor 1-5.");
+        console.log("Validation failed");
+        isValid = false;
       }
-    }
-  };
+      if (!courseRating) {
+        toast.error("Please rate the course 1-5.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (!hasTrueValue(workload)) {
+        toast.error("Please select a workload.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (!hasTrueValue(lecturerStyle)) {
+        toast.error("Please select a lecture style.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (!hasTrueValue(gradingStyle)) {
+        toast.error("Please select a grading style.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (courseworkHours == 0) {
+        toast.error("Please select hours between 1-15.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (
+        !reviewHeadline ||
+        reviewHeadline.length > 60 ||
+        reviewHeadline.length < 5
+      ) {
+        toast.error("Please enter a review headline between 10-60 characters.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (!userComment || userComment.length > 300 || userComment.length < 10) {
+        toast.error("Please enter a comment between 10-300 characters.");
+        console.log("Validation failed");
+        isValid = false;
+      }
+      if (isValid) {
+        try {
+          const auth = getAuth();
+          const idToken = await getIdToken(auth.currentUser);
+          await axios.post(
+            "/api/reviews",
+            {
+              professorId: professor.id,
+              courseId: courseInfo._id,
+              profRating,
+              courseRating,
+              profTags,
+              courseTags,
+              term,
+              year: Number(year),
+              workload,
+              lecturerStyle,
+              gradingStyle,
+              courseworkHours,
+              reviewHeadline,
+              userComment,
+              fbUid: user.uid,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${idToken}`,
+              },
+            }
+          );
+          toast.success("Review submitted successfully!");
+          navigate(`/${deptcode}/${profname}/${coursecode}`);
+        } catch (error) {
+          toast.error(error.response.data.message);
+          console.error("Error submitting review:", error);
+          navigate(`/${deptcode}/${profname}/${coursecode}`);
+        }
+      }
+    },
+    [
+      profRating,
+      courseRating,
+      workload,
+      lecturerStyle,
+      gradingStyle,
+      courseworkHours,
+      reviewHeadline,
+      userComment,
+      year,
+      courseInfo._id,
+      courseTags,
+      coursecode,
+      deptcode,
+      navigate,
+      profTags,
+      professor.id,
+      profname,
+      term,
+      user,
+    ]
+  );
 
   useEffect(() => {
     if (!currentUser) return;
@@ -151,7 +175,6 @@ const UserReview = () => {
         const res = await axios.get(
           `/api/${deptcode}/${profname}/${coursecode}`
         );
-        console.log(res.data);
         setCourseInfo(res.data.courseInfo);
         setProfessor(res.data.professorDetails);
         setDataLoaded(true);
@@ -300,7 +323,6 @@ const UserReview = () => {
               <div className="allTags">
                 <p>Course Tags:</p>
                 <div className="courseTags">
-                  {console.log("courseInfo.courseTags", courseInfo.courseTags)}
                   {Object.entries(courseInfo.courseTags)
                     .sort((a, b) => b[1] - a[1])
                     .map(([key, value]) => {
@@ -314,7 +336,6 @@ const UserReview = () => {
                 </div>
                 <p>Professor Tags:</p>
                 <div className="courseTags">
-                  {console.log(courseInfo.profTag)}
                   {Object.entries(courseInfo.profTags)
                     .sort((a, b) => b[1] - a[1])
                     .map(([key, value]) => {

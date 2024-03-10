@@ -73,7 +73,7 @@
   flex-direction: column;
   justify-content: space-between;
   font-weight: 700;
-  padding-top: 3%;
+  padding-top: 1rem;
 }
 
 .review-container {
@@ -112,4 +112,21 @@
 
 .coursework-title {
   padding-top: 1%;
+}
+
+.change-btn-container {
+  padding-top: 0.8rem;
+}
+
+.delete-btn {
+  color: #ffffff;
+  background-color: rgb(255, 95, 95);
+}
+.delete-btn:hover {
+  color: #ffffff;
+  background-color: rgba(255, 95, 95, 0.82);
+}
+
+.user-tags {
+  padding-top: 0.8rem;
 }

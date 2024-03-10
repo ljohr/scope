@@ -26,6 +26,7 @@ import validateReviewData from "./utils/validateReview.js";
 import idTokenValidator from "./middleware/idTokenValidator.js";
 import sessionCookieValidator from "./middleware/sessionCookieValidator.js";
 import updateReviewController from "./controllers/updateReviewController.js";
+import deleteReviewController from "./controllers/deleteReviewController.js";
 // sort prof page and courses by
 // last semester taught -> alphabetical
 
@@ -373,7 +374,7 @@ app.get(
   }
 );
 
-app.post("/api/new-review", sessionCookieValidator, async (req, res, next) => {
+app.post("/api/reviews", idTokenValidator, async (req, res, next) => {
   try {
     const validationErrors = validateReviewData(req.body);
     if (validationErrors) {
@@ -390,23 +391,35 @@ app.post("/api/new-review", sessionCookieValidator, async (req, res, next) => {
   }
 });
 
-app.post(
-  "/api/update-review/:reviewId",
-  sessionCookieValidator,
+app.put("/api/reviews/:reviewId", idTokenValidator, async (req, res, next) => {
+  try {
+    const validationErrors = validateReviewData(req.body);
+    if (validationErrors) {
+      return res.status(400).send({ errors: validationErrors });
+    }
+
+    const reviewId = req.params.reviewId;
+    const reviewData = req.body;
+
+    const { status, message } = await updateReviewController(
+      reviewId,
+      reviewData
+    );
+
+    res.status(status).send({ message });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete(
+  "/api/reviews/:reviewId",
+  idTokenValidator,
   async (req, res, next) => {
     try {
-      const validationErrors = validateReviewData(req.body);
-      if (validationErrors) {
-        return res.status(400).send({ errors: validationErrors });
-      }
-
       const reviewId = req.params.reviewId;
-      const reviewData = req.body;
 
-      const { status, message } = await updateReviewController(
-        reviewId,
-        reviewData
-      );
+      const { status, message } = await deleteReviewController(reviewId);
 
       res.status(status).send({ message });
     } catch (error) {

@@ -2,13 +2,10 @@ import mongoose from "mongoose";
 import CourseModel from "../models/Course.js";
 import ProfessorModel from "../models/Professor.js";
 import ReviewModel from "../models/Review.js";
-import UserModel from "../models/User.js";
 
 const { ObjectId } = mongoose.Types;
 
 const updateTags = (newTags, tagsToUpdate, originalTags) => {
-  console.log("****************************");
-  console.log(newTags, tagsToUpdate, originalTags);
   Object.keys(newTags).forEach((key) => {
     if (originalTags[key] && !newTags[key]) {
       tagsToUpdate[key] -= 1;
@@ -127,11 +124,6 @@ const updateReviewController = async (reviewId, reviewData) => {
     const course = await CourseModel.findById(courseId);
     if (!course) {
       return { status: 404, message: "Course not found" };
-    }
-
-    const user = await UserModel.findOne({ fbUserId: reviewData.fbUid });
-    if (!user) {
-      return { status: 404, message: "User not found" };
     }
 
     await updateCourse(course, reviewData, originalReview);
