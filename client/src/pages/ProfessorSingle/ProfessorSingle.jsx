@@ -52,6 +52,12 @@ const ProfessorSingle = () => {
           <Link className="course-dept" to={`/${deptcode}/professors`}>
             {professor.department}
           </Link>
+          <Link
+            className="course-dept"
+            to={`/${deptcode}/${profname}/thank-you`}
+          >
+            Thank You Page
+          </Link>
           <section className="prof-courses">
             {professor.courseIds?.map((course) => {
               const courseReviewUrl = `/${deptcode}/${profname}/${course.courseCode}`;

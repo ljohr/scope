@@ -17,6 +17,7 @@ import mongoose from "mongoose";
 import loginRouter from "./routers/loginRouter.js";
 import logoutRouter from "./routers/logoutRouter.js";
 import MajorModel from "./models/Majors.js";
+import ThankYouModel from "./models/ThankYou.js";
 const { ObjectId } = mongoose.Types;
 import profSearch from "./controllers/profSearch.js";
 import courseSearch from "./controllers/courseSearch.js";
@@ -27,6 +28,8 @@ import idTokenValidator from "./middleware/idTokenValidator.js";
 import sessionCookieValidator from "./middleware/sessionCookieValidator.js";
 import updateReviewController from "./controllers/updateReviewController.js";
 import deleteReviewController from "./controllers/deleteReviewController.js";
+import { newThanksController } from "./controllers/newThanksController.js";
+import validateThanksPost from "./utils/validateThanksPost.js";
 // sort prof page and courses by
 // last semester taught -> alphabetical
 
@@ -480,6 +483,35 @@ app.get(
   }
 );
 
+app.get("/api/thank-you/", idTokenValidator, async (req, res, next) => {
+  try {
+    const professorId = req.body.professorId;
+    const posts = await ThankYouModel.find({ professorId: professorId }).sort({
+      createdAt: -1,
+    });
+
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/thank-you/", idTokenValidator, async (req, res, next) => {
+  try {
+    const validationErrors = validateThanksPost(req.body);
+    if (validationErrors) {
+      console.log(validationErrors);
+      return res.status(400).send({ errors: validationErrors });
+    }
+
+    const reviewData = req.body;
+    const { status, message } = await newThanksController(reviewData);
+
+    res.status(status).send({ message });
+  } catch (error) {
+    next(error);
+  }
+});
 // app.get(
 //   `/api/fetch-review/:reviewId`,
 //   idTokenValidator,
