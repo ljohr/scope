@@ -1,0 +1,51 @@
+.thankYouContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3% 0;
+}
+
+.formContainer {
+  width: 80%;
+  padding: 2rem;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.201);
+  height: 100%;
+  margin: 2rem 0;
+}
+
+.userComment {
+  padding: 1rem;
+  resize: none;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.pseudonymContainer,
+.headlineContainer {
+  padding-bottom: 1rem;
+}
+.pseudonymContainer h4,
+.headlineContainer h4,
+.commentContainer h4 {
+  padding-bottom: 0.4rem;
+}
+
+.commentHeadline,
+.pseudonym {
+  padding: 0.8rem 1rem;
+  width: 100%;
+  line-height: 1.5;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.submitContainer {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}

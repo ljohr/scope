@@ -48,4 +48,4 @@ const newThanksController = async (reviewData) => {
   }
 };
 
-export { newThanksController };
+export default newThanksController;

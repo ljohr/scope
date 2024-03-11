@@ -135,8 +135,6 @@ const UpdateReview = () => {
     const validateAndGetData = async () => {
       try {
         const res = await axios.get(`/api/validate-user-review/${reviewId}`);
-        console.log(res.data);
-        console.log(currentUser);
         if (res.data.fbUserId != currentUser.uid) {
           toast.error("You do not have permission to edit this review.");
           console.error("Error fetching review");
@@ -172,7 +170,6 @@ const UpdateReview = () => {
         setProfessor(res.data.professorDetails);
         setDataLoaded(true);
       } catch (error) {
-        console.log(error);
         if (error.response && error.response.status === 404) {
           // navigate("/page-not-found");
           console.log(error);
@@ -185,7 +182,7 @@ const UpdateReview = () => {
 
     validateAndGetData();
     fetchCourse();
-  }, [deptcode, profname, coursecode, currentUser, reviewId]);
+  }, [deptcode, profname, coursecode, currentUser, reviewId, navigate]);
 
   return (
     <main className="user-review-main">

@@ -1,9 +1,12 @@
-import { useState, useEffect, useContext, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate, Link } from "react-router-dom";
-import { UserContext } from "../../providers/UserContext";
-import { toast } from "react-toastify";
 import axios from "axios";
+import { useState, useEffect, useContext, useCallback } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { UserContext } from "../../providers/UserContext";
+
+import { CircularProgress, Slider } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -11,8 +14,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { CircularProgress, Slider } from "@mui/material";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+
 import "./CourseSingle.css";
 
 const CourseSingle = () => {
@@ -157,7 +159,6 @@ const CourseSingle = () => {
                           ? review.modality
                           : ""}
                       </p>
-                      {/* {review.userComments ? ( */}
                       {review.userComment ? (
                         <p className="review-comment">{review.userComment}</p>
                       ) : (

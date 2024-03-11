@@ -18,18 +18,20 @@ import loginRouter from "./routers/loginRouter.js";
 import logoutRouter from "./routers/logoutRouter.js";
 import MajorModel from "./models/Majors.js";
 import ThankYouModel from "./models/ThankYou.js";
-const { ObjectId } = mongoose.Types;
 import profSearch from "./controllers/profSearch.js";
 import courseSearch from "./controllers/courseSearch.js";
 import fetchUserReviews from "./controllers/fetchUserReviews.js";
 import { newReviewController } from "./controllers/newReviewController.js";
 import validateReviewData from "./utils/validateReview.js";
+import validateThanksPost from "./utils/validateThanksPost.js";
 import idTokenValidator from "./middleware/idTokenValidator.js";
 import sessionCookieValidator from "./middleware/sessionCookieValidator.js";
 import updateReviewController from "./controllers/updateReviewController.js";
 import deleteReviewController from "./controllers/deleteReviewController.js";
-import { newThanksController } from "./controllers/newThanksController.js";
-import validateThanksPost from "./utils/validateThanksPost.js";
+import newThanksController from "./controllers/newThanksController.js";
+import updateThanksController from "./controllers/updateThanksController.js";
+import deleteThankYouController from "./controllers/deleteThankYouController.js";
+const { ObjectId } = mongoose.Types;
 // sort prof page and courses by
 // last semester taught -> alphabetical
 
@@ -350,6 +352,28 @@ app.get(
 );
 
 app.get(
+  "/api/thankYou/validateAndGetReview/:reviewId",
+  sessionCookieValidator,
+  async (req, res) => {
+    const reviewId = req.params.reviewId;
+    console.log(reviewId);
+    try {
+      const review = await ThankYouModel.findOne({
+        _id: new ObjectId(reviewId),
+      });
+      const user = await UserModel.findOne({ _id: review.userId });
+      console.log(review, user);
+      res
+        .status(200)
+        .json({ fbUserId: user.fbUserId.toString(), reviewData: review });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).json({ message: "Error fetching user" });
+    }
+  }
+);
+
+app.get(
   "/api/thankYou/:deptcode/:profname",
   sessionCookieValidator,
   async (req, res, next) => {
@@ -391,6 +415,47 @@ app.post(
 
       const reviewData = req.body;
       const { status, message } = await newThanksController(reviewData);
+
+      res.status(status).send({ message });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+app.delete(
+  "/api/thankYou/:reviewId",
+  idTokenValidator,
+  async (req, res, next) => {
+    try {
+      const reviewId = req.params.reviewId;
+      console.log(reviewId);
+
+      const { status, message } = await deleteThankYouController(reviewId);
+
+      res.status(status).send({ message });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+app.put(
+  "/api/thankYou/:deptcode/:profname/:reviewId",
+  idTokenValidator,
+  async (req, res, next) => {
+    try {
+      const validationErrors = validateThanksPost(req.body);
+      if (validationErrors) {
+        console.log(validationErrors);
+        return res.status(400).send({ errors: validationErrors });
+      }
+      const reviewId = req.params.reviewId;
+      const reviewData = req.body;
+      const { status, message } = await updateThanksController(
+        reviewId,
+        reviewData
+      );
 
       res.status(status).send({ message });
     } catch (error) {
