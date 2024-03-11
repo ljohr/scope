@@ -195,6 +195,7 @@ app.get("/api/majors", sessionCookieValidator, async (req, res, next) => {
 app.get("/api/courses", sessionCookieValidator, async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
+  const skip = (page - 1) * limit;
   const majorCode = req.query.major;
   try {
     let query = {};
@@ -203,7 +204,7 @@ app.get("/api/courses", sessionCookieValidator, async (req, res, next) => {
     }
     const courses = await CourseModel.find(query)
       .sort({ courseCode: 1 })
-      .skip((page - 1) * limit)
+      .skip(skip)
       .limit(limit)
       .populate("professorId");
     const totalDocs = await CourseModel.countDocuments(query);
@@ -584,6 +585,9 @@ app.get(
 );
 
 app.get("/api/user/reviews", idTokenValidator, async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
+  const skip = (page - 1) * limit;
   const decodedToken = req.decodedToken;
 
   try {
@@ -593,11 +597,22 @@ app.get("/api/user/reviews", idTokenValidator, async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const reviews = await ReviewModel.find({ userId: user._id }).populate(
-      "courseId"
-    );
+    const reviews = await ReviewModel.find({ userId: user._id })
+      .populate("courseId")
+      .populate("professorId")
+      .sort({
+        createdAt: -1,
+      })
+      .skip(skip)
+      .limit(limit);
 
-    res.json(reviews);
+    const totalReviews = await ReviewModel.countDocuments({ userId: user._id });
+
+    res.json({
+      reviews,
+      totalPages: Math.ceil(totalReviews / limit),
+      currentPage: page,
+    });
   } catch (error) {
     next(error);
   }

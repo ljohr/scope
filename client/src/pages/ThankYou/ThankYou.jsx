@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../providers/UserContext";
+import convertDate from "../../utils/convertDate";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
@@ -80,15 +81,6 @@ const ThankYou = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const convertDate = (isoDate) => {
-    const date = new Date(isoDate);
-    const day = date.getUTCDate().toString().padStart(2, "0");
-    const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-    const year = date.getUTCFullYear();
-    const formattedDate = `${month}/${day}/${year}`;
-    return formattedDate;
   };
 
   return (
