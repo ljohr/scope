@@ -11,7 +11,7 @@ const logoutUser = async () => {
     await signOut(auth);
     await axios.post("/api/sessionLogOut", {}, { withCredentials: true });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -35,16 +35,20 @@ const setSessionCache = (isAuthenticated) => {
 
 const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user || null);
+      setLoading(false);
     });
 
     const checkState = async () => {
       try {
         if (shouldRevalidateSession()) {
-          const response = await axios.get("/api/auth/validateSession");
+          const response = await axios.get("/api/auth/validateSession", {
+            withCredentials: true,
+          });
           const { isAuthenticated } = response.data;
           setSessionCache(isAuthenticated);
         }
@@ -56,6 +60,8 @@ const UserProvider = ({ children }) => {
         localStorage.removeItem("sessionCache");
         setCurrentUser(null);
         logoutUser();
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -64,10 +70,10 @@ const UserProvider = ({ children }) => {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [currentUser]);
+  }, []);
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, loading }}>
       {children}
     </UserContext.Provider>
   );

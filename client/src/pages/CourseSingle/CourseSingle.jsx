@@ -116,6 +116,23 @@ const CourseSingle = () => {
     }
   };
 
+  const getTags = (curTags) => {
+    if (curTags && Object.keys(curTags).length) {
+      return Object.entries(curTags).map(([key, value]) => {
+        return (
+          value && (
+            <div key={key} className="btn-pill">
+              {value}
+              {key}
+            </div>
+          )
+        );
+      });
+    } else {
+      return null;
+    }
+  };
+
   return (
     <>
       <HelmetProvider>
@@ -207,19 +224,11 @@ const CourseSingle = () => {
                         </div>
                       </div>
                       <div className="user-tags">
-                        {review.courseTags &&
-                          Object.entries(review.courseTags).map(
-                            ([key, value]) => {
-                              return (
-                                value && (
-                                  <div key={key} className="btn-pill">
-                                    {value}
-                                    {key}
-                                  </div>
-                                )
-                              );
-                            }
-                          )}
+                        {getTags(review.gradingStyle)}
+                        {getTags(review.lecturerStyle)}
+                        {getTags(review.courseTags)}
+                        {getTags(review.profTags)}
+                        {getTags(review.workload)}
                       </div>
                       <div className="dateCreated">
                         <p>Posted {convertDate(review.createdAt)}</p>

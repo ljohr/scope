@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import { auth } from "../../config/firebaseConfig";
 import {

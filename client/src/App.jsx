@@ -2,6 +2,7 @@ import "./App.css";
 import axios from "axios";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home/Home";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
@@ -26,20 +27,18 @@ import ThankYou from "./pages/ThankYou/ThankYou.jsx";
 import NewThankYou from "./pages/ThankYou/NewThankYou.jsx";
 import EditThankYou from "./pages/ThankYou/EditThankYou.jsx";
 
-import AuthCheck from "./providers/AuthCheck.js";
-
 axios.defaults.baseURL = "http://localhost:4000";
 
 const LayOut = () => {
   return (
-    <AuthCheck>
+    <>
       <header>
         <Navbar />
       </header>
       <ToastContainer />
       <Outlet />
       <Footer />
-    </AuthCheck>
+    </>
   );
 };
 
