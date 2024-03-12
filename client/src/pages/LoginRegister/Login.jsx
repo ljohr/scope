@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(UserContext);
+  const { currentUser, loading, setCurrentUser } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -65,6 +65,7 @@ const Login = () => {
         </Helmet>
       </HelmetProvider>
       <main className="login-main">
+        {console.log(loading, currentUser)}
         <div className="register-card">
           <h1>Login</h1>
           <form action="" className="login-form">

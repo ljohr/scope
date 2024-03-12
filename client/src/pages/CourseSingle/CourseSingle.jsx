@@ -19,17 +19,19 @@ import DialogTitle from "@mui/material/DialogTitle";
 import "./CourseSingle.css";
 
 const CourseSingle = () => {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, loading } = useContext(UserContext);
   const { deptcode, profname, coursecode } = useParams();
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [courseInfo, setCourseInfo] = useState({});
-  const [professor, setProfessor] = useState({});
-  const [reviews, setReviews] = useState([]);
+  const [courseData, setCourseData] = useState({
+    courseInfo: {},
+    professor: {},
+    reviews: [],
+    totalPages: 0,
+    dataLoaded: false,
+  });
   const [curReviewUid, setCurReviewUid] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const limit = 12;
 
   const navigate = useNavigate();
@@ -39,11 +41,13 @@ const CourseSingle = () => {
       const res = await axios.get(
         `/api/courseSingle/${deptcode}/${profname}/${coursecode}?&page=${page}&limit=${limit}`
       );
-      setCourseInfo(res.data.courseInfo);
-      setProfessor(res.data.professorDetails);
-      setReviews(res.data.reviews);
-      setTotalPages(res.data.totalPages);
-      setDataLoaded(true);
+      setCourseData({
+        courseInfo: res.data.courseInfo,
+        professor: res.data.professorDetails,
+        reviews: res.data.reviews,
+        totalPages: res.data.totalPages,
+        dataLoaded: true,
+      });
     } catch (error) {
       if (error.response && error.response.status === 404) {
         navigate("/page-not-found");
@@ -69,17 +73,19 @@ const CourseSingle = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    fetchCourse();
-
-    if (currentUser) {
+    if (!loading && currentUser) {
+      fetchCourse();
       fetchUserId();
+    } else if (!loading && !currentUser) {
+      toast.error("Please login to view the page.");
+      navigate("/login");
     }
-  }, [currentUser, fetchCourse, fetchUserId]);
+  }, [loading, currentUser, fetchCourse, fetchUserId, navigate]);
 
   const courseHourAvg = [
     {
-      value: courseInfo.avgWeeklyHours,
-      label: courseInfo.avgWeeklyHours,
+      value: courseData.courseInfo.avgWeeklyHours,
+      label: courseData.courseInfo.avgWeeklyHours,
     },
   ];
 
@@ -88,7 +94,7 @@ const CourseSingle = () => {
   };
 
   const valuetext = () => {
-    return courseInfo.avgWeeklyHours;
+    return courseData.courseInfo.avgWeeklyHours;
   };
 
   const handleClickOpen = (reviewId) => {
@@ -110,7 +116,8 @@ const CourseSingle = () => {
         },
       });
       handleClose();
-      window.location.reload();
+      setCourseData((prevData) => ({ ...prevData, dataLoaded: false }));
+      await fetchCourse();
     } catch (error) {
       console.error(error);
     }
@@ -138,19 +145,20 @@ const CourseSingle = () => {
       <HelmetProvider>
         <Helmet>
           <title>
-            {courseInfo.courseCode || "Course Code"} |{" "}
-            {professor.name || "Professor"} | Scope
+            {courseData.courseInfo.courseCode || "Course Code"} |{" "}
+            {courseData.professor.name || "Professor"} | Scope
           </title>
         </Helmet>
       </HelmetProvider>
       <main className="course-single-main">
-        {dataLoaded ? (
+        {courseData.dataLoaded ? (
           <div className="main-container">
             <h1>
-              {courseInfo.courseCode} - {courseInfo.courseName}
+              {courseData.courseInfo.courseCode} -{" "}
+              {courseData.courseInfo.courseName}
             </h1>
             <Link to={`/${deptcode}/${profname}`}>
-              <h2>{professor.name}</h2>
+              <h2>{courseData.professor.name}</h2>
             </Link>
             <Link
               className="add-review-btn"
@@ -160,7 +168,7 @@ const CourseSingle = () => {
             </Link>
             <div className="container">
               <section className="course-reviews">
-                {reviews.map((review) => {
+                {courseData.reviews.map((review) => {
                   return (
                     <div key={review._id} className="review-card">
                       <div className="review-container">
@@ -286,32 +294,32 @@ const CourseSingle = () => {
                 <h3>Course Overall</h3>
                 <p>Average Professor Rating:</p>
                 <div className="prof-rating">
-                  {courseInfo.avgProfRating.toFixed(2)}
+                  {courseData.courseInfo.avgProfRating.toFixed(2)}
                   <Rating
                     name="half-rating"
-                    defaultValue={courseInfo.avgProfRating}
+                    defaultValue={courseData.courseInfo.avgProfRating}
                     precision={0.1}
                     readOnly
                   />
                 </div>
                 <p>Average Course Rating: </p>
                 <div className="prof-rating">
-                  {courseInfo.avgCourseRating.toFixed(2)}
+                  {courseData.courseInfo.avgCourseRating.toFixed(2)}
                   <Rating
                     name="half-rating"
-                    defaultValue={courseInfo.avgCourseRating}
+                    defaultValue={courseData.courseInfo.avgCourseRating}
                     precision={0.1}
                     readOnly
                   />
                 </div>
                 <p>
                   Total Course Reviewers: <br />{" "}
-                  {courseInfo.totalCourseReviewers}
+                  {courseData.courseInfo.totalCourseReviewers}
                 </p>
                 <div className="allTags">
                   <p>Course Tags:</p>
                   <div className="courseTags">
-                    {Object.entries(courseInfo.courseTags)
+                    {Object.entries(courseData.courseInfo.courseTags)
                       .sort((a, b) => b[1] - a[1])
                       .map(([key, value]) => {
                         return (
@@ -324,7 +332,7 @@ const CourseSingle = () => {
                   </div>
                   <p>Professor Tags:</p>
                   <div className="courseTags">
-                    {Object.entries(courseInfo.profTags)
+                    {Object.entries(courseData.courseInfo.profTags)
                       .sort((a, b) => b[1] - a[1])
                       .map(([key, value]) => {
                         return (
@@ -337,7 +345,7 @@ const CourseSingle = () => {
                   </div>
                 </div>
                 <div>
-                  {courseInfo.avgWeeklyHours == 0 ? (
+                  {courseData.courseInfo.avgWeeklyHours == 0 ? (
                     ""
                   ) : (
                     <>
@@ -347,7 +355,7 @@ const CourseSingle = () => {
                       <Slider
                         className="coursehours-avg-slider"
                         aria-label="Hours"
-                        defaultValue={courseInfo.avgWeeklyHours}
+                        defaultValue={courseData.courseInfo.avgWeeklyHours}
                         getAriaValueText={valuetext}
                         step={null}
                         min={0}
@@ -362,10 +370,10 @@ const CourseSingle = () => {
                 </div>
               </section>
             </div>
-            {totalPages > 1 ? (
+            {courseData.totalPages > 1 ? (
               <div className="pagination-container">
                 <Pagination
-                  count={totalPages}
+                  count={courseData.totalPages}
                   page={page}
                   onChange={handlePageChange}
                   color="primary"

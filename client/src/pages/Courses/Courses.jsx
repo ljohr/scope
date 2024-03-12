@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Rating, Pagination, CircularProgress } from "@mui/material";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -9,8 +9,10 @@ import toSlug from "../../utils/toSlug";
 import MajorFilter from "../../components/MajorFilter/MajorFilter";
 
 import styles from "./Courses.module.css";
+import { UserContext } from "../../providers/UserContext";
 
 const Courses = () => {
+  const { currentUser, loading } = useContext(UserContext);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [courses, setCourses] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -39,10 +41,16 @@ const Courses = () => {
   }, [selectedMajorCode, page, limit, navigate]);
 
   const handleMajorSelect = useCallback((major) => {
-    console.log(major.code);
     setSelectedMajorCode(major ? major.code : "");
     setPage(1);
   }, []);
+
+  useEffect(() => {
+    if (!loading && !currentUser) {
+      toast.error("Please login to view the page.");
+      navigate("/login");
+    }
+  }, [currentUser, loading, navigate]);
 
   useEffect(() => {
     fetchCourses();

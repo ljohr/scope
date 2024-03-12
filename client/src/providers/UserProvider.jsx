@@ -59,9 +59,8 @@ const UserProvider = ({ children }) => {
         console.error("Error validating session:", error);
         localStorage.removeItem("sessionCache");
         setCurrentUser(null);
-        logoutUser();
-      } finally {
         setLoading(false);
+        logoutUser();
       }
     };
 
