@@ -377,7 +377,6 @@ app.get(
   sessionCookieValidator,
   async (req, res) => {
     const reviewId = req.params.reviewId;
-    console.log(reviewId);
     try {
       const review = await ThankYouModel.findOne({
         _id: new ObjectId(reviewId),
@@ -399,6 +398,9 @@ app.get(
   sessionCookieValidator,
   async (req, res, next) => {
     try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 12;
+      const skip = (page - 1) * limit;
       const { deptcode, profname } = req.params;
       const professor = await ProfessorModel.findOne({
         professorName: nameFromSlug(profname),
@@ -411,11 +413,22 @@ app.get(
       const professorId = professor._id;
       const posts = await ThankYouModel.find({
         professorId: professorId,
-      }).sort({
-        createdAt: -1,
+      })
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit);
+
+      const totalPosts = await ThankYouModel.countDocuments({
+        professorId: professorId,
       });
 
-      res.json({ posts, professor });
+      res.json({
+        posts,
+        professor,
+        totalPages: Math.ceil(totalPosts / limit),
+      });
     } catch (error) {
       console.log("inerror");
       next(error);
@@ -534,7 +547,6 @@ app.get(
         reviews: reviews,
         totalPages: Math.ceil(totalCourses / limit),
       };
-      console.log(course);
       res.json(responseData);
     } catch (error) {
       next(error);

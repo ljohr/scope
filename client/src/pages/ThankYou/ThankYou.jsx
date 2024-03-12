@@ -14,28 +14,40 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import styles from "./ThankYou.module.css";
+import { Pagination } from "@mui/material";
 
 const ThankYou = () => {
   const { currentUser } = useContext(UserContext);
   const { deptcode, profname } = useParams();
   const [curReviewUid, setCurReviewUid] = useState(null);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [professor, setProfessor] = useState({});
-  const [posts, setPosts] = useState([]);
+  const [postsData, setPostsData] = useState({
+    posts: [],
+    professor: {},
+    reviews: [],
+    totalPages: 0,
+    dataLoaded: false,
+  });
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [page, setPage] = useState(1);
+  const limit = 12;
   const navigate = useNavigate();
 
   const getPosts = useCallback(async () => {
     try {
-      const res = await axios.get(`/api/thankYou/${deptcode}/${profname}`);
-      setPosts(res.data.posts);
-      setProfessor(res.data.professor);
-      setDataLoaded(true);
+      const res = await axios.get(
+        `/api/thankYou/${deptcode}/${profname}?&page=${page}&limit=${limit}`
+      );
+      setPostsData({
+        posts: res.data.posts,
+        professor: res.data.professor,
+        totalPages: res.data.totalPages,
+        dataLoaded: true,
+      });
     } catch (error) {
       console.error(error);
     }
-  }, [deptcode, profname]);
+  }, [deptcode, profname, page]);
 
   const fetchUserId = useCallback(async () => {
     try {
@@ -78,10 +90,15 @@ const ThankYou = () => {
         },
       });
       handleClose();
-      window.location.reload();
+      setPostsData((prevData) => ({ ...prevData, dataLoaded: false }));
+      await getPosts();
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
   };
 
   return (
@@ -89,16 +106,17 @@ const ThankYou = () => {
       <HelmetProvider>
         <Helmet>
           <title>
-            Thank You Page for Professor {professor.professorName || ""} | Scope
+            Thank You Page for Professor{" "}
+            {postsData.professor.professorName || ""} | Scope
           </title>
         </Helmet>
       </HelmetProvider>
       <main className={styles.thankYouContainer}>
-        {dataLoaded ? (
+        {postsData.dataLoaded ? (
           <>
             <h1>
               <Link className="add-review-btn" to={`/${deptcode}/${profname}/`}>
-                {professor.professorName}
+                {postsData.professor.professorName}
               </Link>{" "}
               - Thank You Page
             </h1>
@@ -115,8 +133,8 @@ const ThankYou = () => {
               <button className="review-btn">Leave a thank you note!</button>
             </Link>
             <div className={styles.postContainer}>
-              {posts.length > 0 ? (
-                posts.map((post) => {
+              {postsData.posts.length > 0 ? (
+                postsData.posts.map((post) => {
                   return (
                     <div key={post._id} className={styles.postSingle}>
                       <div className={styles.postHeader}>
@@ -184,6 +202,18 @@ const ThankYou = () => {
           <div className="loading-container">
             <CircularProgress />
           </div>
+        )}
+        {postsData.totalPages > 1 ? (
+          <div className="pagination-container">
+            <Pagination
+              count={postsData.totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </div>
+        ) : (
+          <></>
         )}
       </main>
     </>
