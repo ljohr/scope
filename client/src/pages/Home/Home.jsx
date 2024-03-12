@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
-import StudentsTalking from "../../assets/students-talking.svg";
-import "./Home.css";
 import { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import StudentsTalking from "../../assets/students-talking.svg";
 import { UserContext } from "../../providers/UserContext";
+import "./Home.css";
 
 const Home = () => {
   const { currentUser } = useContext(UserContext);
@@ -14,11 +15,18 @@ const Home = () => {
   });
 
   return (
-    <main className="home-main">
-      <Hero />
-      <How />
-      <Info />
-    </main>
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Scope | BC Course Evaluations Made Simple</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className="home-main">
+        <Hero />
+        <How />
+        <Info />
+      </main>
+    </>
   );
 };
 

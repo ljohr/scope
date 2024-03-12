@@ -1,9 +1,10 @@
+import axios from "axios";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useCallback, useEffect, useState } from "react";
 import { getAuth, getIdToken } from "firebase/auth";
-import axios from "axios";
-import styles from "./NewThankYou.module.css";
-import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import styles from "./NewThankYou.module.css";
 
 const NewThankYou = () => {
   const { deptcode, profname } = useParams();
@@ -99,47 +100,54 @@ const NewThankYou = () => {
   );
 
   return (
-    <main className={styles.thankYouContainer}>
-      <h1>New Post to Thank Professor {professor.professorName}!</h1>
-      <h3>
-        <Link to={`/${deptcode}/${profname}/thank-you/`}>Thank You Page</Link>
-      </h3>
-      <div className={styles.formContainer}>
-        <div className={styles.pseudonymContainer}>
-          <h4>Add a Pseudonym</h4>
-          <input
-            className={styles.pseudonym}
-            type="text"
-            placeholder="Who's saying thank you? (Anonymous is fine)"
-            onChange={(e) => setPseudonym(e.target.value)}
-          />
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Add a New Thank You Message | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.thankYouContainer}>
+        <h1>New Post to Thank Professor {professor.professorName}!</h1>
+        <h3>
+          <Link to={`/${deptcode}/${profname}/thank-you/`}>Thank You Page</Link>
+        </h3>
+        <div className={styles.formContainer}>
+          <div className={styles.pseudonymContainer}>
+            <h4>Add a Pseudonym</h4>
+            <input
+              className={styles.pseudonym}
+              type="text"
+              placeholder="Who's saying thank you? (Anonymous is fine)"
+              onChange={(e) => setPseudonym(e.target.value)}
+            />
+          </div>
+          <div className={styles.headlineContainer}>
+            <h4>Thank You Note Headline</h4>
+            <input
+              className={styles.commentHeadline}
+              type="text"
+              placeholder="Short and sweet title for your note"
+              onChange={(e) => setCommentHeadline(e.target.value)}
+            />
+          </div>
+          <div className={styles.commentContainer}>
+            <h4>User Note</h4>
+            <textarea
+              className={styles.userComment}
+              name="user-comment"
+              rows="5"
+              placeholder={`Express your gratitude, mention memorable moments, or how this professor made a difference in your studies.`}
+              onChange={(e) => setUserComment(e.target.value)}
+            />
+          </div>
+          <div className={styles.submitContainer}>
+            <button type="submit" onClick={handleSubmit}>
+              Submit Note
+            </button>
+          </div>
         </div>
-        <div className={styles.headlineContainer}>
-          <h4>Thank You Note Headline</h4>
-          <input
-            className={styles.commentHeadline}
-            type="text"
-            placeholder="Short and sweet title for your note"
-            onChange={(e) => setCommentHeadline(e.target.value)}
-          />
-        </div>
-        <div className={styles.commentContainer}>
-          <h4>User Note</h4>
-          <textarea
-            className={styles.userComment}
-            name="user-comment"
-            rows="5"
-            placeholder={`Express your gratitude, mention memorable moments, or how this professor made a difference in your studies.`}
-            onChange={(e) => setUserComment(e.target.value)}
-          />
-        </div>
-        <div className={styles.submitContainer}>
-          <button type="submit" onClick={handleSubmit}>
-            Submit Note
-          </button>
-        </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 

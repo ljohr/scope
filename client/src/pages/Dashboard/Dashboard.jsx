@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
-
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebaseConfig";
 import convertDate from "../../utils/convertDate.js";
@@ -59,81 +59,89 @@ const Dashboard = () => {
   };
 
   return (
-    <main className={styles.dashboardMain}>
-      <h1>Dashboard</h1>
-      <SearchBar className={searchStyles.searchBlock} />
-      {dataLoaded ? (
-        totalPages > 0 ? (
-          <section className={styles.userReviews}>
-            <h2>Recent Reviews</h2>
-            <div className={styles.reviewsContainer}>
-              {reviews.map((review, index) => {
-                return (
-                  <div key={index} className={styles.reviewSingle}>
-                    <Link
-                      to={`/${review.courseId.department}/${toSlug(
-                        review.professorId.professorName
-                      )}/${review.courseId.courseCode}`}
-                    >
-                      <h3 className={styles.reviewCourseTitle}>
-                        {review.courseId.courseCode} /{" "}
-                        {review.professorId.professorName}
-                      </h3>
-                    </Link>
-                    <div className={styles.containerRow}>
-                      <h3 className={styles.courseName}>
-                        {review.courseId.courseName}
-                      </h3>
-                      <p className={styles.termTaken}>
-                        {review.semesterTaken.term} {review.semesterTaken.year}
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Dashboard | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.dashboardMain}>
+        <h1>Dashboard</h1>
+        <SearchBar className={searchStyles.searchBlock} />
+        {dataLoaded ? (
+          totalPages > 0 ? (
+            <section className={styles.userReviews}>
+              <h2>Recent Reviews</h2>
+              <div className={styles.reviewsContainer}>
+                {reviews.map((review, index) => {
+                  return (
+                    <div key={index} className={styles.reviewSingle}>
+                      <Link
+                        to={`/${review.courseId.department}/${toSlug(
+                          review.professorId.professorName
+                        )}/${review.courseId.courseCode}`}
+                      >
+                        <h3 className={styles.reviewCourseTitle}>
+                          {review.courseId.courseCode} /{" "}
+                          {review.professorId.professorName}
+                        </h3>
+                      </Link>
+                      <div className={styles.containerRow}>
+                        <h3 className={styles.courseName}>
+                          {review.courseId.courseName}
+                        </h3>
+                        <p className={styles.termTaken}>
+                          {review.semesterTaken.term}{" "}
+                          {review.semesterTaken.year}
+                        </p>
+                      </div>
+                      <p className={styles.userComment}>{review.userComment}</p>
+                      <div className={styles.ratingContainer}>
+                        <div className={styles.ratingInfo}>
+                          <p>Course Rating: </p>
+                          <Rating
+                            name="half-rating"
+                            value={parseFloat(review.courseRating)}
+                            precision={0.1}
+                            readOnly
+                          />
+                        </div>
+                        <div className={styles.ratingInfo}>
+                          <p>Professor Rating: </p>
+                          <Rating
+                            name="half-rating"
+                            value={parseFloat(review.profRating)}
+                            precision={0.1}
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                      <p className={styles.createdDate}>
+                        Posted {convertDate(review.createdAt)}
                       </p>
                     </div>
-                    <p className={styles.userComment}>{review.userComment}</p>
-                    <div className={styles.ratingContainer}>
-                      <div className={styles.ratingInfo}>
-                        <p>Course Rating: </p>
-                        <Rating
-                          name="half-rating"
-                          value={parseFloat(review.courseRating)}
-                          precision={0.1}
-                          readOnly
-                        />
-                      </div>
-                      <div className={styles.ratingInfo}>
-                        <p>Professor Rating: </p>
-                        <Rating
-                          name="half-rating"
-                          value={parseFloat(review.profRating)}
-                          precision={0.1}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                    <p className={styles.createdDate}>
-                      Posted {convertDate(review.createdAt)}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="pagination-container">
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </div>
-          </section>
+                  );
+                })}
+              </div>
+              <div className="pagination-container">
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                />
+              </div>
+            </section>
+          ) : (
+            <></>
+          )
         ) : (
-          <></>
-        )
-      ) : (
-        <div className={styles.loadingContainer}>
-          <CircularProgress />
-        </div>
-      )}
-    </main>
+          <div className={styles.loadingContainer}>
+            <CircularProgress />
+          </div>
+        )}
+      </main>
+    </>
   );
 };
 

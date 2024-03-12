@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { auth } from "../../config/firebaseConfig";
 import { sendPasswordResetEmail } from "firebase/auth";
+import "react-toastify/dist/ReactToastify.css";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -22,26 +23,33 @@ const ResetPassword = () => {
   }
 
   return (
-    <main className="signup-main">
-      <div className="register-card">
-        <h1>Reset your password</h1>
-        <p>Enter your Scope email account</p>
-        <form action="" className="signup-form" onSubmit={resetPassword}>
-          <input
-            type="email"
-            placeholder="BC Email"
-            onChange={(ev) => setEmail(ev.target.value)}
-          />
-          <button type="submit">Request Reset Email</button>
-        </form>
-        <p>
-          <Link to="/login">Return to Login</Link>
-        </p>
-        <div>
-          <ToastContainer />
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Reset Password | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className="signup-main">
+        <div className="register-card">
+          <h1>Reset your password</h1>
+          <p>Enter your Scope email account</p>
+          <form action="" className="signup-form" onSubmit={resetPassword}>
+            <input
+              type="email"
+              placeholder="BC Email"
+              onChange={(ev) => setEmail(ev.target.value)}
+            />
+            <button type="submit">Request Reset Email</button>
+          </form>
+          <p>
+            <Link to="/login">Return to Login</Link>
+          </p>
+          <div>
+            <ToastContainer />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 

@@ -62,7 +62,7 @@ const ProfessorSingle = () => {
             className="thank-you-page"
             to={`/${deptcode}/${profname}/thank-you`}
           >
-            Thank You Page
+            Leave a message to thank Professor {professor.professorName}
           </Link>
           <section className="prof-courses">
             {courses.map((course) => {

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -114,48 +115,55 @@ const Register = () => {
   };
 
   return (
-    <main className="signup-main">
-      <div className="register-card">
-        <h1>Register</h1>
-        <p>
-          Create a strong password with at least one uppercase letter, one
-          lowercase letter, and one special character.
-        </p>
-        <form action="" className="signup-form" onSubmit={registerUser}>
-          <input
-            type="email"
-            value={email}
-            placeholder="BC Email"
-            className={emailError ? "email-error" : ""}
-            onChange={(ev) => setEmail(ev.target.value)}
-            onBlur={checkEmailError}
-          />
-          <input
-            type="password"
-            value={password}
-            placeholder="Password"
-            className={passwordError ? "password-error" : ""}
-            onChange={(ev) => setPassword(ev.target.value)}
-            onBlur={handlePasswordBlur}
-          />
-          <input
-            type="password"
-            value={confirm}
-            placeholder="Confirm"
-            className={confirmError ? "password-error" : ""}
-            onChange={(ev) => setConfirm(ev.target.value)}
-            onBlur={(ev) => checkConfirmError(password, ev.target.value)}
-          />
-          {emailError && <p className="error-msg">{emailError}</p>}
-          {confirmError && <p className="error-msg">{confirmError}</p>}
-          {passwordError && <p className="error-msg">{passwordError}</p>}
-          <button type="submit">Sign Up</button>
-        </form>
-        <p>
-          Already a member? <Link to="/login">Login</Link>
-        </p>
-      </div>
-    </main>
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Register | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className="signup-main">
+        <div className="register-card">
+          <h1>Register</h1>
+          <p>
+            Create a strong password with at least one uppercase letter, one
+            lowercase letter, and one special character.
+          </p>
+          <form action="" className="signup-form" onSubmit={registerUser}>
+            <input
+              type="email"
+              value={email}
+              placeholder="BC Email"
+              className={emailError ? "email-error" : ""}
+              onChange={(ev) => setEmail(ev.target.value)}
+              onBlur={checkEmailError}
+            />
+            <input
+              type="password"
+              value={password}
+              placeholder="Password"
+              className={passwordError ? "password-error" : ""}
+              onChange={(ev) => setPassword(ev.target.value)}
+              onBlur={handlePasswordBlur}
+            />
+            <input
+              type="password"
+              value={confirm}
+              placeholder="Confirm"
+              className={confirmError ? "password-error" : ""}
+              onChange={(ev) => setConfirm(ev.target.value)}
+              onBlur={(ev) => checkConfirmError(password, ev.target.value)}
+            />
+            {emailError && <p className="error-msg">{emailError}</p>}
+            {confirmError && <p className="error-msg">{confirmError}</p>}
+            {passwordError && <p className="error-msg">{passwordError}</p>}
+            <button type="submit">Sign Up</button>
+          </form>
+          <p>
+            Already a member? <Link to="/login">Login</Link>
+          </p>
+        </div>
+      </main>
+    </>
   );
 };
 

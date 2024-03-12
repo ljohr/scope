@@ -1,10 +1,13 @@
+import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Rating, Pagination, CircularProgress } from "@mui/material";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { toast } from "react-toastify";
-import axios from "axios";
+
 import toSlug from "../../utils/toSlug";
 import MajorFilter from "../../components/MajorFilter/MajorFilter";
+
 import styles from "./Courses.module.css";
 
 const Courses = () => {
@@ -50,72 +53,79 @@ const Courses = () => {
   };
 
   return (
-    <main className={styles.coursesContainer}>
-      <h1>Courses</h1>
-      {dataLoaded ? (
-        <>
-          <div className={styles.container}>
-            <MajorFilter onMajorSelect={handleMajorSelect} />
-            <section className={styles.allCourses}>
-              {courses.map((course) => {
-                return (
-                  <div key={course._id} className={styles.courseSingle}>
-                    <div className={styles.courseInfo}>
-                      <h4 className={styles.courseTitle}>
-                        {course.courseCode}
-                      </h4>
-                      <h4 className={styles.courseTitle}>
-                        {course.courseName}
-                      </h4>
-                      <p>{course.professorId.professorName}</p>
-                    </div>
-                    <div className={styles.ratingInfo}>
-                      <p>
-                        {(
-                          course.totalCourseRatingSum /
-                          course.totalProfReviewers
-                        ).toFixed(2)}
-                      </p>
-                      <Rating
-                        name="half-rating"
-                        value={parseFloat(
-                          (
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>All Courses | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.coursesContainer}>
+        <h1>Courses</h1>
+        {dataLoaded ? (
+          <>
+            <div className={styles.container}>
+              <MajorFilter onMajorSelect={handleMajorSelect} />
+              <section className={styles.allCourses}>
+                {courses.map((course) => {
+                  return (
+                    <div key={course._id} className={styles.courseSingle}>
+                      <div className={styles.courseInfo}>
+                        <h4 className={styles.courseTitle}>
+                          {course.courseCode}
+                        </h4>
+                        <h4 className={styles.courseTitle}>
+                          {course.courseName}
+                        </h4>
+                        <p>{course.professorId.professorName}</p>
+                      </div>
+                      <div className={styles.ratingInfo}>
+                        <p>
+                          {(
                             course.totalCourseRatingSum /
-                              course.totalProfReviewers || 0
-                          ).toFixed(2)
-                        )}
-                        precision={0.1}
-                        readOnly
-                      />
+                            course.totalProfReviewers
+                          ).toFixed(2)}
+                        </p>
+                        <Rating
+                          name="half-rating"
+                          value={parseFloat(
+                            (
+                              course.totalCourseRatingSum /
+                                course.totalProfReviewers || 0
+                            ).toFixed(2)
+                          )}
+                          precision={0.1}
+                          readOnly
+                        />
+                      </div>
+                      <Link
+                        className="light-green-btn"
+                        to={`/${course.department}/${toSlug(
+                          course.professorId.professorName
+                        )}/${course.courseCode}`}
+                      >
+                        See All Reviews
+                      </Link>
                     </div>
-                    <Link
-                      className="light-green-btn"
-                      to={`/${course.department}/${toSlug(
-                        course.professorId.professorName
-                      )}/${course.courseCode}`}
-                    >
-                      See All Reviews
-                    </Link>
-                  </div>
-                );
-              })}
-            </section>
+                  );
+                })}
+              </section>
+            </div>
+            <div className={styles.paginationContainer}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </div>
+          </>
+        ) : (
+          <div className="loading-container">
+            <CircularProgress />
           </div>
-          <div className={styles.paginationContainer}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </div>
-        </>
-      ) : (
-        <div className="loading-container">
-          <CircularProgress />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </>
   );
 };
 

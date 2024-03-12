@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -51,51 +52,58 @@ const Majors = () => {
   };
 
   return (
-    <main className={styles.majorsContainer}>
-      <h1>Majors</h1>
-      {dataLoaded ? (
-        <>
-          <div className={styles.container}>
-            <MajorFilter onMajorSelect={handleMajorSelect} />
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>All Majors | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.majorsContainer}>
+        <h1>Majors</h1>
+        {dataLoaded ? (
+          <>
+            <div className={styles.container}>
+              <MajorFilter onMajorSelect={handleMajorSelect} />
 
-            <section className={styles.allMajors}>
-              {majors.map((major) => {
-                const profsURL = `/${major.code}/professors`;
-                const coursesURL = `/${major.code}/all-courses`;
-                return (
-                  <div key={major._id} className={styles.majorSingle}>
-                    <div className={styles.majorInfo}>
-                      <h4 className={styles.majorCode}>{major.code}</h4>
-                      <p className={styles.majorName}>{major.name}</p>
+              <section className={styles.allMajors}>
+                {majors.map((major) => {
+                  const profsURL = `/${major.code}/professors`;
+                  const coursesURL = `/${major.code}/all-courses`;
+                  return (
+                    <div key={major._id} className={styles.majorSingle}>
+                      <div className={styles.majorInfo}>
+                        <h4 className={styles.majorCode}>{major.code}</h4>
+                        <p className={styles.majorName}>{major.name}</p>
+                      </div>
+                      <div className={styles.majorLinks}>
+                        <Link className="light-green-btn" to={profsURL}>
+                          See All Professors
+                        </Link>
+                        <Link className="light-green-btn" to={coursesURL}>
+                          See All Courses
+                        </Link>
+                      </div>
                     </div>
-                    <div className={styles.majorLinks}>
-                      <Link className="light-green-btn" to={profsURL}>
-                        See All Professors
-                      </Link>
-                      <Link className="light-green-btn" to={coursesURL}>
-                        See All Courses
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </section>
+                  );
+                })}
+              </section>
+            </div>
+            <div className={styles.paginationContainer}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </div>
+          </>
+        ) : (
+          <div className="loading-container">
+            <CircularProgress />
           </div>
-          <div className={styles.paginationContainer}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </div>
-        </>
-      ) : (
-        <div className="loading-container">
-          <CircularProgress />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </>
   );
 };
 

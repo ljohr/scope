@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -45,62 +46,71 @@ const MajorProfs = () => {
   };
 
   return (
-    <main className={styles.profsContainer}>
-      <h1>{deptcode.toUpperCase()} - All Professors</h1>
-      {dataLoaded ? (
-        <>
-          <div className={styles.innerContainer}>
-            <section className={styles.allProfs}>
-              {professors.map((prof) => {
-                const coursesURL = `/${prof.department}/${toSlug(
-                  prof.professorName
-                )}`;
-                return (
-                  <div key={prof._id}>
-                    <div className={styles.profsSingle}>
-                      <div className={styles.profInfo}>
-                        <h4 className={styles.profsDept}>{prof.department}</h4>
-                        <h4 className={styles.profName}>
-                          {prof.professorName}
-                        </h4>
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>{deptcode.toUpperCase() || ""} - All Professors | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.profsContainer}>
+        <h1>{deptcode.toUpperCase()} - All Professors</h1>
+        {dataLoaded ? (
+          <>
+            <div className={styles.innerContainer}>
+              <section className={styles.allProfs}>
+                {professors.map((prof) => {
+                  const coursesURL = `/${prof.department}/${toSlug(
+                    prof.professorName
+                  )}`;
+                  return (
+                    <div key={prof._id}>
+                      <div className={styles.profsSingle}>
+                        <div className={styles.profInfo}>
+                          <h4 className={styles.profsDept}>
+                            {prof.department}
+                          </h4>
+                          <h4 className={styles.profName}>
+                            {prof.professorName}
+                          </h4>
 
-                        <div className={styles.ratingInfo}>
-                          <p>{prof.avgProfRating.toFixed(2)}</p>
-                          <Rating
-                            name="half-rating"
-                            value={parseFloat(prof.avgProfRating.toFixed(2))}
-                            precision={0.1}
-                            readOnly
-                          />
+                          <div className={styles.ratingInfo}>
+                            <p>{prof.avgProfRating.toFixed(2)}</p>
+                            <Rating
+                              name="half-rating"
+                              value={parseFloat(prof.avgProfRating.toFixed(2))}
+                              precision={0.1}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+
+                        <div className="major-links">
+                          <Link className="light-green-btn" to={coursesURL}>
+                            See All Course Reviews
+                          </Link>
                         </div>
                       </div>
-
-                      <div className="major-links">
-                        <Link className="light-green-btn" to={coursesURL}>
-                          See All Course Reviews
-                        </Link>
-                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </section>
+                  );
+                })}
+              </section>
+            </div>
+            <div className={styles.paginationContainer}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </div>
+          </>
+        ) : (
+          <div className="loading-container">
+            <CircularProgress />
           </div>
-          <div className={styles.paginationContainer}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </div>
-        </>
-      ) : (
-        <div className="loading-container">
-          <CircularProgress />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </>
   );
 };
 

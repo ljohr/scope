@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { UserContext } from "../../providers/UserContext";
 import convertDate from "../../utils/convertDate";
 
@@ -84,99 +85,108 @@ const ThankYou = () => {
   };
 
   return (
-    <main className={styles.thankYouContainer}>
-      {dataLoaded ? (
-        <>
-          <h1>
-            <Link className="add-review-btn" to={`/${deptcode}/${profname}/`}>
-              {professor.professorName}
-            </Link>{" "}
-            - Thank You Page
-          </h1>
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>
+            Thank You Page for Professor {professor.professorName || ""} | Scope
+          </title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.thankYouContainer}>
+        {dataLoaded ? (
+          <>
+            <h1>
+              <Link className="add-review-btn" to={`/${deptcode}/${profname}/`}>
+                {professor.professorName}
+              </Link>{" "}
+              - Thank You Page
+            </h1>
 
-          <h3>
-            <Link className="add-review-btn" to={`/${deptcode}/professors`}>
-              {deptcode}
+            <h3>
+              <Link className="add-review-btn" to={`/${deptcode}/professors`}>
+                {deptcode}
+              </Link>
+            </h3>
+            <Link
+              className="add-review-btn"
+              to={`/${deptcode}/${profname}/thank-you/new-post`}
+            >
+              <button className="review-btn">Leave a thank you note!</button>
             </Link>
-          </h3>
-          <Link
-            className="add-review-btn"
-            to={`/${deptcode}/${profname}/thank-you/new-post`}
-          >
-            <button className="review-btn">Leave a thank you note!</button>
-          </Link>
-          <div className={styles.postContainer}>
-            {posts.length > 0 ? (
-              posts.map((post) => {
-                return (
-                  <div key={post._id} className={styles.postSingle}>
-                    <div className={styles.postHeader}>
-                      <h4>{post.commentHeadline}</h4>
-                      <p>{convertDate(post.createdAt)}</p>
+            <div className={styles.postContainer}>
+              {posts.length > 0 ? (
+                posts.map((post) => {
+                  return (
+                    <div key={post._id} className={styles.postSingle}>
+                      <div className={styles.postHeader}>
+                        <h4>{post.commentHeadline}</h4>
+                        <p>{convertDate(post.createdAt)}</p>
+                      </div>
+                      <p></p>
+                      <p>{post.userComment}</p>
+                      <p className={styles.userTitle}>{post.pseudonym}</p>
+                      <div className="change-btn-container">
+                        {/* Check if the current user is the author of the review */}
+                        {currentUser && post.userId === curReviewUid && (
+                          <>
+                            <button
+                              className="edit-btn"
+                              onClick={() =>
+                                navigate(
+                                  `/${deptcode}/${profname}/thank-you/update-review/${post._id}`
+                                )
+                              }
+                            >
+                              Edit Review
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleClickOpen(post._id)}
+                            >
+                              Delete Review
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <p></p>
-                    <p>{post.userComment}</p>
-                    <p className={styles.userTitle}>{post.pseudonym}</p>
-                    <div className="change-btn-container">
-                      {/* Check if the current user is the author of the review */}
-                      {currentUser && post.userId === curReviewUid && (
-                        <>
-                          <button
-                            className="edit-btn"
-                            onClick={() =>
-                              navigate(
-                                `/${deptcode}/${profname}/thank-you/update-review/${post._id}`
-                              )
-                            }
-                          >
-                            Edit Review
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleClickOpen(post._id)}
-                          >
-                            Delete Review
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className={styles.noPosts}>
-                <h4>No posts yet! Be the first to leave a message.</h4>
-              </div>
-            )}
+                  );
+                })
+              ) : (
+                <div className={styles.noPosts}>
+                  <h4>No posts yet! Be the first to leave a message.</h4>
+                </div>
+              )}
+            </div>
+            <Dialog
+              open={openDialog}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Confirm Deletion"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to delete this review?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleDelete} color="primary" autoFocus>
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        ) : (
+          <div className="loading-container">
+            <CircularProgress />
           </div>
-          <Dialog
-            open={openDialog}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirm Deletion"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete this review?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleDelete} color="primary" autoFocus>
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      ) : (
-        <div className="loading-container">
-          <CircularProgress />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </>
   );
 };
 

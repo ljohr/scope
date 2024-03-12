@@ -10,7 +10,7 @@
   display: grid;
   gap: 3rem;
   width: 100%;
-  padding: 1% 5%;
+  padding: 2% 5%;
 }
 
 .resultsContainer {
@@ -65,4 +65,8 @@
 .noResultContainer {
   display: flex;
   justify-content: center;
+}
+
+.queryText {
+  font-style: italic;
 }

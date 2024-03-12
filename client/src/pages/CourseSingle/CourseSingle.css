@@ -95,19 +95,16 @@
   margin-top: 1rem;
 }
 
-/* .review-btn {
-
-} */
-
 .add-review-btn {
   margin-top: 1%;
 }
 
 .review-btn {
-  background-color: #b3ffc9c7;
+  background-color: rgb(222, 254, 231);
 }
 .review-btn:hover {
   background-color: rgba(212, 255, 224, 0.834);
+  cursor: pointer;
 }
 
 .coursework-title {
@@ -125,6 +122,7 @@
 .delete-btn:hover {
   color: #ffffff;
   background-color: rgba(255, 95, 95, 0.82);
+  cursor: pointer;
 }
 
 .user-tags {

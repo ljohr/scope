@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Pagination, CircularProgress } from "@mui/material";
 import axios from "axios";
 import toSlug from "../../utils/toSlug";
@@ -49,49 +50,58 @@ const Professors = () => {
   };
 
   return (
-    <main className={styles.profsContainer}>
-      <h1>Professors</h1>
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>All Professors | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.profsContainer}>
+        <h1>Professors</h1>
 
-      {dataLoaded ? (
-        <>
-          <div className={styles.container}>
-            <MajorFilter onMajorSelect={handleMajorSelect} />
-            <section className={styles.allProfs}>
-              {professors.map((prof) => {
-                const coursesURL = `/${prof.department}/${toSlug(
-                  prof.professorName
-                )}`;
-                return (
-                  <div key={prof._id} className={styles.profsSingle}>
-                    <div className={styles.profInfo}>
-                      <h4 className={styles.profCode}>{prof.professorName}</h4>
-                      <p className={styles.profName}>{prof.department}</p>
+        {dataLoaded ? (
+          <>
+            <div className={styles.container}>
+              <MajorFilter onMajorSelect={handleMajorSelect} />
+              <section className={styles.allProfs}>
+                {professors.map((prof) => {
+                  const coursesURL = `/${prof.department}/${toSlug(
+                    prof.professorName
+                  )}`;
+                  return (
+                    <div key={prof._id} className={styles.profsSingle}>
+                      <div className={styles.profInfo}>
+                        <h4 className={styles.profCode}>
+                          {prof.professorName}
+                        </h4>
+                        <p className={styles.profName}>{prof.department}</p>
+                      </div>
+                      <div className="major-links">
+                        <Link className="light-green-btn" to={coursesURL}>
+                          See All Course Reviews
+                        </Link>
+                      </div>
                     </div>
-                    <div className="major-links">
-                      <Link className="light-green-btn" to={coursesURL}>
-                        See All Course Reviews
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </section>
+                  );
+                })}
+              </section>
+            </div>
+            <div className={styles.paginationContainer}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </div>
+          </>
+        ) : (
+          <div className="loading-container">
+            <CircularProgress />
           </div>
-          <div className={styles.paginationContainer}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </div>
-        </>
-      ) : (
-        <div className="loading-container">
-          <CircularProgress />
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </>
   );
 };
 

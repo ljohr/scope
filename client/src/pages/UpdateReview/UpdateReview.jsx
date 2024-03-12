@@ -1,15 +1,16 @@
+import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { GetYears } from "../../utils/GetYears";
-import { UserContext } from "../../providers/UserContext";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { getAuth, getIdToken } from "firebase/auth";
-import axios from "axios";
-import Rating from "@mui/material/Rating";
-import CircularProgress from "@mui/material/CircularProgress";
-import Slider from "@mui/material/Slider";
+import { toast } from "react-toastify";
+import { UserContext } from "../../providers/UserContext";
+import { GetYears } from "../../utils/GetYears";
 import StarRating from "../UserReview/components/StarRating";
 import TagSelection from "../UserReview/components/TagSelection";
+import CircularProgress from "@mui/material/CircularProgress";
+import Rating from "@mui/material/Rating";
+import Slider from "@mui/material/Slider";
 import "./UpdateReview.css";
 
 const hasTrueValue = (obj) =>
@@ -185,192 +186,203 @@ const UpdateReview = () => {
   }, [deptcode, profname, coursecode, currentUser, reviewId, navigate]);
 
   return (
-    <main className="user-review-main">
-      {dataLoaded ? (
-        <div className="main-container">
-          <Link to={`/${deptcode}/${profname}/${coursecode}`}>
-            <h1>
-              {courseInfo.courseCode} - {courseInfo.courseName}
-            </h1>
-          </Link>
-          <Link to={`/${deptcode}/${profname}`}>
-            <h2>{professor.name}</h2>
-          </Link>
-          <div className="container">
-            <section className="user-review">
-              <h3>Update Your Review</h3>
-              <div className="rating-container">
-                <h4>Overall Professor Rating</h4>
-                <StarRating rating={profRating} setRating={setProfRating} />
-              </div>
-              <div className="rating-container">
-                <h4>Overall Course Rating</h4>
-                <StarRating rating={courseRating} setRating={setCourseRating} />
-              </div>
-              <div className="semester-container">
-                <h4>Semester Taken</h4>
-                <select
-                  name="term"
-                  id="termDropdown"
-                  value={term}
-                  onChange={(e) => setTerm(e.target.value)}
-                >
-                  <option key="Spring" value="Spring">
-                    Spring
-                  </option>
-                  <option key="Summer" value="Summer">
-                    Summer
-                  </option>
-                  <option key="Fall" value="Fall">
-                    Fall
-                  </option>
-                </select>
-                <select
-                  name="year"
-                  id="yearDropdown"
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                >
-                  <GetYears />
-                </select>
-              </div>
-              <TagSelection
-                workload={workload}
-                lecturerStyle={lecturerStyle}
-                gradingStyle={gradingStyle}
-                profTags={profTags}
-                courseTags={courseTags}
-                setWorkload={setWorkload}
-                setLecturerStyle={setLecturerStyle}
-                setGradingStyle={setGradingStyle}
-                setCourseTags={setCourseTags}
-                setProfTags={setProfTags}
-              />
-              <div className="weekly-hours">
-                <h4>Hours per Week: {courseworkHours} hours</h4>
-                <p>
-                  Select the value that best estimates your weekly coursework
-                  hours.
-                </p>
-                <Slider
-                  aria-label="Temperature"
-                  defaultValue={courseworkHours}
-                  valueLabelDisplay="auto"
-                  step={1}
-                  marks
-                  min={0}
-                  max={15}
-                  onChange={(e) => setCourseworkHours(e.target.value)}
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Update Your Review | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className="user-review-main">
+        {dataLoaded ? (
+          <div className="main-container">
+            <Link to={`/${deptcode}/${profname}/${coursecode}`}>
+              <h1>
+                {courseInfo.courseCode} - {courseInfo.courseName}
+              </h1>
+            </Link>
+            <Link to={`/${deptcode}/${profname}`}>
+              <h2>{professor.name}</h2>
+            </Link>
+            <div className="container">
+              <section className="user-review">
+                <h3>Update Your Review</h3>
+                <div className="rating-container">
+                  <h4>Overall Professor Rating</h4>
+                  <StarRating rating={profRating} setRating={setProfRating} />
+                </div>
+                <div className="rating-container">
+                  <h4>Overall Course Rating</h4>
+                  <StarRating
+                    rating={courseRating}
+                    setRating={setCourseRating}
+                  />
+                </div>
+                <div className="semester-container">
+                  <h4>Semester Taken</h4>
+                  <select
+                    name="term"
+                    id="termDropdown"
+                    value={term}
+                    onChange={(e) => setTerm(e.target.value)}
+                  >
+                    <option key="Spring" value="Spring">
+                      Spring
+                    </option>
+                    <option key="Summer" value="Summer">
+                      Summer
+                    </option>
+                    <option key="Fall" value="Fall">
+                      Fall
+                    </option>
+                  </select>
+                  <select
+                    name="year"
+                    id="yearDropdown"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                  >
+                    <GetYears />
+                  </select>
+                </div>
+                <TagSelection
+                  workload={workload}
+                  lecturerStyle={lecturerStyle}
+                  gradingStyle={gradingStyle}
+                  profTags={profTags}
+                  courseTags={courseTags}
+                  setWorkload={setWorkload}
+                  setLecturerStyle={setLecturerStyle}
+                  setGradingStyle={setGradingStyle}
+                  setCourseTags={setCourseTags}
+                  setProfTags={setProfTags}
                 />
-              </div>
-              <div className="headline-container">
-                <h4>Review Headline</h4>
-                <input
-                  className="user-headline"
-                  type="text"
-                  placeholder={"Set a title summarizing your experience"}
-                  value={reviewHeadline}
-                  onChange={(e) => setReviewHeadline(e.target.value)}
-                />
-              </div>
-              <div className="comment-container">
-                <h4>User Comment</h4>
-                <textarea
-                  className="user-comment"
-                  name="user-comment"
-                  rows="7"
-                  value={userComment}
-                  placeholder="Describe your experience: key takeaways, teaching style, workload, and any tips for future students!"
-                  onChange={(e) => setUserComment(e.target.value)}
-                />
-              </div>
+                <div className="weekly-hours">
+                  <h4>Hours per Week: {courseworkHours} hours</h4>
+                  <p>
+                    Select the value that best estimates your weekly coursework
+                    hours.
+                  </p>
+                  <Slider
+                    aria-label="Temperature"
+                    defaultValue={courseworkHours}
+                    valueLabelDisplay="auto"
+                    step={1}
+                    marks
+                    min={0}
+                    max={15}
+                    onChange={(e) => setCourseworkHours(e.target.value)}
+                  />
+                </div>
+                <div className="headline-container">
+                  <h4>Review Headline</h4>
+                  <input
+                    className="user-headline"
+                    type="text"
+                    placeholder={"Set a title summarizing your experience"}
+                    value={reviewHeadline}
+                    onChange={(e) => setReviewHeadline(e.target.value)}
+                  />
+                </div>
+                <div className="comment-container">
+                  <h4>User Comment</h4>
+                  <textarea
+                    className="user-comment"
+                    name="user-comment"
+                    rows="7"
+                    value={userComment}
+                    placeholder="Describe your experience: key takeaways, teaching style, workload, and any tips for future students!"
+                    onChange={(e) => setUserComment(e.target.value)}
+                  />
+                </div>
 
-              <div className="submit-container">
-                <button type="submit" onClick={handleSubmit}>
-                  Submit Review
-                </button>
-              </div>
-            </section>
-            <section className="course-overall">
-              <h3>Course Overall</h3>
-              <p>Average Professor Rating:</p>
-              <div className="prof-rating">
-                {professor.avgProfRating.toFixed(2)}
-                <Rating
-                  name="half-rating"
-                  defaultValue={professor.avgProfRating}
-                  precision={0.1}
-                  readOnly
-                />
-              </div>
-              <p>Average Course Rating: </p>
-              <div className="prof-rating">
-                {courseInfo.avgCourseRating.toFixed(2)}
-                <Rating
-                  name="half-rating"
-                  defaultValue={courseInfo.avgCourseRating}
-                  precision={0.1}
-                  readOnly
-                />
-              </div>
-              <p>
-                Total Course Reviewers: <br /> {courseInfo.totalCourseReviewers}
-              </p>
-              <div className="allTags">
-                <p>Course Tags:</p>
-                <div className="courseTags">
-                  {Object.entries(courseInfo.courseTags)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(([key, value]) => {
-                      return (
-                        <div key={key} className="btn-pill">
-                          {key + " "}
-                          {value}
-                        </div>
-                      );
-                    })}
+                <div className="submit-container">
+                  <button type="submit" onClick={handleSubmit}>
+                    Submit Review
+                  </button>
                 </div>
-                <p>Professor Tags:</p>
-                <div className="courseTags">
-                  {Object.entries(courseInfo.profTags)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(([key, value]) => {
-                      return (
-                        <div key={key} className="btn-pill">
-                          {key + " "}
-                          {value}
-                        </div>
-                      );
-                    })}
+              </section>
+              <section className="course-overall">
+                <h3>Course Overall</h3>
+                <p>Average Professor Rating:</p>
+                <div className="prof-rating">
+                  {professor.avgProfRating.toFixed(2)}
+                  <Rating
+                    name="half-rating"
+                    defaultValue={professor.avgProfRating}
+                    precision={0.1}
+                    readOnly
+                  />
                 </div>
-              </div>
-              <div>
-                {courseInfo.avgWeeklyHours == 0 ? (
-                  ""
-                ) : (
-                  <>
-                    <p>Average Coursework Hours</p>
-                    <Slider
-                      className="coursehours-avg-slider"
-                      valueLabelDisplay="on"
-                      defaultValue={courseInfo.avgWeeklyHours}
-                      valueLabelFormat={(value) => value.toFixed(2)}
-                      step={1}
-                      marks
-                      min={0}
-                      max={15}
-                      disabled
-                    />
-                  </>
-                )}
-              </div>
-            </section>
+                <p>Average Course Rating: </p>
+                <div className="prof-rating">
+                  {courseInfo.avgCourseRating.toFixed(2)}
+                  <Rating
+                    name="half-rating"
+                    defaultValue={courseInfo.avgCourseRating}
+                    precision={0.1}
+                    readOnly
+                  />
+                </div>
+                <p>
+                  Total Course Reviewers: <br />{" "}
+                  {courseInfo.totalCourseReviewers}
+                </p>
+                <div className="allTags">
+                  <p>Course Tags:</p>
+                  <div className="courseTags">
+                    {Object.entries(courseInfo.courseTags)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([key, value]) => {
+                        return (
+                          <div key={key} className="btn-pill">
+                            {key + " "}
+                            {value}
+                          </div>
+                        );
+                      })}
+                  </div>
+                  <p>Professor Tags:</p>
+                  <div className="courseTags">
+                    {Object.entries(courseInfo.profTags)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([key, value]) => {
+                        return (
+                          <div key={key} className="btn-pill">
+                            {key + " "}
+                            {value}
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+                <div>
+                  {courseInfo.avgWeeklyHours == 0 ? (
+                    ""
+                  ) : (
+                    <>
+                      <p>Average Coursework Hours</p>
+                      <Slider
+                        className="coursehours-avg-slider"
+                        valueLabelDisplay="on"
+                        defaultValue={courseInfo.avgWeeklyHours}
+                        valueLabelFormat={(value) => value.toFixed(2)}
+                        step={1}
+                        marks
+                        min={0}
+                        max={15}
+                        disabled
+                      />
+                    </>
+                  )}
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
-      ) : (
-        <CircularProgress />
-      )}
-    </main>
+        ) : (
+          <CircularProgress />
+        )}
+      </main>
+    </>
   );
 };
 

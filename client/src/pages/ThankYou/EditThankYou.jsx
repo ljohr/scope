@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState, useContext } from "react";
-import { getAuth, getIdToken } from "firebase/auth";
-import { UserContext } from "../../providers/UserContext";
 import axios from "axios";
-import styles from "./EditThankYou.module.css";
+import { useCallback, useEffect, useState, useContext } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { getAuth, getIdToken } from "firebase/auth";
 import { toast } from "react-toastify";
+import { UserContext } from "../../providers/UserContext";
+import styles from "./EditThankYou.module.css";
 
 const EditThankYou = () => {
   const { currentUser } = useContext(UserContext);
@@ -124,50 +125,57 @@ const EditThankYou = () => {
   );
 
   return (
-    <main className={styles.thankYouContainer}>
-      <h1>Update Your Post to Thank Professor {professor.professorName}!</h1>
-      <h3>
-        <Link to={`/${deptcode}/${profname}/thank-you/`}>Thank You Page</Link>
-      </h3>
-      <div className={styles.formContainer}>
-        <div className={styles.pseudonymContainer}>
-          <h4>Add a Pseudonym</h4>
-          <input
-            className={styles.pseudonym}
-            type="text"
-            value={pseudonym ? pseudonym : ""}
-            placeholder="Who's saying thank you? (Anonymous is fine)"
-            onChange={(e) => setPseudonym(e.target.value)}
-          />
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Edit Your Thank You Message | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className={styles.thankYouContainer}>
+        <h1>Update Your Post to Thank Professor {professor.professorName}!</h1>
+        <h3>
+          <Link to={`/${deptcode}/${profname}/thank-you/`}>Thank You Page</Link>
+        </h3>
+        <div className={styles.formContainer}>
+          <div className={styles.pseudonymContainer}>
+            <h4>Add a Pseudonym</h4>
+            <input
+              className={styles.pseudonym}
+              type="text"
+              value={pseudonym ? pseudonym : ""}
+              placeholder="Who's saying thank you? (Anonymous is fine)"
+              onChange={(e) => setPseudonym(e.target.value)}
+            />
+          </div>
+          <div className={styles.headlineContainer}>
+            <h4>Thank You Note Headline</h4>
+            <input
+              className={styles.commentHeadline}
+              type="text"
+              placeholder="Short and sweet title for your note"
+              value={commentHeadline ? commentHeadline : ""}
+              onChange={(e) => setCommentHeadline(e.target.value)}
+            />
+          </div>
+          <div className={styles.commentContainer}>
+            <h4>User Note</h4>
+            <textarea
+              className={styles.userComment}
+              name="user-comment"
+              rows="5"
+              value={userComment ? userComment : ""}
+              placeholder={`Express your gratitude, mention memorable moments, or how this professor made a difference in your studies.`}
+              onChange={(e) => setUserComment(e.target.value)}
+            />
+          </div>
+          <div className={styles.submitContainer}>
+            <button type="submit" onClick={handleSubmit}>
+              Submit Note
+            </button>
+          </div>
         </div>
-        <div className={styles.headlineContainer}>
-          <h4>Thank You Note Headline</h4>
-          <input
-            className={styles.commentHeadline}
-            type="text"
-            placeholder="Short and sweet title for your note"
-            value={commentHeadline ? commentHeadline : ""}
-            onChange={(e) => setCommentHeadline(e.target.value)}
-          />
-        </div>
-        <div className={styles.commentContainer}>
-          <h4>User Note</h4>
-          <textarea
-            className={styles.userComment}
-            name="user-comment"
-            rows="5"
-            value={userComment ? userComment : ""}
-            placeholder={`Express your gratitude, mention memorable moments, or how this professor made a difference in your studies.`}
-            onChange={(e) => setUserComment(e.target.value)}
-          />
-        </div>
-        <div className={styles.submitContainer}>
-          <button type="submit" onClick={handleSubmit}>
-            Submit Note
-          </button>
-        </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 

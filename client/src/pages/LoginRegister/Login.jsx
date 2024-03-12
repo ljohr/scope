@@ -1,11 +1,13 @@
-import { useState, useContext } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { auth } from "../../config/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate, Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { toast } from "react-toastify";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebaseConfig";
 import { UserContext } from "../../providers/UserContext";
 import "./LoginRegister.css";
+
 axios.defaults.withCredentials = true;
 
 const Login = () => {
@@ -56,32 +58,39 @@ const Login = () => {
   };
 
   return (
-    <main className="login-main">
-      <div className="register-card">
-        <h1>Login</h1>
-        <form action="" className="login-form">
-          <input
-            type="email"
-            placeholder="BC Email"
-            onChange={(ev) => setEmail(ev.target.value)}
-            autoComplete="username"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={(ev) => setPassword(ev.target.value)}
-            autoComplete="current-password"
-          />
-          <button type="submit" onClick={loginUser}>
-            Log In
-          </button>
-        </form>
-        <Link to="/reset-password">Forgot your password?</Link>
-        <p>
-          {"Don't have an account?"} <a href="/register">Sign Up Here</a>
-        </p>
-      </div>
-    </main>
+    <>
+      <HelmetProvider>
+        <Helmet>
+          <title>Login | Scope</title>
+        </Helmet>
+      </HelmetProvider>
+      <main className="login-main">
+        <div className="register-card">
+          <h1>Login</h1>
+          <form action="" className="login-form">
+            <input
+              type="email"
+              placeholder="BC Email"
+              onChange={(ev) => setEmail(ev.target.value)}
+              autoComplete="username"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              onChange={(ev) => setPassword(ev.target.value)}
+              autoComplete="current-password"
+            />
+            <button type="submit" onClick={loginUser}>
+              Log In
+            </button>
+          </form>
+          <Link to="/reset-password">Forgot your password?</Link>
+          <p>
+            {"Don't have an account?"} <a href="/register">Sign Up Here</a>
+          </p>
+        </div>
+      </main>
+    </>
   );
 };
 
