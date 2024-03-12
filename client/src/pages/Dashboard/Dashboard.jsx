@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebaseConfig";
 import convertDate from "../../utils/convertDate.js";
+import toSlug from "../../utils/toSlug.js";
+import { Link } from "react-router-dom";
 
 import { Rating, Pagination, CircularProgress } from "@mui/material";
 import SearchBar from "../../components/SearchBar/SearchBar.jsx";
@@ -67,32 +69,59 @@ const Dashboard = () => {
             {reviews.map((review, index) => {
               return (
                 <div key={index} className={styles.reviewSingle}>
-                  {console.log(review)}
-                  <h3>{review.courseId.courseCode}</h3>
-                  <h3>{review.professorId.professorName}</h3>
-                  <p>{review.courseId.courseName}</p>
-                  <p>
-                    {review.semesterTaken.term} {review.semesterTaken.year}
+                  <Link
+                    to={`/${review.courseId.department}/${toSlug(
+                      review.professorId.professorName
+                    )}/${review.courseId.courseCode}`}
+                  >
+                    <h3 className={styles.reviewCourseTitle}>
+                      {review.courseId.courseCode} /{" "}
+                      {review.professorId.professorName}
+                    </h3>
+                  </Link>
+                  <div className={styles.containerRow}>
+                    <h3 className={styles.courseName}>
+                      {review.courseId.courseName}
+                    </h3>
+                    <p className={styles.termTaken}>
+                      {review.semesterTaken.term} {review.semesterTaken.year}
+                    </p>
+                  </div>
+                  <p className={styles.userComment}>{review.userComment}</p>
+                  <div className={styles.ratingContainer}>
+                    <div className={styles.ratingInfo}>
+                      <p>Course Rating: </p>
+                      <Rating
+                        name="half-rating"
+                        value={parseFloat(review.courseRating)}
+                        precision={0.1}
+                        readOnly
+                      />
+                    </div>
+                    <div className={styles.ratingInfo}>
+                      <p>Professor Rating: </p>
+                      <Rating
+                        name="half-rating"
+                        value={parseFloat(review.profRating)}
+                        precision={0.1}
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <p className={styles.createdDate}>
+                    Posted {convertDate(review.createdAt)}
                   </p>
-                  <p>{review.userComment}</p>
-                  <p>
-                    Course Rating: {parseFloat(review.courseRating).toFixed(2)}
-                  </p>
-                  <p>
-                    Professor Rating: {parseFloat(review.profRating).toFixed(2)}
-                  </p>
-                  <p>{convertDate(review.createdAt)}</p>
                 </div>
               );
             })}
-            <div className="pagination-container">
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </div>
+          </div>
+          <div className="pagination-container">
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+            />
           </div>
         </section>
       ) : (

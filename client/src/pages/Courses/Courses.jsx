@@ -30,7 +30,7 @@ const Courses = () => {
         console.log(error);
       } else if (error.status === 401) {
         toast.error("Please login to view this page!");
-        navigate("/login");
+        navigate("/");
       }
     }
   }, [selectedMajorCode, page, limit, navigate]);

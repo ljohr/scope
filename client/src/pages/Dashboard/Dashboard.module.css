@@ -12,24 +12,55 @@
   justify-content: center;
   align-items: center;
   padding-top: 3rem;
-  width: 100%;
+  width: 90%;
 }
 
 .reviewsContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  width: 80%;
-  gap: 2rem;
-  row-gap: 2rem;
-  padding-top: 1rem;
+  gap: 1rem;
+  width: 100%;
+  padding-top: 1.2rem;
+}
+
+.containerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.25rem;
 }
 
 .reviewSingle {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
+  justify-content: space-between;
+  padding: 5%;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.201);
+  min-height: 200px;
+  min-width: 300px;
+}
+
+.reviewSingle .courseName {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.reviewCourseTitle {
+  font-size: 1.05rem;
+}
+
+.termTaken {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: rgb(32, 32, 32);
+}
+
+.userComment {
+  padding-bottom: 0.7rem;
 }
 
 .loadingContainer {
@@ -37,4 +68,21 @@
   justify-content: center;
   align-items: center;
   height: 5rem;
+}
+
+.ratingContainer {
+  padding-bottom: 0.8rem;
+}
+
+.ratingInfo {
+  display: flex;
+  align-items: center;
+  font-size: 0.97rem;
+}
+.ratingInfo p {
+  padding-right: 0.3rem;
+}
+
+.createdDate {
+  font-size: 0.85rem;
 }

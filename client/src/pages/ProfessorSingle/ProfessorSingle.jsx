@@ -33,7 +33,7 @@ const ProfessorSingle = () => {
           navigate("/page-not-found");
         } else if (error.response && error.response.status === 401) {
           toast.error("Please login to view this page!");
-          navigate("/login");
+          navigate("/");
         }
       }
     };

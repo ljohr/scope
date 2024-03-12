@@ -45,8 +45,12 @@ const CourseSingle = () => {
       setTotalPages(res.data.totalPages);
       setDataLoaded(true);
     } catch (error) {
-      toast.error("Please login to view this page!");
-      navigate("/login");
+      if (error.response && error.response.status === 404) {
+        navigate("/page-not-found");
+      } else if (error.response && error.response.status === 401) {
+        toast.error("Please login to view this page!");
+        navigate("/login");
+      }
     }
   }, [deptcode, profname, coursecode, page, navigate]);
 
