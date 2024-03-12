@@ -64,7 +64,7 @@ const UserProvider = ({ children }) => {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, []);
+  }, [currentUser]);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>

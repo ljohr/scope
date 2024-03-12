@@ -164,7 +164,7 @@ const UpdateReview = () => {
     const fetchCourse = async () => {
       try {
         const res = await axios.get(
-          `/api/${deptcode}/${profname}/${coursecode}`
+          `/api/courseSingle/${deptcode}/${profname}/${coursecode}`
         );
         console.log(res.data);
         setCourseInfo(res.data.courseInfo);

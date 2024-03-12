@@ -173,7 +173,7 @@ const UserReview = () => {
     const fetchCourse = async () => {
       try {
         const res = await axios.get(
-          `/api/${deptcode}/${profname}/${coursecode}`
+          `/api/courseSingle/${deptcode}/${profname}/${coursecode}`
         );
         setCourseInfo(res.data.courseInfo);
         setProfessor(res.data.professorDetails);

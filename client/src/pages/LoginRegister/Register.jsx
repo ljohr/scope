@@ -96,7 +96,7 @@ const Register = () => {
       try {
         await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(auth.currentUser);
-        navigate("/");
+        navigate("/dashboard");
         toast.success("A verification email has been sent to your inbox!");
       } catch (error) {
         const errorCode = error.code;

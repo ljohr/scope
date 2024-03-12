@@ -38,7 +38,7 @@ const Login = () => {
         }
       );
 
-      navigate("/"); // Redirect user after login
+      navigate("/dashboard"); // Redirect user after login
     } catch (error) {
       console.error(error);
       handleLoginError(error.code); // Handle login errors

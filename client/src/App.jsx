@@ -26,18 +26,20 @@ import ThankYou from "./pages/ThankYou/ThankYou.jsx";
 import NewThankYou from "./pages/ThankYou/NewThankYou.jsx";
 import EditThankYou from "./pages/ThankYou/EditThankYou.jsx";
 
+import AuthCheck from "./providers/AuthCheck.js";
+
 axios.defaults.baseURL = "http://localhost:4000";
 
 const LayOut = () => {
   return (
-    <>
+    <AuthCheck>
       <header>
         <Navbar />
       </header>
       <ToastContainer />
       <Outlet />
       <Footer />
-    </>
+    </AuthCheck>
   );
 };
 
