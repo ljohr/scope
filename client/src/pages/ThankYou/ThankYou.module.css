@@ -6,13 +6,6 @@
   padding: 3% 0;
 }
 
-.loadingContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5rem;
-}
-
 .postContainer {
   width: 80%;
 }

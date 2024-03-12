@@ -85,7 +85,7 @@ const Dashboard = () => {
                 </div>
               );
             })}
-            <div className={styles.paginationContainer}>
+            <div className="pagination-container">
               <Pagination
                 count={totalPages}
                 page={page}

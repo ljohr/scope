@@ -130,3 +130,9 @@
 .user-tags {
   padding-top: 0.8rem;
 }
+
+.dateCreated {
+  padding-top: 0.5rem;
+  font-size: 0.85rem;
+  color: rgb(32, 32, 32);
+}

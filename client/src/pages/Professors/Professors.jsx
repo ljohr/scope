@@ -87,7 +87,9 @@ const Professors = () => {
           </div>
         </>
       ) : (
-        <CircularProgress />
+        <div className="loading-container">
+          <CircularProgress />
+        </div>
       )}
     </main>
   );

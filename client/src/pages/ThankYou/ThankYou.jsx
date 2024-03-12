@@ -172,7 +172,7 @@ const ThankYou = () => {
           </Dialog>
         </>
       ) : (
-        <div className={styles.loadingContainer}>
+        <div className="loading-container">
           <CircularProgress />
         </div>
       )}

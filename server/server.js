@@ -168,15 +168,17 @@ app.post("/api/sessionLogin", idTokenValidator, async (req, res, next) => {
 });
 
 app.get("/api/majors", sessionCookieValidator, async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 12;
-  const majorCode = req.query.major;
-  console.log(majorCode);
   try {
+    const majorCode = req.query.major;
     let query = {};
+
     if (majorCode) {
       query = { code: majorCode.toUpperCase() };
     }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+
     const majors = await MajorModel.find(query)
       .sort({ code: 1 })
       .skip((page - 1) * limit)
@@ -193,15 +195,17 @@ app.get("/api/majors", sessionCookieValidator, async (req, res, next) => {
 });
 
 app.get("/api/courses", sessionCookieValidator, async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 12;
-  const skip = (page - 1) * limit;
-  const majorCode = req.query.major;
   try {
+    const majorCode = req.query.major;
     let query = {};
     if (majorCode) {
       query = { department: majorCode.toUpperCase() };
     }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
     const courses = await CourseModel.find(query)
       .sort({ courseCode: 1 })
       .skip(skip)
@@ -222,10 +226,10 @@ app.get(
   "/api/:deptcode/professors",
   sessionCookieValidator,
   async (req, res, next) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
-    const deptcode = req.params.deptcode.toUpperCase();
     try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 12;
+      const deptcode = req.params.deptcode.toUpperCase();
       const professors = await ProfessorModel.find({ department: deptcode })
         .sort({ professorName: 1 })
         .skip((page - 1) * limit)
@@ -248,10 +252,10 @@ app.get(
   "/api/:deptcode/all-courses",
   sessionCookieValidator,
   async (req, res, next) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
-    const deptcode = req.params.deptcode.toUpperCase();
     try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 12;
+      const deptcode = req.params.deptcode.toUpperCase();
       const courses = await CourseModel.find({ department: deptcode })
         .sort({ courseCode: 1 })
         .skip((page - 1) * limit)
@@ -272,10 +276,10 @@ app.get(
 );
 
 app.get("/api/professors", sessionCookieValidator, async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 12;
-  const majorCode = req.query.major;
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const majorCode = req.query.major;
     let query = {};
     if (majorCode) {
       query = { department: majorCode.toUpperCase() };
@@ -307,24 +311,40 @@ app.get("/api/professors", sessionCookieValidator, async (req, res, next) => {
 // });
 
 app.get(
-  "/api/course-single/:deptcode/:profname",
+  "/api/profSingle/:deptcode/:profname",
   sessionCookieValidator,
   async (req, res, next) => {
     try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 12;
+      const skip = (page - 1) * limit;
       const { deptcode, profname } = req.params;
-      console.log(profname, nameFromSlug(profname));
-      // Fetch the professor by name and department.
+
       const professor = await ProfessorModel.findOne({
         professorName: nameFromSlug(profname),
         department: deptcode.toUpperCase(),
-      })
-        .populate("courseIds")
-        .populate("avgProfRating");
+      });
+
       if (!professor) {
         return res.status(404).json({ message: "Professor not found" });
       }
 
-      res.json(professor);
+      const courses = await CourseModel.find({ professorId: professor._id })
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit);
+
+      const totalCourses = await CourseModel.countDocuments({
+        professorId: professor._id,
+      });
+
+      res.json({
+        professor,
+        courses,
+        totalPages: Math.ceil(totalCourses / limit),
+      });
     } catch (error) {
       next(error);
     }
@@ -466,12 +486,14 @@ app.put(
 );
 
 app.get(
-  "/api/:deptcode/:profname/:courseCode",
+  "/api/courseSingle/:deptcode/:profname/:courseCode",
   sessionCookieValidator,
   async (req, res, next) => {
     try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 12;
+      const skip = (page - 1) * limit;
       const { deptcode, profname, courseCode } = req.params;
-      // use the simple react searchbar wit hthe json course data i get back
       const professor = await ProfessorModel.findOne({
         professorName: nameFromSlug(profname),
         department: deptcode.toUpperCase(),
@@ -479,9 +501,8 @@ app.get(
 
       if (!professor) {
         return res.status(404).json({ message: "Professor not found" });
-      } // Find the course by professorId, department, and courseCode
+      }
 
-      // Add find by course to see all profs ani review page i nthe course page
       const course = await CourseModel.findOne({
         professorId: professor._id,
         department: deptcode.toUpperCase(),
@@ -492,11 +513,17 @@ app.get(
         return res.status(404).json({ message: "Course not found" });
       }
 
-      const reviews = await ReviewModel.find({ courseId: course._id }).sort({
-        createdAt: -1,
+      const reviews = await ReviewModel.find({ courseId: course._id })
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit);
+
+      const totalCourses = await ReviewModel.countDocuments({
+        courseId: course._id,
       });
 
-      // Structure the response to include the course details and the reviews
       const responseData = {
         courseInfo: course,
         professorDetails: {
@@ -505,6 +532,7 @@ app.get(
           avgProfRating: professor.avgProfRating,
         },
         reviews: reviews,
+        totalPages: Math.ceil(totalCourses / limit),
       };
       console.log(course);
       res.json(responseData);
@@ -585,9 +613,6 @@ app.get(
 );
 
 app.get("/api/user/reviews", idTokenValidator, async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 12;
-  const skip = (page - 1) * limit;
   const decodedToken = req.decodedToken;
 
   try {
@@ -597,6 +622,11 @@ app.get("/api/user/reviews", idTokenValidator, async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
     const reviews = await ReviewModel.find({ userId: user._id })
       .populate("courseId")
       .populate("professorId")

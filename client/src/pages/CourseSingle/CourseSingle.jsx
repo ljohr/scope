@@ -5,8 +5,9 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { UserContext } from "../../providers/UserContext";
+import convertDate from "../../utils/convertDate";
 
-import { CircularProgress, Slider } from "@mui/material";
+import { CircularProgress, Slider, Pagination } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -27,21 +28,27 @@ const CourseSingle = () => {
   const [curReviewUid, setCurReviewUid] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const limit = 12;
 
   const navigate = useNavigate();
 
   const fetchCourse = useCallback(async () => {
     try {
-      const res = await axios.get(`/api/${deptcode}/${profname}/${coursecode}`);
+      const res = await axios.get(
+        `/api/courseSingle/${deptcode}/${profname}/${coursecode}?&page=${page}&limit=${limit}`
+      );
       setCourseInfo(res.data.courseInfo);
       setProfessor(res.data.professorDetails);
       setReviews(res.data.reviews);
+      setTotalPages(res.data.totalPages);
       setDataLoaded(true);
     } catch (error) {
       toast.error("Please login to view this page!");
       navigate("/login");
     }
-  }, [deptcode, profname, coursecode, navigate]);
+  }, [deptcode, profname, coursecode, page, navigate]);
 
   const fetchUserId = useCallback(async () => {
     try {
@@ -71,6 +78,10 @@ const CourseSingle = () => {
       label: courseInfo.avgWeeklyHours,
     },
   ];
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
   const valuetext = () => {
     return courseInfo.avgWeeklyHours;
@@ -133,10 +144,12 @@ const CourseSingle = () => {
                     <div key={review._id} className="review-card">
                       <div className="review-container">
                         <h4>{review.reviewHeadline}</h4>
-                        <p>
-                          {review.semesterTaken.term}{" "}
-                          {review.semesterTaken.year}
-                        </p>
+                        <div>
+                          <p>
+                            {review.semesterTaken.term}{" "}
+                            {review.semesterTaken.year}
+                          </p>
+                        </div>
                       </div>
                       <div className="review-container">
                         {review.reviewers ? (
@@ -188,29 +201,6 @@ const CourseSingle = () => {
                             readOnly
                           />{" "}
                         </div>
-                        <div className="change-btn-container">
-                          {/* Check if the current user is the author of the review */}
-                          {currentUser && review.userId === curReviewUid && (
-                            <>
-                              <button
-                                className="edit-btn"
-                                onClick={() =>
-                                  navigate(
-                                    `/${deptcode}/${profname}/${coursecode}/update-review/${review._id}`
-                                  )
-                                }
-                              >
-                                Edit Review
-                              </button>
-                              <button
-                                className="delete-btn"
-                                onClick={() => handleClickOpen(review._id)}
-                              >
-                                Delete Review
-                              </button>
-                            </>
-                          )}
-                        </div>
                       </div>
                       <div className="user-tags">
                         {review.courseTags &&
@@ -226,6 +216,32 @@ const CourseSingle = () => {
                               );
                             }
                           )}
+                      </div>
+                      <div className="dateCreated">
+                        <p>Posted {convertDate(review.createdAt)}</p>
+                      </div>
+                      <div className="change-btn-container">
+                        {/* Check if the current user is the author of the review */}
+                        {currentUser && review.userId === curReviewUid && (
+                          <>
+                            <button
+                              className="edit-btn"
+                              onClick={() =>
+                                navigate(
+                                  `/${deptcode}/${profname}/${coursecode}/update-review/${review._id}`
+                                )
+                              }
+                            >
+                              Edit Review
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleClickOpen(review._id)}
+                            >
+                              Delete Review
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   );
@@ -333,9 +349,23 @@ const CourseSingle = () => {
                 </div>
               </section>
             </div>
+            {totalPages > 1 ? (
+              <div className="pagination-container">
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         ) : (
-          <CircularProgress />
+          <div className="loading-container">
+            <CircularProgress />
+          </div>
         )}
       </main>
     </>

@@ -54,3 +54,14 @@ button:hover {
   margin-bottom: 0.4rem;
   border-radius: 2rem;
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15rem;
+}
+
+.pagination-container {
+  padding-top: 3%;
+}

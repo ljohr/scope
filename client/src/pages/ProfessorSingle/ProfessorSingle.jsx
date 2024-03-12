@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import CircularProgress from "@mui/material/CircularProgress";
+import { CircularProgress, Pagination } from "@mui/material";
 import axios from "axios";
 import "./ProfessorSingle.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -11,21 +11,21 @@ const ProfessorSingle = () => {
   const { deptcode, profname } = useParams();
   const [dataLoaded, setDataLoaded] = useState(false);
   const [professor, setProfessor] = useState({});
+  const [courses, setCourses] = useState({});
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const limit = 12;
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourse = async () => {
       try {
         const response = await axios.get(
-          `/api/course-single/${deptcode}/${profname}`
+          `/api/profSingle/${deptcode}/${profname}?&page=${page}&limit=${limit}`
         );
-        const sortedCourses = response.data.courseIds.sort((a, b) =>
-          a.courseCode.localeCompare(b.courseCode)
-        );
-        setProfessor({
-          ...response.data,
-          courseIds: sortedCourses,
-        });
+        setProfessor(response.data.professor);
+        setCourses(response.data.courses);
+        setTotalPages(response.data.totalPages);
         setDataLoaded(true);
       } catch (error) {
         console.log(error);
@@ -39,7 +39,11 @@ const ProfessorSingle = () => {
     };
 
     fetchCourse();
-  }, [deptcode, profname, navigate]);
+  }, [deptcode, profname, page, navigate]);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <>
@@ -61,7 +65,7 @@ const ProfessorSingle = () => {
             Thank You Page
           </Link>
           <section className="prof-courses">
-            {professor.courseIds?.map((course) => {
+            {courses.map((course) => {
               const courseReviewUrl = `/${deptcode}/${profname}/${course.courseCode}`;
               return (
                 <div key={course._id} className="prof-course">
@@ -85,9 +89,23 @@ const ProfessorSingle = () => {
               );
             })}
           </section>
+          {totalPages > 1 ? (
+            <div className="pagination-container">
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </main>
       ) : (
-        <CircularProgress />
+        <div className="loading-container">
+          <CircularProgress />
+        </div>
       )}
     </>
   );
