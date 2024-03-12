@@ -24,15 +24,15 @@ const Navbar = () => {
 
   return (
     <div className="nav-bar">
-      <nav className="nav-links">
-        <ul>
-          <li>
-            <Link to="/" className="nav-title">
-              <span>Scope</span>
-            </Link>
-          </li>
-          {currentUser ? (
-            <>
+      {currentUser ? (
+        <>
+          <nav className="nav-links">
+            <ul>
+              <li>
+                <Link to="/" className="nav-title">
+                  <span>Scope</span>
+                </Link>
+              </li>
               <li>
                 <Link to="/courses">Courses</Link>
               </li>
@@ -45,15 +45,24 @@ const Navbar = () => {
               <li>
                 <Link to="/core">Core</Link>
               </li>
-            </>
-          ) : (
-            ""
-          )}
-        </ul>
-      </nav>
-      <nav>
-        <SearchBar className={searchStyles.searchNav} />
-      </nav>
+            </ul>
+          </nav>
+          <nav>
+            <SearchBar className={searchStyles.searchNav} />
+          </nav>
+        </>
+      ) : (
+        <nav className="nav-links">
+          <ul>
+            <li>
+              <Link to="/" className="nav-title">
+                <span>Scope</span>
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      )}
+
       <nav className="nav-login">
         <ul>
           {currentUser ? (

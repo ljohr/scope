@@ -5,16 +5,25 @@
 
 .searchBlock select {
   padding: 0 1rem;
+  border: 1px solid rgb(198, 198, 198);
+  border-radius: 0.5rem 0 0 0.5rem;
+  border-right: none;
 }
 
 .searchBlock form input {
   padding: 1rem 1.2rem;
   min-width: 30rem;
+  border: 1px solid rgb(198, 198, 198);
+  border-left: none;
+  border-right: none;
 }
 
 .searchBlock form button {
   padding: 1rem 1.2rem;
   border: 1px solid rgb(198, 198, 198);
+  background: white;
+  border-radius: 0 0.5rem 0.5rem 0;
+  border-left: none;
 }
 
 /* Navbar SearchBar Styling */
@@ -26,15 +35,21 @@
 .searchNav select {
   padding: 0 0.3rem;
   border: 1px solid rgba(194, 194, 194, 0.598);
+  border-radius: 0.5rem 0 0 0.5rem;
   border-right: none;
 }
 
 .searchNav form input {
   border: 1px solid rgba(194, 194, 194, 0.598);
   padding: 0.5rem 0.5rem;
-  min-width: 3rem;
+  min-width: 2rem;
+  border-left: none;
+  border-right: none;
 }
 
 .searchNav form button {
   border: 1px solid rgba(194, 194, 194, 0.598);
+  background: white;
+  border-radius: 0 0.5rem 0.5rem 0;
+  border-left: none;
 }

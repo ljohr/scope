@@ -61,3 +61,8 @@
 .paginationContainer {
   padding-top: 3%;
 }
+
+.noResultContainer {
+  display: flex;
+  justify-content: center;
+}

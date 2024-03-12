@@ -113,15 +113,14 @@ const SearchResults = () => {
                             <p>{result.professorName}</p>
                           </div>
                           <p>
-                            Average Instructor Rating: {result.avgProfRating}
+                            Average Instructor Rating:{" "}
+                            {result.avgProfRating.toFixed(2)}
                           </p>
                           <p>Total Reviewers: {result.totalProfReviewers}</p>
                         </div>
                         <Rating
                           name="half-rating"
-                          value={parseFloat(
-                            (result.avgProfRating || 0).toFixed(2)
-                          )}
+                          value={parseFloat(result.avgProfRating || 0)}
                           precision={0.1}
                           readOnly
                         />
@@ -137,16 +136,28 @@ const SearchResults = () => {
                     );
                   }
                 })}
+                {console.log(results.length, type)}
               </section>
+              {results.length === 0 && (
+                <div className={styles.noResultContainer}>
+                  <p>
+                    Did you mean to search for a{" "}
+                    {type === "Course" ? "professor" : "course"}? You have
+                    searched for a {type.toLowerCase()}.
+                  </p>
+                </div>
+              )}
             </div>
-            <div className={styles.paginationContainer}>
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </div>
+            {results.length > 0 && (
+              <div className={styles.paginationContainer}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                />
+              </div>
+            )}
           </>
         ) : (
           <div className={styles.loadingContainer}>

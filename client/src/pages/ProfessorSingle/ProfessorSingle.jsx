@@ -59,7 +59,7 @@ const ProfessorSingle = () => {
             {professor.department}
           </Link>
           <Link
-            className="course-dept"
+            className="thank-you-page"
             to={`/${deptcode}/${profname}/thank-you`}
           >
             Thank You Page

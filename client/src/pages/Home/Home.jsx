@@ -1,18 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StudentsTalking from "../../assets/students-talking.svg";
 import "./Home.css";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../providers/UserContext";
 
 const Home = () => {
+  const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  });
+
   return (
     <main className="home-main">
       <Hero />
-      {/* <How />
-      <Info /> */}
+      <How />
+      <Info />
     </main>
   );
 };
 
-function Hero() {
+const Hero = () => {
   return (
     <section className="hero">
       <div className="home-info">
@@ -36,9 +46,9 @@ function Hero() {
       </div>
     </section>
   );
-}
+};
 
-function How() {
+const How = () => {
   return (
     <section className="how-to-use">
       <h1>How to Use</h1>
@@ -56,9 +66,9 @@ function How() {
       </div>
     </section>
   );
-}
+};
 
-function Info() {
+const Info = () => {
   return (
     <section id="how-to-use">
       <h1>Where is this information coming from?</h1>
@@ -68,6 +78,6 @@ function Info() {
       </p>
     </section>
   );
-}
+};
 
 export default Home;
